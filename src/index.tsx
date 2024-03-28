@@ -2,24 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
-import './styles/reset.css';
-import reportWebVitals from './reportWebVitals';
 import App from './App';
-import Signup from './pages/Signup';
-import SignupEmail from './pages/SignupEmail';
+import reportWebVitals from './reportWebVitals';
+// import { configureStore } from '@reduxjs/toolkit';
+// import { Provider } from 'react-redux';
+// import { composeWithDevTools } from '@redux-devtools/extension';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+// const store = configureStore({ reducer: rootReducer }, composeWithDevTools);
+
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/signup/email" element={<SignupEmail />} />
-      </Routes>
-    </BrowserRouter>
+    {/* <Provider store ={store} > */}
+    {/* 나중에 redux 써서 store쓰면 이 안에다가 App 넣으면 됌 */}
+    {/* </Provider> */}
+    <App />
   </React.StrictMode>
 );
 
