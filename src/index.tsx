@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './styles/reset.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './index.css';
+import './styles/reset.css';
+import reportWebVitals from './reportWebVitals';
+import App from './App';
 import Signup from './pages/Signup';
+import SignupEmail from './pages/SignupEmail';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,6 +17,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/signup/email" element={<SignupEmail />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
