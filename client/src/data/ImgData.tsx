@@ -1,6 +1,6 @@
-import { SwipeImg } from './components/MainPopularPost';
+import { Slide } from '../components/MainPageImgSlide';
 
-export const images: SwipeImg[] = [
+export const slides: Slide[] = [
   {
     imageUrl: '/images/mainSon.avif',
     text: '이강인과 손흥민의 합작 골',

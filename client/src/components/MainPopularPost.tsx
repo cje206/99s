@@ -7,7 +7,7 @@ import {
   Img,
   ImageCounterWrapper,
   ImageCounter,
-} from '../emotion';
+} from '../data/emotion';
 
 export interface SwipeImg {
   imageUrl: string;

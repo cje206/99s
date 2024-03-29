@@ -1,5 +1,5 @@
-import { slides } from '../ImgData';
-import { images } from '../PopularPostData';
+import { slides } from '../data/ImgData';
+import { images } from '../data/PopularPostData';
 import MainPageImgSlide from '../components/MainPageImgSlide';
 import MainPopularPost from '../components/MainPopularPost';
 
