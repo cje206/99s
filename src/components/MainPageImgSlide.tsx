@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+import '../styles/MainPageImgSlide.scss';
 import { useState, useEffect } from 'react';
 
 export interface Slide {
@@ -24,9 +26,26 @@ export default function MainPageImgSlide({ slides }: MainPageImgSlideProps) {
   }
 
   return (
-    <div>
-      <p>{slides[currentIndex].text}</p>
-      <img src={slides[currentIndex].imageUrl} alt="이미지 슬라이드" />
-    </div>
+    <>
+      <p
+        style={{
+          width: '70%',
+          wordWrap: 'break-word',
+          margin: '0 auto',
+          fontWeight: 'bold',
+        }}
+      >
+        {slides[currentIndex].text}
+      </p>
+      <button>
+        <Link to=""></Link>자세히 보기
+      </button>
+      <div
+        className="imgBorder"
+        style={{ backgroundImage: `url(${slides[currentIndex].imageUrl})` }}
+      >
+        {/* <img src={slides[currentIndex].imageUrl} alt="이미지 슬라이드" /> */}
+      </div>
+    </>
   );
 }
