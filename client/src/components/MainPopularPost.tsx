@@ -1,3 +1,4 @@
+import '../styles/MainPopularPost.scss';
 import { useState } from 'react';
 import Swipe from 'react-easy-swipe';
 import {
@@ -7,15 +8,18 @@ import {
   Img,
   ImageCounterWrapper,
   ImageCounter,
-} from '../data/emotion';
+} from '../components/MainPopularStyle';
 
 export interface SwipeImg {
   imageUrl: string;
-  text: string;
+  title: string;
+  writer: string;
+  writerImgUrl: string;
+  Date: string;
 }
 
 interface MainPopularPostProps {
-  images: SwipeImg[]; // 이미지 URL 배열을 prop으로 받음
+  images: SwipeImg[];
 }
 
 export default function MainPopularPost({ images }: MainPopularPostProps) {
@@ -43,14 +47,15 @@ export default function MainPopularPost({ images }: MainPopularPostProps) {
   };
 
   const onSwipeEnd = () => {
-    if (positionx < -20) {
-      // 오른쪽으로 스와이프했을 때, 다음 이미지로 넘어가거나, 마지막 이미지에서는 첫 번째 이미지로 순환
-      const nextImgCount = imgCount === images.length ? 1 : imgCount + 1;
-      setImgCount(nextImgCount);
-    } else if (positionx > 20) {
-      // 왼쪽으로 스와이프했을 때, 이전 이미지로 넘어가거나, 첫 번째 이미지에서는 마지막 이미지로 순환
-      const prevImgCount = imgCount === 1 ? images.length : imgCount - 1;
+    // 오른쪽으로 스와이프 (이전 이미지로)
+    if (positionx > 20) {
+      const prevImgCount = imgCount <= 1 ? images.length : imgCount - 1;
       setImgCount(prevImgCount);
+    }
+    // 왼쪽으로 스와이프 (다음 이미지로)
+    else if (positionx < -20) {
+      const nextImgCount = imgCount >= images.length ? 1 : imgCount + 1;
+      setImgCount(nextImgCount);
     }
     setPositionx(0);
     setEndSwipe(true);
@@ -58,14 +63,16 @@ export default function MainPopularPost({ images }: MainPopularPostProps) {
 
   return (
     <>
+      <p className="category" style={{ fontWeight: 'bold' }}>
+        인기 게시글
+      </p>
       <Container>
-        <p>인기 게시글</p>
         <PostImage>
           <Swipe onSwipeEnd={onSwipeEnd} onSwipeMove={onSwipeMove}>
             <StyledImgDiv
-            // imgCount={imgCount}
-            // positionx={positionx}
-            // endSwipe={endSwipe}
+              imgCount={imgCount}
+              positionx={positionx}
+              endSwipe={endSwipe}
             >
               {images.map((image, index) => {
                 return (
@@ -74,15 +81,36 @@ export default function MainPopularPost({ images }: MainPopularPostProps) {
                     style={{ minWidth: '100%', textAlign: 'center' }}
                   >
                     {' '}
-                    {/* 화면 너비에 맞추어 이미지를 표시 */}
-                    <Img src={image.imageUrl} alt={image.text} />
-                    <p>{image.text}</p> {/* 텍스트 표시 */}
+                    <Img src={image.imageUrl}></Img>
                   </div>
                 );
               })}
             </StyledImgDiv>
           </Swipe>
         </PostImage>
+        <div className="postTitle">{images[imgCount - 1].title}</div>
+        <div className="writerInfo">
+          {images[imgCount - 1].writerImgUrl && (
+            <img
+              className="writerImg"
+              src={images[imgCount - 1].writerImgUrl}
+              alt="작성자 사진"
+            />
+          )}
+          <div className="writerDetail">
+            <div style={{ fontSize: '20px', paddingBottom: '5px' }}>
+              {images[imgCount - 1].writer}
+            </div>
+            <div
+              style={{
+                color: '#7E7F81',
+                fontSize: '11px',
+              }}
+            >
+              {images[imgCount - 1].Date}
+            </div>
+          </div>
+        </div>
         {images.length > 1 && (
           <ImageCounterWrapper>
             {images.map((imageUrl, index) => {
