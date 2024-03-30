@@ -33,7 +33,7 @@ time, mark, audio, video {
 	vertical-align: baseline;
   font-family: 'NanumSquareNeo-Variable';
 }
-input::placeholder, button {
+input, input::placeholder, button {
   font-family: 'NanumSquareNeo-Variable';
 	border: none;
 	background: none;

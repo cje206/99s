@@ -7,6 +7,8 @@ interface Props {
   setValue: (val: string) => void;
   placeholder?: string;
   type?: string;
+  refName?: any;
+  inputFunc?: any;
 }
 
 const BoxStyle = styled.div`
@@ -35,6 +37,8 @@ export default function InputText({
   type,
   placeholder,
   setValue,
+  refName,
+  inputFunc,
 }: Props) {
   return (
     <BoxStyle>
@@ -44,6 +48,8 @@ export default function InputText({
         type={type || 'text'}
         placeholder={placeholder || text}
         onChange={(e) => setValue(e.target.value)}
+        ref={refName}
+        onInput={inputFunc ? (e) => inputFunc(e) : undefined}
       />
     </BoxStyle>
   );
