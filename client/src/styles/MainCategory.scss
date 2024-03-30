@@ -1,0 +1,23 @@
+@import './variables';
+@import './utils';
+
+@include mobile {
+  .imageWrapper {
+    width: 100%;
+    height: 50vw;
+  }
+  .postTitle {
+    font-weight: bold;
+  }
+  .postContent {
+    font-size: 15px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3; /* 표시할 최대 행 수 */
+    overflow: hidden;
+    max-width: 100%;
+    color: #7e7f81;
+    margin-bottom: 30px;
+  }
+}
