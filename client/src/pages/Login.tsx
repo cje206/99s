@@ -1,20 +1,63 @@
-import React, { useState } from 'react';
+import { useRef, useState } from 'react';
 import InputText from '../components/InputText';
 import BtnLarge from '../components/BtnLarge';
+import { SignHeader } from '../components/Headers';
+import '../styles/signup.scss';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+  const navigator = useNavigate();
+  const emailRef = useRef<HTMLInputElement>();
+  const pwRef = useRef<HTMLInputElement>();
+  const [maintain, setMaintain] = useState<Boolean>(false);
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [pw, setPw] = useState('');
+  const loginFunc = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/member/login',
+      params: { email, pw, maintain },
+    });
+    if (res.data.success) {
+      alert(`${res.data.result.username}님 환영합니다!`);
+      navigator('/');
+    } else if (res.data.msg === '이메일 오류') {
+      alert('존재하지 않는 메일입니다.');
+      emailRef.current?.focus();
+    } else if (res.data.msg === '비밀번호 오류') {
+      alert('비밀번호가 일치하지 않습니다.');
+      pwRef.current?.focus();
+    }
+  };
   return (
     <div className="wrap">
-      <InputText text="이메일" data={email} type="email" setValue={setEmail} />
-      <InputText
-        text="비밀번호"
-        data={password}
-        type="password"
-        setValue={setPassword}
-      />
-      <BtnLarge text="로그인" />
+      <SignHeader />
+      <div className="body">
+        <InputText
+          text="이메일"
+          data={email}
+          type="email"
+          setValue={setEmail}
+          refName={emailRef}
+        />
+        <InputText
+          text="비밀번호"
+          data={pw}
+          type="password"
+          setValue={setPw}
+          refName={pwRef}
+        />
+        <div className="autoLogin">
+          <input
+            type="checkbox"
+            id="autoLogin"
+            onChange={(e) => setMaintain(e.target.checked)}
+          />
+          <label htmlFor="autoLogin"> 자동 로그인</label>
+        </div>
+        <BtnLarge text="로그인" func={loginFunc} />
+      </div>
     </div>
   );
 }

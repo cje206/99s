@@ -1,17 +1,21 @@
 .wrap {
-  h1 {
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  p {
-    margin-bottom: 30px;
-  }
-  .btns {
-    margin-bottom: 30px;
-    .signupBtn {
-      display: block;
+  .body {
+    padding: 0 20px;
+    h1.title {
+      font-size: 1.4rem;
+      font-weight: bold;
       margin-bottom: 20px;
     }
+    p.subText {
+      margin-bottom: 30px;
+    }
+    .singupBtns {
+      margin-bottom: 30px;
+      .signupBtn {
+        display: block;
+        margin-bottom: 20px;
+      }
+    }
   }
+  min-width: 320px;
 }
