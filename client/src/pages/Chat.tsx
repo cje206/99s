@@ -1,0 +1,81 @@
+import { useEffect, useState } from 'react';
+import { InputChat, MyChatMsg, OpChatMsg } from '../components/ChatMsg';
+import Chatlist from '../components/Chatlist';
+import { ChatDetailHeader, ChattingHeader } from '../components/Headers';
+import { ChatDataProps } from '../types';
+import useAuth from '../hooks/useAuth';
+import axios from 'axios';
+
+export default function Chat() {
+  const [user, setUser] = useAuth();
+  const [roomList, setRoomList] = useState<any[]>([]);
+
+  useEffect(() => {
+    setUser();
+  }, []);
+  useEffect(() => {
+    findRoom();
+  }, [user]);
+
+  const findRoom = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/chat/find',
+      params: { userId: user.id },
+    });
+    console.log(res);
+    setRoomList(res.data.result);
+  };
+
+  const [chatData, setChatData] = useState<ChatDataProps>({
+    open: false,
+    data: [],
+    roomId: '',
+  });
+
+  return (
+    <div className="wrap">
+      {chatData.open || <ChattingHeader />}
+      {chatData.open && <ChatDetailHeader />}
+      <div className="body" style={{ marginBottom: '100px' }}>
+        {chatData.open ||
+          roomList?.map((value, idx) => {
+            console.log(idx);
+            return (
+              <Chatlist
+                key={value.id}
+                nickname={value.nickname}
+                recentMsg={value.recentMsg}
+                sendTime={value.updatedAt}
+                roomId={value.roomId}
+                data={setChatData}
+              />
+            );
+          })}
+
+        {chatData.data?.map((value) => {
+          if (value.userId == user.id) {
+            return (
+              <MyChatMsg
+                key={value.id}
+                text={value.chatMsg}
+                sendTime={value.createdAt}
+              />
+            );
+          } else {
+            return (
+              <OpChatMsg
+                key={value.id}
+                text={value.chatMsg}
+                sendTime={value.createdAt}
+              />
+            );
+          }
+        })}
+        {chatData.open && (
+          <InputChat userId={user.id} chatlist={[chatData, setChatData]} />
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,7 +1,11 @@
 const express = require('express');
-const { signup } = require('../controller/member');
-const routre = express.Router();
+const { signup, login, find, searchId } = require('../controller/member');
+const { auth } = require('../middleware');
+const router = express.Router();
 
-routre.post('/signup', signup);
+router.post('/signup', signup);
+router.get('/login', login);
+router.get('/find', auth, find);
+router.get('/searchId', searchId);
 
-module.exports = routre;
+module.exports = router;
