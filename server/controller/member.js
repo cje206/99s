@@ -35,3 +35,17 @@ exports.login = async (req, res) => {
     res.json({ success: false, msg: '이메일 오류' });
   }
 };
+
+// 회원 인증
+exports.find = async (req, res) => {
+  const { id } = req.user;
+  const result = await Member.findOne({ where: { id } });
+  res.json({ success: true, result });
+};
+
+// id로 회원 검색하기
+exports.searchId = async (req, res) => {
+  const { id } = req.query;
+  const result = await Member.findOne({ where: { id } });
+  res.json({ success: true, result });
+};

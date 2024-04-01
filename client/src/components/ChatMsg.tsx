@@ -20,42 +20,6 @@ const ChatStyle = styled.p`
   max-width: 60vw;
   background: #f1f1f1;
 `;
-export function MyChatMsg({ text, sendTime }: ChatMsgProps) {
-  return (
-    <BoxStyle style={{ justifyContent: 'flex-end' }}>
-      <TimeStyle>{sendTime}</TimeStyle>
-      <ChatStyle
-        style={{ background: '#43a046', color: '#fff', marginLeft: '10px' }}
-      >
-        {text}
-      </ChatStyle>
-    </BoxStyle>
-  );
-}
-export function OpChatMsg({ text, sendTime }: ChatMsgProps) {
-  return (
-    <BoxStyle>
-      <ChatStyle style={{ marginRight: '10px' }}>{text}</ChatStyle>
-      <TimeStyle>{sendTime}</TimeStyle>
-    </BoxStyle>
-  );
-}
-
-export function DateChatMsg({ children }: any) {
-  return (
-    <div
-      style={{
-        textAlign: 'center',
-        color: '#a9a9a9',
-        fontSize: '12px',
-        marginBottom: '10px',
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
 const InputBox = styled.div`
   position: fixed;
   bottom: 0;
@@ -88,9 +52,56 @@ const SendBtn = styled.button`
   color: #fff;
 `;
 
-export function InputChat({ userId, roomId }: SendMsgProps) {
+export function MyChatMsg({ text, sendTime }: ChatMsgProps) {
+  const writtenTime = new Date(sendTime);
+  const HOUR = writtenTime.getHours();
+  const MINUTE = writtenTime.getMinutes();
+  return (
+    <BoxStyle style={{ justifyContent: 'flex-end' }}>
+      <TimeStyle>
+        {HOUR <= 12 ? `오전 ${HOUR}:${MINUTE}` : `오후 ${HOUR - 12}:${MINUTE}`}
+      </TimeStyle>
+      <ChatStyle
+        style={{ background: '#43a046', color: '#fff', marginLeft: '10px' }}
+      >
+        {text}
+      </ChatStyle>
+    </BoxStyle>
+  );
+}
+export function OpChatMsg({ text, sendTime }: ChatMsgProps) {
+  const writtenTime = new Date(sendTime);
+  const HOUR = writtenTime.getHours();
+  const MINUTE = writtenTime.getMinutes();
+  return (
+    <BoxStyle>
+      <ChatStyle style={{ marginRight: '10px' }}>{text}</ChatStyle>
+      <TimeStyle>
+        {HOUR <= 12 ? `오전 ${HOUR}:${MINUTE}` : `오후 ${HOUR - 12}:${MINUTE}`}
+      </TimeStyle>
+    </BoxStyle>
+  );
+}
+
+export function DateChatMsg({ children }: any) {
+  return (
+    <div
+      style={{
+        textAlign: 'center',
+        color: '#a9a9a9',
+        fontSize: '12px',
+        marginBottom: '10px',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+export function InputChat({ userId, chatlist }: SendMsgProps) {
   const socket = socketIOClient('localhost:8000');
   const [chatMsg, setChatMsg] = useState<string>('');
+  const [chatData, setChatData] = chatlist;
   const sendMsg = async () => {
     socket.emit('msg', {
       chatMsg,
@@ -99,11 +110,19 @@ export function InputChat({ userId, roomId }: SendMsgProps) {
     const res = await axios({
       method: 'POST',
       url: 'http://localhost:8000/api/chat/write',
-      data: { userId, roomId, chatMsg },
+      data: { userId, roomId: chatData.roomId, chatMsg },
+    });
+    setChatData({
+      open: true,
+      data: [...chatData.data, res.data.result],
+      roomId: chatData.roomId,
     });
     setChatMsg('');
   };
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChatMsg(e.target.value);
+  };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.code === 'Enter') {
       sendMsg();
     }
@@ -114,7 +133,7 @@ export function InputChat({ userId, roomId }: SendMsgProps) {
         type="text"
         placeholder="채팅 내용을 입력하세요."
         value={chatMsg}
-        onChange={(e) => setChatMsg(e.target.value)}
+        onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
       <SendBtn type="button" onClick={sendMsg}>

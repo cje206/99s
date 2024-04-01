@@ -48,10 +48,6 @@ export default function Chatlist({
       roomId,
     });
   };
-  socket.on('newMsg', (res) => {
-    console.log(res);
-    goChat(res.roomId);
-  });
   return (
     <BoxStyle onClick={() => goChat(roomId)}>
       <Profile></Profile>
