@@ -37,14 +37,12 @@ export default function Login() {
       <div className="body">
         <InputText
           text="이메일"
-          data={email}
           type="email"
           setValue={setEmail}
           refName={emailRef}
         />
         <InputText
           text="비밀번호"
-          data={pw}
           type="password"
           setValue={setPw}
           refName={pwRef}

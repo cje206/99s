@@ -31,3 +31,12 @@ export interface SendMsgProps {
   userId: number;
   chatlist?: any;
 }
+export interface UserProps {
+  id: number;
+  username: string;
+  birth: string;
+  email: string;
+  password: string;
+  createdAt: string;
+  updatedAt: string;
+}

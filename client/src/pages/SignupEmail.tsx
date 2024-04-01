@@ -69,16 +69,10 @@ export default function SignupEmail() {
     <div className="wrap">
       <SignHeader />
       <div className="body">
-        <InputText
-          text="이름"
-          data={username}
-          setValue={setUsername}
-          refName={nameRef}
-        />
+        <InputText text="이름" setValue={setUsername} refName={nameRef} />
         <InputText
           text="생년월일"
           placeholder="YYYY-MM-DD"
-          data={birth}
           setValue={setBirth}
           refName={birthRef}
           inputFunc={checkBirth}
@@ -86,21 +80,18 @@ export default function SignupEmail() {
         <InputText
           text="이메일"
           type="email"
-          data={email}
           setValue={setEmail}
           refName={emailRef}
         />
         <InputText
           text="비밀번호"
           type="password"
-          data={pw}
           setValue={setPw}
           refName={pwRef}
         />
         <InputText
           text="비밀번호 확인"
           type="password"
-          data={confirmPw}
           setValue={setConfirmPw}
         />
         {pw !== confirmPw && '비밀번호가 일치하지 않습니다.'}
