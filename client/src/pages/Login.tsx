@@ -21,6 +21,7 @@ export default function Login() {
     });
     if (res.data.success) {
       alert(`${res.data.result.username}님 환영합니다!`);
+      localStorage.setItem('token', res.data.token);
       navigator('/');
     } else if (res.data.msg === '이메일 오류') {
       alert('존재하지 않는 메일입니다.');

@@ -29,11 +29,5 @@ export interface ChatMsgProps {
 
 export interface SendMsgProps {
   userId: number;
-  roomId: string | undefined;
-}
-
-export interface newChat {
-  userId: number;
-  roomId: string;
-  chatMsg: string;
+  chatlist?: any;
 }

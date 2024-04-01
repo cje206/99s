@@ -28,15 +28,16 @@ io.on('connection', (socket) => [
   socket.on('enter', (res) => {
     const { roomId } = res;
     socket.join(roomId);
-    socket.roomId = roomId;
+    console.log(socket.roomId, '접속 완료');
   }),
   // 채팅 입력
   socket.on('msg', (res) => {
-    const { chatMsg, userId } = res;
-    io.to(socket.roomId).emit('newMsg', {
+    const { chatMsg, userId, roomId } = res;
+    console.log('채팅 수신');
+    io.to(roomId).emit('newMsg', {
       chatMsg,
       userId,
-      roomId: socket.roomId,
+      roomId,
     });
   }),
 ]);
