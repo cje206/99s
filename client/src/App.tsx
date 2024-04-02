@@ -6,12 +6,9 @@ import Main from './pages/Main';
 import SignupEmail from './pages/SignupEmail';
 import Login from './pages/Login';
 import Chat from './pages/Chat';
-<<<<<<< HEAD
 import Setting from './pages/Setting';
-=======
 import SearchResult from './pages/SearchResult';
 import BlogHome from './pages/BlogHome';
->>>>>>> fe02b98dbdcb24835f96f6608670dd1369b9d389
 
 function App() {
   return (

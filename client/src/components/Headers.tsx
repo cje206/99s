@@ -56,8 +56,9 @@ const BtnBox = styled.div`
   font-size: 12px;
 `;
 const Text = styled.div`
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
+  margin-left: 20px;
 `;
 const BtnsWrap = styled.div`
   display: flex;
@@ -122,10 +123,10 @@ export function SearchHeader() {
   );
 }
 
-export function BlogHeader({ children }: any) {
+export function BlogHeader({ blogTitle }: { blogTitle: string }) {
   return (
     <BoxStyle>
-      <Text>{children}</Text>
+      <Text>{blogTitle}</Text>
       <BtnsWrap>
         <Icon url="search"></Icon>
         <Icon url="rmenu"></Icon>
