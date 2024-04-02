@@ -1,0 +1,7 @@
+{
+  "liveServer.settings.port": 5503,
+  "editor.indentSize": "tabSize",
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  }
+}

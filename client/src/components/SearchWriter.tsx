@@ -13,6 +13,8 @@ export interface Info {
   writerImgUrl?: string;
   nickname?: string;
   blogintro?: string;
+  id: number;
+  blogTitle?: string;
 }
 interface InfoProps {
   items: Info[];

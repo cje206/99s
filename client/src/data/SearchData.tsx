@@ -1,6 +1,7 @@
 import { Info } from '../components/SearchWriter';
 export const items: Info[] = [
   {
+    id: 1,
     imageUrl: '/images/mainSon.avif',
     title: '이강인과 손흥민의 합작 골',
     writer: 'son',
@@ -12,8 +13,10 @@ export const items: Info[] = [
     subscribe: 4,
     nickname: '랄라요',
     blogintro: '좋은 글 쓰고 있습니다.',
+    blogTitle: '좋은 날',
   },
   {
+    id: 2,
     imageUrl: '/images/mainIpad.jpeg',
     title: '5월 초 애플 신제품 출시',
     writer: 'snosn',
@@ -25,8 +28,10 @@ export const items: Info[] = [
     subscribe: 3,
     nickname: '1등하요',
     blogintro: '좋은 글 쓰고 있습니다.',
+    blogTitle: '화창한날',
   },
   {
+    id: 3,
     imageUrl: '/images/mainSchwarzenegger.jpeg',
     title: '슈워제네거, 진짜 터미네이터 되나?',
     writer: 'sumin',
@@ -38,8 +43,10 @@ export const items: Info[] = [
     subscribe: 1,
     nickname: '물',
     blogintro: '좋은 글 쓰고 있습니다.',
+    blogTitle: '비오는 날',
   },
   {
+    id: 4,
     imageUrl: '/images/mainSchwarzenegger.jpeg',
     title: '슈워제네거, 진짜 터미네이터 되나?',
     writer: '아구찜',
@@ -51,5 +58,6 @@ export const items: Info[] = [
     subscribe: 10,
     nickname: '불',
     blogintro: '좋은 글 쓰고 있습니다.',
+    blogTitle: '좋은 날',
   },
 ];

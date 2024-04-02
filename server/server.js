@@ -21,6 +21,8 @@ const memberRouter = require('./routes/member');
 app.use('/api/member', memberRouter);
 const chatRouter = require('./routes/chat');
 app.use('/api/chat', chatRouter);
+const blogRouter = require('./routes/blog');
+app.use('/api/blog', blogRouter);
 
 // 채팅(소켓)
 io.on('connection', (socket) => [
