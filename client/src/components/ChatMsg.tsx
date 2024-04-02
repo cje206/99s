@@ -103,6 +103,9 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
   const [chatMsg, setChatMsg] = useState<string>('');
   const [chatData, setChatData] = chatlist;
   const sendMsg = async () => {
+    if (chatMsg.trim().length == 0) {
+      return;
+    }
     socket.emit('msg', {
       chatMsg,
       userId,
