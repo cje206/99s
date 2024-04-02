@@ -25,9 +25,26 @@
   }
   .textDetail {
     display: flex;
-    // justify-content: space-between;
-    .postWriter {
-      margin-right: 20px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 15px;
+    // .postWriter {
+    //   margin-right: 20px;
+    // }
+    .postDate {
+      color: rgb(126, 127, 129);
+      font-size: 11px;
     }
+  }
+  .postContent {
+    font-size: 15px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    max-width: 100%;
+    color: #7e7f81;
+    margin-bottom: 30px;
   }
 }
