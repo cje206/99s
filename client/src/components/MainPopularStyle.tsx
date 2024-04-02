@@ -138,6 +138,7 @@ export const ButtonExtraStyled = styled.button`
   cursor: pointer;
   &:hover {
     background-color: #43a046;
+    color: 'black';
   }
 
   &:focus {
