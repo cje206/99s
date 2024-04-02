@@ -4,6 +4,7 @@ import BtnLarge from '../components/BtnLarge';
 import axios from 'axios';
 import { SignHeader } from '../components/Headers';
 import { useNavigate } from 'react-router-dom';
+import { ErrorMsgRed } from '../components/ErrorMsg';
 
 export default function SignupEmail() {
   const navigator = useNavigate();
@@ -94,7 +95,9 @@ export default function SignupEmail() {
           type="password"
           setValue={setConfirmPw}
         />
-        {pw !== confirmPw && '비밀번호가 일치하지 않습니다.'}
+        {pw !== confirmPw && (
+          <ErrorMsgRed>비밀번호가 일치하지 않습니다.</ErrorMsgRed>
+        )}
         <BtnLarge text="회원가입" func={signupFunc} />
       </div>
     </div>

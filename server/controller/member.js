@@ -49,3 +49,26 @@ exports.searchId = async (req, res) => {
   const result = await Member.findOne({ where: { id } });
   res.json({ success: true, result });
 };
+
+// 회원 정보 수정
+exports.update = async (req, res) => {
+  if (req.body.pw) {
+    const { id, nowPw, pw, email } = req.body;
+    const find = await Member.findOne({ where: { id } });
+    const success = await bcrypt.compare(nowPw, find.password);
+    if (success) {
+      const password = await bcrypt.hash(pw, 11);
+      const result = await Member.update(
+        { password, email },
+        { where: { id } }
+      );
+      res.json({ success, msg: '회원정보 수정 완료' });
+    } else {
+      res.json({ success, msg: '비밀번호 오류' });
+    }
+  } else {
+    const { email, id } = req.body;
+    const result = Member.update({ email: email }, { where: { id } });
+    res.json({ success: true, msg: '회원정보 수정 완료' });
+  }
+};
