@@ -15,6 +15,7 @@ let sequelize = new Sequelize(
 db.Member = require('./member')(sequelize);
 db.Chat = require('./chat')(sequelize);
 db.Room = require('./room')(sequelize);
+db.Blog = require('./blog')(sequelize);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
