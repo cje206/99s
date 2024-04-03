@@ -7,31 +7,19 @@ const BlogModel = (sequelize) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    blogTitle: {
+    writerImg: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    subscribeList: {
-      type: DataTypes.JSON,
-      allowNUll: true,
-      defaultValue: [],
-    },
-    subscribeCount: {
-      type: DataTypes.INTEGER,
-      allowNUll: true,
-      defaultValue: 0,
     },
     nickname: {
       type: DataTypes.STRING,
       allowNUll: false,
     },
+    blogTitle: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     blogInfo: {
       type: DataTypes.STRING,
-      allowNUll: true,
-    },
-    writerImg: {
-      type: DataTypes.STRING,
-      allowNUll: true,
     },
     fontColor: {
       type: DataTypes.STRING,
@@ -41,7 +29,20 @@ const BlogModel = (sequelize) => {
     },
     theme: {
       type: DataTypes.INTEGER,
+      allowNUll: false,
       defaultValue: 1,
+    },
+    subscribeList: {
+      type: DataTypes.JSON,
+      defaultValue: [],
+    },
+    subscribeCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    view: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   });
 };
