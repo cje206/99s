@@ -12,20 +12,48 @@ import {
   ButtonExtra,
 } from '../components/MainPopularStyle';
 import '../styles/MainCategory.scss';
+import Pagination from './Pagination';
 export interface CategoryInfo {
-  imageUrl: string;
-  title: string;
-  writer: string;
-  date: string;
-  content: string;
+  imageUrl?: string;
+  title?: string;
+  subscribe?: number;
+  postNum?: number;
+  writer?: string;
+  date?: string;
+  content?: string;
+  writerImgUrl?: string;
+  nickname?: string;
+  blogintro?: string;
+  id: number;
+  blogTitle?: string;
+  view?: number;
+  postId?: number;
 }
 interface MainCategoryProps {
   items: CategoryInfo[];
+  ShowContent: boolean;
+  showPagination: boolean;
+  itemsPerPage?: number;
+  // StyledButton: boolean;
+  // ButtonExtraStyled: boolean;
 }
-export default function MainCategory({ items }: MainCategoryProps) {
+export default function MainCategory({
+  items,
+  ShowContent,
+  itemsPerPage = 4,
+  showPagination,
+}: MainCategoryProps) {
   const [selectedCategory, setSelectedCategory] = useState('일상');
   const [shownItems, setShownItems] = useState(4); // 초기에 보여줄 아이템 수
   const [showMoreButton, setShowMoreButton] = useState(true); // 더보기 버튼의 표시 여부
+  const [currentPage, setCurrentPage] = useState(1);
+  // const itemsPerPage = 3; //실험차 3이고 나중에 10으로 변경하면 됌
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleShowMore = () => {
     const newShownItems = shownItems + 4; //더보기 +4개씩 증가
@@ -38,39 +66,41 @@ export default function MainCategory({ items }: MainCategoryProps) {
   };
   return (
     <>
-      <ButtonWrapper>
-        <StyledButton
-          isSelected={selectedCategory === '일상'}
-          onClick={() => setSelectedCategory('일상')}
-        >
-          일상
-        </StyledButton>
-        <StyledButton
-          isSelected={selectedCategory === '스포츠'}
-          onClick={() => setSelectedCategory('스포츠')}
-        >
-          스포츠
-        </StyledButton>
-        <StyledButton
-          isSelected={selectedCategory === 'IT·과학'}
-          onClick={() => setSelectedCategory('IT·과학')}
-        >
-          IT·과학
-        </StyledButton>
-        <StyledButton
-          isSelected={selectedCategory === '시사·경제'}
-          onClick={() => setSelectedCategory('시사·경제')}
-        >
-          시사·경제
-        </StyledButton>
-        <StyledButton
-          isSelected={selectedCategory === '글로벌'}
-          onClick={() => setSelectedCategory('글로벌')}
-        >
-          글로벌
-        </StyledButton>
-      </ButtonWrapper>
-      {items.map((item, index) => (
+      {ShowContent && (
+        <ButtonWrapper>
+          <StyledButton
+            isSelected={selectedCategory === '일상'}
+            onClick={() => setSelectedCategory('일상')}
+          >
+            일상
+          </StyledButton>
+          <StyledButton
+            isSelected={selectedCategory === '스포츠'}
+            onClick={() => setSelectedCategory('스포츠')}
+          >
+            스포츠
+          </StyledButton>
+          <StyledButton
+            isSelected={selectedCategory === 'IT·과학'}
+            onClick={() => setSelectedCategory('IT·과학')}
+          >
+            IT·과학
+          </StyledButton>
+          <StyledButton
+            isSelected={selectedCategory === '시사·경제'}
+            onClick={() => setSelectedCategory('시사·경제')}
+          >
+            시사·경제
+          </StyledButton>
+          <StyledButton
+            isSelected={selectedCategory === '글로벌'}
+            onClick={() => setSelectedCategory('글로벌')}
+          >
+            글로벌
+          </StyledButton>
+        </ButtonWrapper>
+      )}
+      {currentItems.map((item, index) => (
         <PostCategoryContainer
           key={index}
           style={{ margin: '20px 20px 0 20px' }}
@@ -93,10 +123,18 @@ export default function MainCategory({ items }: MainCategoryProps) {
           </PostDetail>
         </PostCategoryContainer>
       ))}
-      {showMoreButton && (
+      {ShowContent && showMoreButton && (
         <ButtonExtra onClick={handleShowMore}>
           <ButtonExtraStyled>게시글 더보기</ButtonExtraStyled>
         </ButtonExtra>
+      )}
+      {showPagination && (
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          totalItems={items.length}
+          paginate={paginate}
+          currentPage={currentPage}
+        />
       )}
     </>
   );
