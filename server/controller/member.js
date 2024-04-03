@@ -72,3 +72,9 @@ exports.update = async (req, res) => {
     res.json({ success: true, msg: '회원정보 수정 완료' });
   }
 };
+
+// 회원 정보 삭제
+exports.destroy = async (req, res) => {
+  const result = await Member.destroys({ where: { id: req.body.id } });
+  res.json({ success: true, msg: '회원 탈퇴 완료' });
+};

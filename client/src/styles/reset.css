@@ -33,11 +33,12 @@ time, mark, audio, video {
 	vertical-align: baseline;
   font-family: 'NanumSquareNeo-Variable';
 }
-input, button, textarea {
+input, button, textarea, select {
   font-family: 'NanumSquareNeo-Variable';
 	border: none;
 	background: none;
 }
+select{border: 1px solid #d4d7db;}
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {

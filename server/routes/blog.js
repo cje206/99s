@@ -1,7 +1,19 @@
 const express = require('express');
-const controller = require('../controller/blog');
+const {
+  blogDetail,
+  find,
+  update,
+  getCategory,
+  newCategory,
+  delCategory,
+} = require('../controller/blog');
 const router = express.Router();
 
-router.get('/:id', controller.blogDetail);
+router.get('/find', find);
+router.patch('/update', update);
+router.get('/getCategory', getCategory);
+router.get('/:id', blogDetail);
+router.post('/newCategory', newCategory);
+router.delete('/delCategory', delCategory);
 
 module.exports = router;

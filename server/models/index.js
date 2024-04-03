@@ -16,6 +16,14 @@ db.Member = require('./member')(sequelize);
 db.Chat = require('./chat')(sequelize);
 db.Room = require('./room')(sequelize);
 db.Blog = require('./blog')(sequelize);
+db.Category = require('./category')(sequelize);
+db.Comment = require('./comment')(sequelize);
+
+db.Member.hasOne(db.Blog);
+db.Blog.belongsTo(db.Member);
+
+db.Blog.hasMany(db.Category);
+db.Category.belongsTo(db.Blog);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
