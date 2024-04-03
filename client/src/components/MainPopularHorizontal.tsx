@@ -3,11 +3,20 @@ import { useState } from 'react';
 import '../styles/MainPopularHorizontalPost.scss';
 import Pagination from './Pagination';
 export interface PopularInfo {
-  imageUrl: string;
-  title: string;
-  writer: string;
-  date: string;
-  content: string;
+  imageUrl?: string;
+  title?: string;
+  subscribe?: number;
+  postNum?: number;
+  writer?: string;
+  date?: string;
+  content?: string;
+  writerImgUrl?: string;
+  nickname?: string;
+  blogintro?: string;
+  id: number;
+  blogTitle?: string;
+  view?: number;
+  postId?: number;
 }
 interface MainPopularInfoProps {
   data: PopularInfo[];

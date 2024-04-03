@@ -63,7 +63,7 @@ export default function MainPopularPost({ images }: MainPopularPostProps) {
 
   return (
     <>
-      <p className="category" style={{ fontWeight: 'bold' }}>
+      <p className="category" style={{ fontWeight: 'bold', fontSize: '18px' }}>
         인기 게시글
       </p>
       <Container>

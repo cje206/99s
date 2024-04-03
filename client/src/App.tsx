@@ -9,6 +9,7 @@ import Chat from './pages/Chat';
 import Setting from './pages/Setting';
 import SearchResult from './pages/SearchResult';
 import BlogHome from './pages/BlogHome';
+import Content from './pages/Content';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/search" element={<SearchResult />} />
           <Route path="/blog/:id" element={<BlogHome />} />
+          <Route path="/blog/:id/:postId" element={<Content />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

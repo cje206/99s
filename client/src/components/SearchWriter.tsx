@@ -15,6 +15,8 @@ export interface Info {
   blogintro?: string;
   id: number;
   blogTitle?: string;
+  view?: number;
+  postId?: number;
 }
 interface InfoProps {
   items: Info[];

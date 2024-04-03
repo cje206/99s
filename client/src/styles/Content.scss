@@ -1,0 +1,9 @@
+@import './variables';
+
+@include mobile {
+  .contentTitle {
+    margin: 15px 0 20px 0;
+    font-size: 20px;
+    font-weight: bold;
+  }
+}

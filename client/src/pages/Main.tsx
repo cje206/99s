@@ -26,7 +26,7 @@ export default function Main() {
         />
       </div>
       <div>
-        <MainCategory items={items} />
+        <MainCategory items={items} ShowContent={true} showPagination={false} />
       </div>
     </>
   );

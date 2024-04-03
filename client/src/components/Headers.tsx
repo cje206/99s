@@ -58,7 +58,7 @@ const BtnBox = styled.div`
 const Text = styled.div`
   font-size: 18px;
   font-weight: bold;
-  margin-left: 20px;
+  /* margin-left: 20px; */
 `;
 const BtnsWrap = styled.div`
   display: flex;
