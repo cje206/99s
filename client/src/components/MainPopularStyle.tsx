@@ -1,4 +1,5 @@
-import styled from '@emotion/styled';
+// import styled from '@emotion/styled';
+import styled, { css } from 'styled-components';
 
 //스와이프 인기게시글
 export const Container = styled.div`
@@ -95,10 +96,10 @@ export const ButtonWrapper = styled.div`
   align-items: center;
   margin: 40px 20px 0 20px;
 `;
-
 interface StyledButtonProps {
   isSelected: boolean;
 }
+
 export const StyledButton = styled.button<StyledButtonProps>`
   border-radius: 20px;
   padding: 10px 20px;
@@ -128,7 +129,12 @@ export const ButtonExtra = styled.div`
   display: flex;
   justify-content: center;
 `;
-export const ButtonExtraStyled = styled.button`
+
+interface ButtonProps {
+  smallBtn: boolean;
+}
+
+export const ButtonExtraStyled = styled.button<ButtonProps>`
   border-radius: 20px;
   padding: 10px 50px;
   border: 1px solid #d9dbdf;
@@ -140,9 +146,16 @@ export const ButtonExtraStyled = styled.button`
     background-color: #43a046;
     color: 'black';
   }
-
   &:focus {
     outline: none;
     border-color: #c9d9eb;
   }
+
+  // 조건부 스타일 적용
+  ${(props) =>
+    props.smallBtn &&
+    css`
+      padding: 10px 30px;
+      color: #fbc02d;
+    `}
 `;

@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { BlogHeader } from '../components/Headers';
 import { items } from '../data/SearchData';
 import Content from '../components/Content';
+import Comment from '../components/BlogComment';
 
 export default function ContentPage() {
   const { id } = useParams<{ id?: string }>();
@@ -12,6 +13,7 @@ export default function ContentPage() {
     <>
       <BlogHeader blogTitle={item?.blogTitle ?? ''} />
       <Content />
+      <Comment />
     </>
   );
 }

@@ -1,0 +1,7 @@
+@import './variables';
+
+@include mobile {
+  .commentTop {
+    display: flex;
+  }
+}

@@ -35,6 +35,23 @@ export const items: Info[] = [
     postId: 2,
   },
   {
+    id: 1,
+    imageUrl: '/images/post2.jpeg',
+    title: '쏘카 분석 결과 방문지 "경주" 1등',
+    writer: 'son',
+    content:
+      '최근 2년 동안 쏘카 카셰어링 이용고객은 4월 여행지로 ‘경상북도’를 가장 많이 방문한 것으로 나타났다.쏘카는 자사 정차지 데이터 분석 플랫폼 "소피아(SOcar PoI App)"를 활용해 최근 2개년 4월 한달 동안 회원들이 많이 방문한 지역을 분석한 결과를 3일 발표했다. 이번 조사는 2022년과 2023년 4월 1일부터 30일까지의 쏘카 정차지 데이터를 분석대상으로 삼았다.',
+    date: '2024-03-30',
+    writerImgUrl: '/images/writerImg.webp',
+    postNum: 15,
+    subscribe: 3,
+    nickname: '1등하요',
+    blogintro: '좋은 글 쓰고 있습니다.',
+    blogTitle: '화창한날',
+    view: 10,
+    postId: 3,
+  },
+  {
     id: 2,
     imageUrl: '/images/mainIpad.jpeg',
     title: '5월 초 애플 신제품 출시',
@@ -48,6 +65,7 @@ export const items: Info[] = [
     nickname: '1등하요',
     blogintro: '좋은 글 쓰고 있습니다.',
     blogTitle: '화창한날',
+    view: 10,
     postId: 1,
   },
   {
@@ -64,6 +82,7 @@ export const items: Info[] = [
     nickname: '1등하요',
     blogintro: '좋은 글 쓰고 있습니다.',
     blogTitle: '화창한날',
+    view: 10,
     postId: 2,
   },
   {
@@ -80,6 +99,7 @@ export const items: Info[] = [
     nickname: '물',
     blogintro: '좋은 글 쓰고 있습니다.',
     blogTitle: '비오는 날',
+    view: 10,
     postId: 1,
   },
   {
@@ -96,6 +116,7 @@ export const items: Info[] = [
     nickname: '불',
     blogintro: '좋은 글 쓰고 있습니다.',
     blogTitle: '좋은 날',
+    view: 10,
     postId: 1,
   },
 ];

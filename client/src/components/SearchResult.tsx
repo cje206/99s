@@ -96,7 +96,9 @@ export default function SearchBar() {
           <SearchWriter items={items.slice(0, 3)} showPagination={false} />
           {showMoreWriter && (
             <ButtonExtra onClick={handleShowMoreWriter}>
-              <ButtonExtraStyled>게시글 더보기</ButtonExtraStyled>
+              <ButtonExtraStyled smallBtn={false}>
+                게시글 더보기
+              </ButtonExtraStyled>
             </ButtonExtra>
           )}
           <hr
@@ -121,7 +123,9 @@ export default function SearchBar() {
           />
           {showMoreTitle && (
             <ButtonExtra onClick={handleShowMoreTitle}>
-              <ButtonExtraStyled>게시글 더보기</ButtonExtraStyled>
+              <ButtonExtraStyled smallBtn={false}>
+                게시글 더보기
+              </ButtonExtraStyled>
             </ButtonExtra>
           )}
           <hr
@@ -146,7 +150,9 @@ export default function SearchBar() {
           />
           {showMoreContent && (
             <ButtonExtra onClick={handleShowMoreContent}>
-              <ButtonExtraStyled>게시글 더보기</ButtonExtraStyled>
+              <ButtonExtraStyled smallBtn={false}>
+                게시글 더보기
+              </ButtonExtraStyled>
             </ButtonExtra>
           )}
         </>
