@@ -66,6 +66,16 @@ exports.newCategory = async (req, res) => {
   res.json({ success: true, msg: '카테고리 추가 완료' });
 };
 
+// 카테고리 수정
+exports.updateCategory = async (req, res) => {
+  const { categoryName, group, id } = req.body;
+  const result = await Category.update(
+    { categoryName, group },
+    { where: { id } }
+  );
+  res.json({ success: true, msg: '카테고리 수정 완료' });
+};
+
 // 카테고리 삭제
 exports.delCategory = async (req, res) => {
   const result = await Category.destroy({ where: { id: req.body.id } });

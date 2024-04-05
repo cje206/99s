@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ThemeStyle } from '../types';
 import DefaultSidemenu from './Sidemenus';
+import { useState } from 'react';
 
 const BoxStyle = styled.div`
   width: 100%;
@@ -23,10 +24,10 @@ const LogoImg = styled.img`
   width: 80px;
   height: auto;
 `;
-const Icon = styled.p<{ url: string }>`
+const Icon = styled.p<{ $url: string }>`
   width: 24px;
   height: 24px;
-  background: url(${({ url }) => `/images/ico-${url}.png`}) no-repeat
+  background: url(${({ $url }) => `/images/ico-${$url}.png`}) no-repeat
     center/contain;
 `;
 const SearchBox = styled.div`
@@ -92,19 +93,23 @@ const Title = styled.p`
 `;
 
 export function MainHeader() {
+  const [sidemenu, setSidemenu] = useState<boolean>(false);
   const navigate = useNavigate();
+  const closeFunc = () => {
+    setSidemenu(false);
+  };
   return (
     <>
       <BoxStyle>
-        <Icon url="lmenu"></Icon>
+        <Icon $url="lmenu" onClick={() => setSidemenu(true)}></Icon>
         <LogoImg
           src="/images/logo2.png"
           alt="Blo9"
           onClick={() => navigate('/')}
         />
-        <Icon url="search"></Icon>
+        <Icon $url="search"></Icon>
       </BoxStyle>
-      <DefaultSidemenu />
+      {sidemenu && <DefaultSidemenu func={closeFunc} />}
     </>
   );
 }
@@ -121,7 +126,7 @@ export function SearchHeader() {
       <SearchBox>
         <InputBox />
         <BtnBox>
-          <Icon url="search-white"></Icon>
+          <Icon $url="search-white"></Icon>
         </BtnBox>
       </SearchBox>
     </BoxStyle>
@@ -144,8 +149,8 @@ export function BlogHeader({
     >
       <Text>{children}</Text>
       <BtnsWrap>
-        <Icon url="search"></Icon>
-        <Icon url="rmenu"></Icon>
+        <Icon $url="search"></Icon>
+        <Icon $url="rmenu"></Icon>
       </BtnsWrap>
     </BoxStyle>
   );
@@ -161,7 +166,7 @@ export function SettingHeader({ children }: any) {
         onClick={() => navigate('/')}
       />
       <TextCenter>{children}</TextCenter>
-      <Icon url="rmenu"></Icon>
+      <Icon $url="rmenu"></Icon>
     </BoxStyle>
   );
 }
@@ -176,7 +181,7 @@ export function ChattingHeader() {
         onClick={() => navigate('/')}
       />
       <TextCenter>채팅</TextCenter>
-      <Icon url="search"></Icon>
+      <Icon $url="search"></Icon>
     </BoxStyle>
   );
 }
@@ -188,7 +193,7 @@ export function ChatDetailHeader() {
         <Profile />
         <Title>아이디</Title>
       </BtnsWrap>
-      <Icon url="search"></Icon>
+      <Icon $url="search"></Icon>
     </BoxStyle>
   );
 }
