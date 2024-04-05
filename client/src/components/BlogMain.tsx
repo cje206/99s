@@ -1,6 +1,6 @@
 //현재 글을 써서 db에 저장하는것이 안되므로 data를 만들어서 임의로 지정
 
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Info, items } from '../data/SearchData';
 import '../styles/BlogMain.scss';
@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import MainPopularHorizontal from './MainPopularHorizontal';
 import { data } from '../data/PopularHorizontalPost';
 import MainCategory from './MainCategory';
+import useAuth from '../hooks/useAuth';
+import axios from 'axios';
 
 const BlogMainContainer = styled.div`
   display: flex;
@@ -42,8 +44,24 @@ const PopularPost = styled.div`
   margin: 20px 20px 70px 20px;
 `;
 
+interface Blog {
+  id: number;
+  nickname: string;
+  blogTitle: string;
+  theme: number;
+  view: number;
+  subscribeCount: number;
+  subscribeList: number[];
+  bgcolor?: string;
+  fontColor?: string;
+  blogInfo?: string;
+}
+
 export default function BlogMain() {
   const { id } = useParams<{ id?: string }>();
+  const navigator = useNavigate();
+  const [user, setUser] = useAuth();
+  const [blogInfo, setBlogInfo] = useState<Blog>();
   const post = items.find(
     (item: { id: number }) => item.id === (id ? parseInt(id) : NaN)
   );
@@ -53,6 +71,26 @@ export default function BlogMain() {
   const handleLayoutChange = (mode: string) => {
     setLayoutMode(mode);
   };
+
+  const getBlogInfo = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/blog/find',
+      params: { memberId: id },
+    });
+    console.log(res);
+    if (res.data.result.lenght === 0) {
+      navigator('/');
+    }
+    setBlogInfo(res.data.result);
+  };
+
+  useEffect(() => {
+    setUser();
+  }, []);
+  useEffect(() => {
+    getBlogInfo();
+  }, [user]);
 
   useEffect(() => {
     const postId = id ? parseInt(id) : NaN;
@@ -71,12 +109,12 @@ export default function BlogMain() {
 
   return (
     <>
-      {post && (
+      {blogInfo && (
         <BlogMainContainer>
-          <img src={post.writerImgUrl} alt="작성자이미지"></img>
+          <img src={post?.writerImgUrl} alt="작성자이미지"></img>
           <BlogDetail>
-            <div className="nickName">{post.nickname}</div>
-            <div className="blogInfo">{post.blogintro}</div>
+            <div className="nickName">{blogInfo.nickname}</div>
+            <div className="blogInfo">{blogInfo.blogInfo}</div>
           </BlogDetail>
         </BlogMainContainer>
       )}
