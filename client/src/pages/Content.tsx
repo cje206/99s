@@ -11,7 +11,7 @@ export default function ContentPage() {
 
   return (
     <>
-      <BlogHeader blogTitle={item?.blogTitle ?? ''} />
+      {/* <BlogHeader blogTitle={item?.blogTitle ?? ''} /> */}
       <Content />
       <Comment />
     </>

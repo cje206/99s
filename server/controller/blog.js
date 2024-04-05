@@ -15,10 +15,8 @@ exports.blogDetail = async (req, res) => {
 
 // member id로 블로그 조회
 exports.find = async (req, res) => {
-  console.log(req.query);
   const { memberId } = req.query;
   const result = await Blog.findOne({ where: { memberId } });
-  console.log('req.query: ', req.query);
   res.json({ success: true, msg: '블로그 조회 완료', result });
 };
 

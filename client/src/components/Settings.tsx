@@ -671,6 +671,7 @@ export function SetBlog() {
       <BlogBox>
         <div className="profileImg"></div>
         <button className="editImg">프로필 사진 변경</button>
+        <button className="editImg">기본이미지</button>
       </BlogBox>
       <BoxStyle>
         <label>닉네임 *</label>
@@ -700,7 +701,7 @@ export function SetBlog() {
         ></textarea>
       </BoxStyle>
       <h3>블로그 색상 변경</h3>
-      <ThemeBox bgcolor="#fff" txtcolor="#fbc02d">
+      <ThemeBox bgcolor="#f6f7f9" txtcolor="#333">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 1</p>
@@ -710,7 +711,7 @@ export function SetBlog() {
           <span className="btnText off">OFF</span>
         </button>
       </ThemeBox>
-      <ThemeBox bgcolor="#fff" txtcolor="#fbc02d">
+      <ThemeBox bgcolor="#f6f7f9" txtcolor="#fbc02d">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 2</p>
@@ -720,7 +721,7 @@ export function SetBlog() {
           <span className="btnText off">OFF</span>
         </button>
       </ThemeBox>
-      <ThemeBox bgcolor="#fff" txtcolor="#fbc02d">
+      <ThemeBox bgcolor="#f6f7f9" txtcolor="#11804b">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 3</p>
@@ -730,7 +731,7 @@ export function SetBlog() {
           <span className="btnText off">OFF</span>
         </button>
       </ThemeBox>
-      <ThemeBox bgcolor="#fff" txtcolor="#fbc02d">
+      <ThemeBox bgcolor="#f2f1ff" txtcolor="#352e91">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 4</p>

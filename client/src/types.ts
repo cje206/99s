@@ -40,3 +40,14 @@ export interface UserProps {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ThemeStyle {
+  color: string;
+  background: string;
+  fontWeight?: string;
+}
+
+export interface ColorObject {
+  color: string;
+  background: string;
+}

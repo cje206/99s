@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { ThemeStyle } from '../types';
+import DefaultSidemenu from './Sidemenus';
 
 const BoxStyle = styled.div`
   width: 100%;
@@ -92,15 +94,18 @@ const Title = styled.p`
 export function MainHeader() {
   const navigate = useNavigate();
   return (
-    <BoxStyle>
-      <Icon url="lmenu"></Icon>
-      <LogoImg
-        src="/images/logo2.png"
-        alt="Blo9"
-        onClick={() => navigate('/')}
-      />
-      <Icon url="search"></Icon>
-    </BoxStyle>
+    <>
+      <BoxStyle>
+        <Icon url="lmenu"></Icon>
+        <LogoImg
+          src="/images/logo2.png"
+          alt="Blo9"
+          onClick={() => navigate('/')}
+        />
+        <Icon url="search"></Icon>
+      </BoxStyle>
+      <DefaultSidemenu />
+    </>
   );
 }
 
@@ -123,10 +128,21 @@ export function SearchHeader() {
   );
 }
 
-export function BlogHeader({ blogTitle }: { blogTitle: string }) {
+export function BlogHeader({
+  children,
+  theme,
+}: {
+  children: string;
+  theme: ThemeStyle;
+}) {
   return (
-    <BoxStyle>
-      <Text>{blogTitle}</Text>
+    <BoxStyle
+      style={{
+        background: theme.color,
+        color: theme.background,
+      }}
+    >
+      <Text>{children}</Text>
       <BtnsWrap>
         <Icon url="search"></Icon>
         <Icon url="rmenu"></Icon>
