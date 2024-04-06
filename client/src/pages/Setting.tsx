@@ -7,10 +7,7 @@ import {
   SetPost,
 } from '../components/Settings';
 
-interface Props {
-  position: string;
-}
-export default function Setting({ position }: Props) {
+export default function Setting({ position }: { position: string }) {
   return (
     <div className="wrap">
       <SettingHeader>{position}</SettingHeader>

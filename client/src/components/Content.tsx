@@ -36,6 +36,7 @@ export default function Content() {
   const navigate = useNavigate();
   const numericId = parseInt(id || '', 10);
   const numericPostId = parseInt(postId || '', 10);
+  console.log(id, postId);
 
   // const matchedItem = items.find(
   //   (item) => item.id === numericId && item.postId === numericPostId

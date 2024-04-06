@@ -5,6 +5,7 @@ const BoxStyle = styled.button<{ btncolor: string }>`
   padding: 0;
   border-radius: 50px;
   display: flex;
+  cursor: pointer;
   .btnText {
     display: inline-block;
     width: 20px;
