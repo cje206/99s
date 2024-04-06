@@ -1,5 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { ThemeStyle } from '../types';
+import { useState } from 'react';
+import { BlogSidemenu, DefaultSidemenu, SetSidemenu } from './Sidemenus';
 
 const BoxStyle = styled.div`
   width: 100%;
@@ -21,10 +24,10 @@ const LogoImg = styled.img`
   width: 80px;
   height: auto;
 `;
-const Icon = styled.p<{ url: string }>`
+const Icon = styled.p<{ $url: string }>`
   width: 24px;
   height: 24px;
-  background: url(${({ url }) => `/images/ico-${url}.png`}) no-repeat
+  background: url(${({ $url }) => `/images/ico-${$url}.png`}) no-repeat
     center/contain;
 `;
 const SearchBox = styled.div`
@@ -90,17 +93,24 @@ const Title = styled.p`
 `;
 
 export function MainHeader() {
+  const [sidemenu, setSidemenu] = useState<boolean>(false);
   const navigate = useNavigate();
+  const closeFunc = () => {
+    setSidemenu(false);
+  };
   return (
-    <BoxStyle>
-      <Icon url="lmenu"></Icon>
-      <LogoImg
-        src="/images/logo2.png"
-        alt="Blo9"
-        onClick={() => navigate('/')}
-      />
-      <Icon url="search"></Icon>
-    </BoxStyle>
+    <>
+      <BoxStyle>
+        <Icon $url="lmenu" onClick={() => setSidemenu(true)}></Icon>
+        <LogoImg
+          src="/images/logo2.png"
+          alt="Blo9"
+          onClick={() => navigate('/')}
+        />
+        <Icon $url="search"></Icon>
+      </BoxStyle>
+      {sidemenu && <DefaultSidemenu func={closeFunc} />}
+    </>
   );
 }
 
@@ -116,27 +126,49 @@ export function SearchHeader() {
       <SearchBox>
         <InputBox />
         <BtnBox>
-          <Icon url="search-white"></Icon>
+          <Icon $url="search-white"></Icon>
         </BtnBox>
       </SearchBox>
     </BoxStyle>
   );
 }
 
-export function BlogHeader({ blogTitle }: { blogTitle: string }) {
+export function BlogHeader({
+  children,
+  theme,
+}: {
+  children: string;
+  theme: ThemeStyle;
+}) {
+  const [sidemenu, setSidemenu] = useState<boolean>(false);
+  const closeFunc = () => {
+    setSidemenu(false);
+  };
   return (
-    <BoxStyle>
-      <Text>{blogTitle}</Text>
-      <BtnsWrap>
-        <Icon url="search"></Icon>
-        <Icon url="rmenu"></Icon>
-      </BtnsWrap>
-    </BoxStyle>
+    <>
+      <BoxStyle
+        style={{
+          background: theme.color,
+          color: theme.background,
+        }}
+      >
+        <Text>{children}</Text>
+        <BtnsWrap>
+          <Icon $url="search"></Icon>
+          <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
+        </BtnsWrap>
+      </BoxStyle>
+      {sidemenu && <BlogSidemenu func={closeFunc} />}
+    </>
   );
 }
 
 export function SettingHeader({ children }: any) {
+  const [sidemenu, setSidemenu] = useState<boolean>(false);
   const navigate = useNavigate();
+  const closeFunc = () => {
+    setSidemenu(false);
+  };
   return (
     <BoxStyle>
       <LogoImg
@@ -145,7 +177,8 @@ export function SettingHeader({ children }: any) {
         onClick={() => navigate('/')}
       />
       <TextCenter>{children}</TextCenter>
-      <Icon url="rmenu"></Icon>
+      <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
+      {sidemenu && <SetSidemenu func={closeFunc} />}
     </BoxStyle>
   );
 }
@@ -160,19 +193,19 @@ export function ChattingHeader() {
         onClick={() => navigate('/')}
       />
       <TextCenter>채팅</TextCenter>
-      <Icon url="search"></Icon>
+      <Icon $url="search"></Icon>
     </BoxStyle>
   );
 }
 
-export function ChatDetailHeader() {
+export function ChatDetailHeader({ children }: { children: string }) {
   return (
     <BoxStyle>
       <BtnsWrap>
         <Profile />
-        <Title>아이디</Title>
+        <Title>{children}</Title>
       </BtnsWrap>
-      <Icon url="search"></Icon>
+      <Icon $url="search"></Icon>
     </BoxStyle>
   );
 }

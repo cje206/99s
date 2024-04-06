@@ -12,7 +12,8 @@ export interface InputRef {
 export interface ChatDataProps {
   open: boolean;
   data: any[];
-  roomId?: string;
+  roomId: string;
+  nickname: string;
 }
 
 export interface ChatListProps {
@@ -45,4 +46,15 @@ export interface UserProps {
 export interface EditorProps {
   body: string;
   setBody: React.Dispatch<SetStateAction<string>>;
+
+export interface ThemeStyle {
+  color: string;
+  background: string;
+  fontWeight?: string;
+}
+
+export interface ColorObject {
+  color: string;
+  background: string;
+
 }
