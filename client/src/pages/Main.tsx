@@ -7,10 +7,11 @@ import { data } from '../data/PopularHorizontalPost';
 import MainCategory from '../components/MainCategory';
 import { items } from '../data/MainCategory';
 import { MainHeader } from '../components/Headers';
+import '../styles/common.scss';
 
 export default function Main() {
   return (
-    <>
+    <div className="wrap">
       <MainHeader />
       <div className="main-slide">
         <MainPageImgSlide slides={slides} />
@@ -28,6 +29,6 @@ export default function Main() {
       <div>
         <MainCategory items={items} ShowContent={true} showPagination={false} />
       </div>
-    </>
+    </div>
   );
 }

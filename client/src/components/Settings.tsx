@@ -5,8 +5,7 @@ import { UserProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 import { ErrorMsgGrey, ErrorMsgRed } from './ErrorMsg';
-import rootReducer from '../store';
-import { deflate } from 'zlib';
+import { ToggleBtn } from './Btns';
 const TableStyle = styled.table`
   width: 100%;
   margin: 10px 0 30px;
@@ -339,6 +338,7 @@ export function SetCategory() {
   const [newName, setNewName] = useState<string>('');
   const [newGroup, setNewGroup] = useState<number>(1);
   const [create, setCreate] = useState<boolean>(false);
+  const [editId, setEditId] = useState<number>(0);
   const categoryStyle = {
     display: 'flex',
     alignItems: 'center',
@@ -354,14 +354,54 @@ export function SetCategory() {
         </label>
       </div>
       <BtnBox>
-        <div className="btn active">수정</div>
+        <div
+          className="btn active"
+          onClick={() => {
+            setEditId(id);
+            setCreate(false);
+            setNewName(name);
+            setNewGroup(getGroupId(group));
+          }}
+        >
+          수정
+        </div>
         <div className="btn disabled" onClick={() => deleteFunc(id)}>
           삭제
         </div>
       </BtnBox>
     </CheckBox>
   );
-  const changeCate = () => (
+  const changeCate = (id: number) => (
+    <CheckBox style={categoryStyle}>
+      <div className="add">
+        <input
+          type="text"
+          placeholder="카테고리명"
+          onChange={(e) => setNewName(e.target.value)}
+          value={newName}
+        />
+        <select
+          onChange={(e) => setNewGroup(Number(e.target.value))}
+          value={newGroup}
+        >
+          <option value="1">일상</option>
+          <option value="2">스포츠</option>
+          <option value="3">IT&#183;과학</option>
+          <option value="4">시사&#183;경제</option>
+          <option value="5">글로벌</option>
+        </select>
+      </div>
+      <BtnBox>
+        <div className="btn active" onClick={() => editFunc(id)}>
+          저장
+        </div>
+        <div className="btn disabled" onClick={() => deleteFunc(id)}>
+          삭제
+        </div>
+      </BtnBox>
+    </CheckBox>
+  );
+  const newCate = () => {
     <CheckBox style={categoryStyle}>
       <div className="add">
         <input
@@ -385,8 +425,8 @@ export function SetCategory() {
           삭제
         </div>
       </BtnBox>
-    </CheckBox>
-  );
+    </CheckBox>;
+  };
   const getList = async () => {
     if (user.id) {
       const res = await axios({
@@ -417,6 +457,22 @@ export function SetCategory() {
         return '';
     }
   };
+  const getGroupId = (idx: string): number => {
+    switch (idx) {
+      case '일상':
+        return 1;
+      case '스포츠':
+        return 2;
+      case 'IT·과학':
+        return 3;
+      case '시사·경제':
+        return 4;
+      case '글로벌':
+        return 5;
+      default:
+        return 1;
+    }
+  };
   const addFunc = async () => {
     const data = {
       group: getGroupName(newGroup),
@@ -431,7 +487,22 @@ export function SetCategory() {
     getList();
     setCreate(false);
   };
+  const editFunc = async (id: number) => {
+    const res = await axios({
+      method: 'PATCH',
+      url: 'http://localhost:8000/api/blog/updateCategory',
+      data: {
+        group: getGroupName(newGroup),
+        categoryName: newName,
+        id,
+      },
+    });
+    document.location.reload();
+  };
   const deleteFunc = async (id: number) => {
+    if (!window.confirm('삭제하시겠습니까?')) {
+      return;
+    }
     const res = await axios({
       method: 'DELETE',
       url: 'http://localhost:8000/api/blog/delCategory',
@@ -440,7 +511,6 @@ export function SetCategory() {
     alert(res.data.msg);
     getList();
   };
-  const editFunc = () => {};
   useEffect(() => {
     setUser();
   }, []);
@@ -455,14 +525,26 @@ export function SetCategory() {
           <span style={{ textDecoration: 'underline' }}> 블로그 생성하기</span>
         </Link>
       )}
-      {list.length === 0 && <p>카테고리를 생성해주세요!</p>}
+      {isBlogExist && list.length === 0 && <p>카테고리를 생성해주세요!</p>}
       {isBlogExist &&
         list.map(({ id, categoryName, group }) => {
-          return unchangeCate(id, categoryName, group);
+          if (editId == id) {
+            return changeCate(id);
+          } else {
+            return unchangeCate(id, categoryName, group);
+          }
         })}
-      {create && changeCate()}
+      {create && newCate()}
       {isBlogExist && (
-        <RectBtn onClick={() => setCreate(true)}>카테고리 추가</RectBtn>
+        <RectBtn
+          onClick={() => {
+            setEditId(0);
+            setCreate(true);
+            setNewName('');
+          }}
+        >
+          카테고리 추가
+        </RectBtn>
       )}
     </>
   );
@@ -663,7 +745,8 @@ export function SetBlog() {
     setInfo();
   }, [user]);
   useEffect(() => {
-    toggleBtn(theme);
+    // toggleBtn(theme);
+    console.log(theme);
   }, [theme]);
 
   return (
@@ -706,40 +789,36 @@ export function SetBlog() {
           <p className="colorIcon"></p>
           <p className="colorName">색상 1</p>
         </div>
-        <button className="btn" onClick={() => setTheme(1)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(1)}>
+          <ToggleBtn active={theme === 1} btncolor="#333" />
+        </div>
       </ThemeBox>
       <ThemeBox bgcolor="#f6f7f9" txtcolor="#fbc02d">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 2</p>
         </div>
-        <button className="btn" onClick={() => setTheme(2)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(2)}>
+          <ToggleBtn active={theme === 2} btncolor="#fbc02d" />
+        </div>
       </ThemeBox>
       <ThemeBox bgcolor="#f6f7f9" txtcolor="#11804b">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 3</p>
         </div>
-        <button className="btn" onClick={() => setTheme(3)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(3)}>
+          <ToggleBtn active={theme === 3} btncolor="#11804b" />
+        </div>
       </ThemeBox>
       <ThemeBox bgcolor="#f2f1ff" txtcolor="#352e91">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 4</p>
         </div>
-        <button className="btn" onClick={() => setTheme(4)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(4)}>
+          <ToggleBtn active={theme === 4} btncolor="#352e91" />
+        </div>
       </ThemeBox>
       <ThemeBox bgcolor={customBg} txtcolor={customText}>
         <div className="text">
@@ -769,10 +848,9 @@ export function SetBlog() {
             </div>
           </div>
         </div>
-        <button className="btn" onClick={() => setTheme(5)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(5)}>
+          <ToggleBtn active={theme === 5} btncolor={customText} />
+        </div>
       </ThemeBox>
       <EditBox>
         <button className="btn btnCancle" onClick={() => navigate('/setting')}>

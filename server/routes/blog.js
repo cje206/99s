@@ -6,6 +6,7 @@ const {
   getCategory,
   newCategory,
   delCategory,
+  updateCategory,
 } = require('../controller/blog');
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.get('/getCategory', getCategory);
 router.post('/newCategory', newCategory);
 router.delete('/delCategory', delCategory);
 router.get('/:id', blogDetail);
+router.patch('/updateCategory', updateCategory);
 
 module.exports = router;

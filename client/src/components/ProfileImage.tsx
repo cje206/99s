@@ -27,36 +27,29 @@ const DefaultImg = styled.div<{ link?: string }>`
 `;
 
 export default function ProfileImage({ id }: { id: number }) {
-  const [user, setUser] = useAuth();
   const [profile, setProfile] = useState<{ img: string | null }>({ img: '' });
   const [theme, setTheme] = useState<ColorObject>({
     color: '#fbc02d',
     background: '#fff',
   });
   const getProfile = async () => {
-    if (user.id) {
+    if (id !== 0) {
       const res = await axios({
         method: 'GET',
         url: 'http://localhost:8000/api/blog/find',
-        params: { memberId: user.id },
+        params: { memberId: id },
       });
-      const { writerImg, bgColor, fontColor, theme } = res.data.result;
+      const { writerImg, bgColor, fontColor } = res.data.result;
       setProfile({
         img: writerImg,
       });
-      getColor(theme, bgColor, bgColor, setTheme);
+      getColor(res.data.result.theme, bgColor, fontColor, setTheme);
     }
   };
   useEffect(() => {
-    setUser();
-    console.log(user);
+    getProfile();
+    console.log(profile);
   }, []);
-  useEffect(() => {
-    getProfile();
-  }, [user]);
-  useEffect(() => {
-    getProfile();
-  }, [profile]);
 
   return (
     <>
