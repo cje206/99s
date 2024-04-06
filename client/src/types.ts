@@ -1,3 +1,4 @@
+import { SetStateAction } from 'react';
 export interface Info {
   name: string;
   birth: string;
@@ -39,4 +40,9 @@ export interface UserProps {
   password: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface EditorProps {
+  body: string;
+  setBody: React.Dispatch<SetStateAction<string>>;
 }
