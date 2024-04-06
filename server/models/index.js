@@ -25,6 +25,9 @@ db.Blog.belongsTo(db.Member);
 db.Blog.hasMany(db.Category);
 db.Category.belongsTo(db.Blog);
 
+db.Blog.hasMany(db.Comment, { foreignKey: 'postId', as: 'comments' });
+db.Comment.belongsTo(db.Blog, { foreignKey: 'postId', as: 'blog' });
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

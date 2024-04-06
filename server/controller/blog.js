@@ -81,3 +81,8 @@ exports.delCategory = async (req, res) => {
   const result = await Category.destroy({ where: { id: req.body.id } });
   res.json({ success: true, msg: '카테고리 삭제 완료' });
 };
+
+//블로그 글 작성
+// exports.createPost = async(req,res) => {
+//   const {writerImg, nickname, }
+// }

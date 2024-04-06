@@ -1,3 +1,4 @@
+import { SetStateAction } from 'react';
 export interface Info {
   name: string;
   birth: string;
@@ -42,6 +43,10 @@ export interface UserProps {
   updatedAt: string;
 }
 
+export interface EditorProps {
+  body: string;
+  setBody: React.Dispatch<SetStateAction<string>>;
+
 export interface ThemeStyle {
   color: string;
   background: string;
@@ -51,4 +56,5 @@ export interface ThemeStyle {
 export interface ColorObject {
   color: string;
   background: string;
+
 }
