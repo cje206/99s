@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ThemeStyle } from '../types';
-import DefaultSidemenu from './Sidemenus';
 import { useState } from 'react';
+import { BlogSidemenu, DefaultSidemenu, SetSidemenu } from './Sidemenus';
 
 const BoxStyle = styled.div`
   width: 100%;
@@ -140,24 +140,35 @@ export function BlogHeader({
   children: string;
   theme: ThemeStyle;
 }) {
+  const [sidemenu, setSidemenu] = useState<boolean>(false);
+  const closeFunc = () => {
+    setSidemenu(false);
+  };
   return (
-    <BoxStyle
-      style={{
-        background: theme.color,
-        color: theme.background,
-      }}
-    >
-      <Text>{children}</Text>
-      <BtnsWrap>
-        <Icon $url="search"></Icon>
-        <Icon $url="rmenu"></Icon>
-      </BtnsWrap>
-    </BoxStyle>
+    <>
+      <BoxStyle
+        style={{
+          background: theme.color,
+          color: theme.background,
+        }}
+      >
+        <Text>{children}</Text>
+        <BtnsWrap>
+          <Icon $url="search"></Icon>
+          <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
+        </BtnsWrap>
+      </BoxStyle>
+      {sidemenu && <BlogSidemenu func={closeFunc} />}
+    </>
   );
 }
 
 export function SettingHeader({ children }: any) {
+  const [sidemenu, setSidemenu] = useState<boolean>(false);
   const navigate = useNavigate();
+  const closeFunc = () => {
+    setSidemenu(false);
+  };
   return (
     <BoxStyle>
       <LogoImg
@@ -166,7 +177,8 @@ export function SettingHeader({ children }: any) {
         onClick={() => navigate('/')}
       />
       <TextCenter>{children}</TextCenter>
-      <Icon $url="rmenu"></Icon>
+      <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
+      {sidemenu && <SetSidemenu func={closeFunc} />}
     </BoxStyle>
   );
 }
@@ -186,12 +198,12 @@ export function ChattingHeader() {
   );
 }
 
-export function ChatDetailHeader() {
+export function ChatDetailHeader({ children }: { children: string }) {
   return (
     <BoxStyle>
       <BtnsWrap>
         <Profile />
-        <Title>아이디</Title>
+        <Title>{children}</Title>
       </BtnsWrap>
       <Icon $url="search"></Icon>
     </BoxStyle>

@@ -15,7 +15,7 @@ router.patch('/update', update);
 router.get('/getCategory', getCategory);
 router.post('/newCategory', newCategory);
 router.delete('/delCategory', delCategory);
-router.get('/:id', blogDetail);
 router.patch('/updateCategory', updateCategory);
+// router.get('/:id', blogDetail);
 
 module.exports = router;

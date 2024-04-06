@@ -46,6 +46,7 @@ export default function Chatlist({
       open: true,
       data: res.data.result,
       roomId,
+      nickname,
     });
   };
   return (

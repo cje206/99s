@@ -11,7 +11,8 @@ export interface InputRef {
 export interface ChatDataProps {
   open: boolean;
   data: any[];
-  roomId?: string;
+  roomId: string;
+  nickname: string;
 }
 
 export interface ChatListProps {

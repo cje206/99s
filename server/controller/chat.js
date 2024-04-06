@@ -1,6 +1,7 @@
-const { Chat, Room, Member } = require('../models');
-const { Op } = require('sequelize');
+const { Chat, Room, Member, Blog } = require('../models');
+const { Op, where } = require('sequelize');
 
+// 시간
 const getTimeText = (time) => {
   let recentTime = new Date(time);
   let nowTime = new Date();
@@ -35,30 +36,52 @@ exports.find = async (req, res) => {
 
   for (let i = 0; i < find1.length; i++) {
     const [findId, _] = find1[i].roomId.split('to');
-    const res = await Member.findOne({ where: { id: findId } });
-    result.push({
-      id: find1[i].id,
-      roomId: find1[i].roomId,
-      recentMsg: find1[i].recentMsg,
-      nickname: res.username,
-    });
+    const searchBlog = await Blog.findOne({ where: { memberId: findId } });
+    if (searchBlog.nickname) {
+      result.push({
+        id: find1[i].id,
+        roomId: find1[i].roomId,
+        recentMsg: find1[i].recentMsg,
+        updatedAt: getTimeText(find1[i].updatedAt),
+        nickname: searchBlog.nickname,
+      });
+    } else {
+      const searchMember = await Member.findOne({ where: { id: findId } });
+      result.push({
+        id: find1[i].id,
+        roomId: find1[i].roomId,
+        recentMsg: find1[i].recentMsg,
+        updatedAt: getTimeText(find1[i].updatedAt),
+        nickname: searchMember.username,
+      });
+    }
   }
   for (let i = 0; i < find2.length; i++) {
     const [_, findId] = find2[i].roomId.split('to');
-    const res = await Member.findOne({ where: { id: findId } });
-    result.push({
-      id: find2[i].id,
-      roomId: find2[i].roomId,
-      recentMsg: find2[i].recentMsg,
-      updatedAt: getTimeText(find2[i].updatedAt),
-      nickname: res.username,
-    });
-    console.log(result);
+    const searchBlog = await Blog.findOne({ where: { memberId: findId } });
+    if (searchBlog.nickname) {
+      result.push({
+        id: find2[i].id,
+        roomId: find2[i].roomId,
+        recentMsg: find2[i].recentMsg,
+        updatedAt: getTimeText(find2[i].updatedAt),
+        nickname: searchBlog.nickname,
+      });
+    } else {
+      const searchMember = await Member.findOne({ where: { id: findId } });
+      result.push({
+        id: find2[i].id,
+        roomId: find2[i].roomId,
+        recentMsg: find2[i].recentMsg,
+        updatedAt: getTimeText(find2[i].updatedAt),
+        nickname: searchMember.username,
+      });
+    }
   }
   res.json({
     success: true,
     result,
-    message: '채팅 리스트 조회 완료',
+    msg: '채팅 리스트 조회 완료',
   });
 };
 
@@ -66,16 +89,42 @@ exports.find = async (req, res) => {
 exports.check = async (req, res) => {
   const { roomId } = req.query;
   const result = await Chat.findAll({ where: { roomId } });
-  res.json({ success: true, result, message: '채팅 내역 조회 완료' });
+  res.json({ success: true, result, msg: '채팅 내역 조회 완료' });
 };
 
 // 채팅 내용 추가
 exports.write = async (req, res) => {
   const { userId, chatMsg, roomId } = req.body;
   const result = await Chat.create({ userId, chatMsg, roomId });
-  const update = await Room.update(
-    { recentMsg: chatMsg },
-    { where: { roomId } }
-  );
-  res.json({ success: true, result, message: '채팅 추가 완료' });
+  // 해당 채팅방 룸리스트 조회
+  const find = await Room.findOne({ where: { roomId } });
+  if (find) {
+    const update = await Room.update(
+      { recentMsg: chatMsg },
+      { where: { roomId } }
+    );
+  } else {
+    const add = await Room.create({ roomId, recentMsg: chatMsg });
+  }
+  res.json({ success: true, result, msg: '채팅 추가 완료' });
+};
+
+// 닉네임 조회
+exports.nickname = async (req, res) => {
+  const { memberId } = req.query;
+  const searchBlog = await Blog.findOne({ where: { memberId } });
+  if (searchBlog.nickname) {
+    res.json({
+      success: true,
+      result: { nickname: searchBlog.nickname },
+      msg: '닉네임 조회 완료',
+    });
+  } else {
+    const searchMember = await Member.findOne({ where: { id: memberId } });
+    res.json({
+      success: true,
+      result: { nickname: searchMember.username },
+      msg: '닉네임 조회 완료',
+    });
+  }
 };

@@ -6,6 +6,7 @@ import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 import { ErrorMsgGrey, ErrorMsgRed } from './ErrorMsg';
 import { ToggleBtn } from './Btns';
+import { ArrList } from './Lists';
 const TableStyle = styled.table`
   width: 100%;
   margin: 10px 0 30px;
@@ -22,20 +23,6 @@ const TdStyle = styled.td`
   text-align: center;
   border-right: 1px solid #ececec;
   border-bottom: 1px solid #ececec;
-`;
-const LinkBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #eee;
-  .title {
-    line-height: 50px;
-    font-weight: 700;
-  }
-  .ico-arrR {
-    width: 24px;
-    height: 50px;
-    background: url('./images/ico-arrR.png') no-repeat center/contain;
-  }
 `;
 const CheckBox = styled.div`
   padding: 15px 0;
@@ -260,6 +247,25 @@ interface Props {
   user: UserProps;
 }
 
+export function SetMenu() {
+  return (
+    <>
+      <Link to="/setting/post">
+        <ArrList>글 관리</ArrList>
+      </Link>
+      <Link to="/setting/category">
+        <ArrList>카테고리 관리</ArrList>
+      </Link>
+      <Link to="/setting/info">
+        <ArrList>개인정보 수정</ArrList>
+      </Link>
+      <Link to="/setting/blog">
+        <ArrList>블로그 편집</ArrList>
+      </Link>
+    </>
+  );
+}
+
 export function SetHome() {
   return (
     <>
@@ -284,30 +290,7 @@ export function SetHome() {
           </tr>
         </tbody>
       </TableStyle>
-      <Link to="/setting/post">
-        <LinkBox>
-          <div className="title">글 관리</div>
-          <div className="ico-arrR"></div>
-        </LinkBox>
-      </Link>
-      <Link to="/setting/category">
-        <LinkBox>
-          <div className="title">카테고리 관리</div>
-          <div className="ico-arrR"></div>
-        </LinkBox>
-      </Link>
-      <Link to="/setting/info">
-        <LinkBox>
-          <div className="title">개인정보 수정</div>
-          <div className="ico-arrR"></div>
-        </LinkBox>
-      </Link>
-      <Link to="/setting/blog">
-        <LinkBox>
-          <div className="title">블로그 편집</div>
-          <div className="ico-arrR"></div>
-        </LinkBox>
-      </Link>
+      <SetMenu />
     </>
   );
 }
