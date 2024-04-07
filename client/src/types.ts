@@ -46,7 +46,7 @@ export interface UserProps {
 export interface EditorProps {
   body: string;
   setBody: React.Dispatch<SetStateAction<string>>;
-
+}
 export interface ThemeStyle {
   color: string;
   background: string;
@@ -56,5 +56,4 @@ export interface ThemeStyle {
 export interface ColorObject {
   color: string;
   background: string;
-
 }

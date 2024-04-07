@@ -27,6 +27,8 @@ const blogRouter = require('./routes/blog');
 app.use('/api/blog', blogRouter);
 const commentRoutes = require('./routes/comment');
 app.use('/api', commentRoutes);
+const postRoutes = require('./routes/post');
+app.use('/api/post', postRoutes);
 
 // 채팅(소켓)
 io.on('connection', (socket) => [

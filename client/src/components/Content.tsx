@@ -123,6 +123,7 @@ export default function Content() {
         {/* 여기엔 블로그 내용  */}
         {/* 이때는 레이아웃을 우리가 잡을 수 없는데 어떻게 할건지?, 
             사람들마다 쓰는 방법이 다르니까. 그걸 그대로 가져올 수 있는지? */}
+        {/* 여기에 글을 가져와서 확인할 수 있어야함 */}
         <div className="hastag"></div>
         <div className="postReact">
           {/* <div className="likeSection"> */}
@@ -194,7 +195,7 @@ export default function Content() {
             <div className="writer">{matchedItem.writer} </div>
             <div className="subscribe">구독자 {matchedItem.subscribe}명</div>
           </div>
-          <ButtonExtraStyled smallBtn className="subscribeBtn">
+          <ButtonExtraStyled smallbtn className="subscribeBtn">
             {/* 구독하기 버튼 */}
             구독하기
           </ButtonExtraStyled>

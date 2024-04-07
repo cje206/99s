@@ -18,6 +18,7 @@ db.Room = require('./room')(sequelize);
 db.Blog = require('./blog')(sequelize);
 db.Category = require('./category')(sequelize);
 db.Comment = require('./comment')(sequelize);
+db.Post = require('./post')(sequelize);
 
 db.Member.hasOne(db.Blog);
 db.Blog.belongsTo(db.Member);
@@ -27,6 +28,13 @@ db.Category.belongsTo(db.Blog);
 
 db.Blog.hasMany(db.Comment, { foreignKey: 'postId', as: 'comments' });
 db.Comment.belongsTo(db.Blog, { foreignKey: 'postId', as: 'blog' });
+
+db.Blog.hasMany(db.Post, { foreignKey: 'blogId', onDelete: 'CASCADE' });
+db.Post.belongsTo(db.Blog, {
+  foreignKey: 'blogId',
+  targetKey: 'id',
+  onDelete: 'CASCADE',
+});
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
