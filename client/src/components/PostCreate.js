@@ -1,17 +1,19 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import 'react-quill/dist/quill.snow.css';
+import { useEffect, useRef, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
-import { storage } from '../config/Firebase';
 import { uploadBytes, getDownloadURL, ref } from 'firebase/storage';
 import DOMPurify from 'isomorphic-dompurify';
-import 'react-quill/dist/quill.core.css';
 import axios from 'axios';
-import ImageResize from 'quill-image-resize';
-// import { ImageActions } from '@xeger/quill-image-actions';
-// import { ImageFormats } from '@xeger/quill-image-formats';
+import ImageResize from '@looop/quill-image-resize-module-react';
 
-// Quill.register('modules/imageActions', ImageActions);
-// Quill.register('modules/imageFormats', ImageFormats);
+import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.core.css'; // 이 위치로 옮겼습니다.
+import '../styles/test.scss';
+
+import { storage } from '../config/Firebase';
+import { ButtonExtraStyled, ButtonExtra, TitleInput } from './MainPopularStyle';
+import { Link } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
+
 Quill.register('modules/imageResize', ImageResize);
 
 export const formats = [
@@ -92,9 +94,13 @@ const modules = {
     },
 
     // 이미지 크기 조절
-    ImageResize: {
-      parchment: Quill.import('parchment'),
-      modules: ['Resize', 'DisplaySize'],
+    imageResize: {
+      displayStyles: {
+        backgroundColor: 'black',
+        border: 'none',
+        color: 'white',
+      },
+      modules: ['Resize', 'DisplaySize', 'Toolbar'],
     },
   },
 };
@@ -102,6 +108,7 @@ const modules = {
 function QuillEditor({ placeholder, value, ...rest }) {
   const quillRef = useRef();
   const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
   const sanitizer = DOMPurify.sanitize;
 
   useEffect(() => {
@@ -125,32 +132,59 @@ function QuillEditor({ placeholder, value, ...rest }) {
   };
   const addFunc = async () => {
     const data = {
-      group: '제목',
-      categoryName: DOMPurify.sanitize(content),
+      postTitle: title, //칸 만들어서 그 값 넣기
+      content: content,
+      // blogId: blog.id,
     };
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/blog/newCategory',
+      url: 'http://localhost:8000/api/post/write',
       data,
     });
     console.log(res);
+    document.querySelector('.result').innerHTML = DOMPurify.sanitize(content);
+    document.querySelector('.title').innerHTML = DOMPurify.sanitize(title);
   };
   return (
-    <div style={{ margin: '50px' }}>
-      <button onClick={addFunc}>제출</button>
-      <ReactQuill
-        style={{ height: '600px' }}
-        {...rest}
-        placeholder={placeholder}
-        theme="snow"
-        ref={quillRef}
-        value={content || ''}
-        onChange={setContent}
-        modules={modules}
-        formats={formats}
-      />
-      {/* <DisplayContents content={content} /> */}
-    </div>
+    <>
+      <div style={{ margin: '30px' }}>
+        <TitleInput
+          className="ql-snow ql-toolbar"
+          type="text"
+          placeholder="제목을 입력해주세요"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        ></TitleInput>
+
+        <ReactQuill
+          style={{ height: '600px' }}
+          {...rest}
+          placeholder={placeholder}
+          theme="snow"
+          ref={quillRef}
+          value={content || ''}
+          onChange={setContent}
+          modules={modules}
+          formats={formats}
+        />
+        <ButtonExtra style={{ marginTop: '60px' }}>
+          {/* <Link to="/blog/:id/:postId"> */}
+          <ButtonExtraStyled onClick={addFunc} smallbtn={true}>
+            작성하기
+          </ButtonExtraStyled>
+          {/* </Link> */}
+          <Link to="/blog/:id">
+            <ButtonExtraStyled smallbtn={true} style={{ color: 'gray' }}>
+              취소
+            </ButtonExtraStyled>
+          </Link>
+        </ButtonExtra>
+
+        {/* <DisplayContents content={content} /> */}
+      </div>
+      <div className="result"></div>
+      <div className="title"></div>
+    </>
   );
 }
 export default QuillEditor;

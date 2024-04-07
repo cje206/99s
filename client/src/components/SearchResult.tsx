@@ -96,7 +96,7 @@ export default function SearchBar() {
           <SearchWriter items={items.slice(0, 3)} showPagination={false} />
           {showMoreWriter && (
             <ButtonExtra onClick={handleShowMoreWriter}>
-              <ButtonExtraStyled smallBtn={false}>
+              <ButtonExtraStyled smallbtn={false}>
                 게시글 더보기
               </ButtonExtraStyled>
             </ButtonExtra>
@@ -123,7 +123,7 @@ export default function SearchBar() {
           />
           {showMoreTitle && (
             <ButtonExtra onClick={handleShowMoreTitle}>
-              <ButtonExtraStyled smallBtn={false}>
+              <ButtonExtraStyled smallbtn={false}>
                 게시글 더보기
               </ButtonExtraStyled>
             </ButtonExtra>
@@ -150,7 +150,7 @@ export default function SearchBar() {
           />
           {showMoreContent && (
             <ButtonExtra onClick={handleShowMoreContent}>
-              <ButtonExtraStyled smallBtn={false}>
+              <ButtonExtraStyled smallbtn={false}>
                 게시글 더보기
               </ButtonExtraStyled>
             </ButtonExtra>

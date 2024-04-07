@@ -11,11 +11,8 @@ import SearchResult from './pages/SearchResult';
 import BlogHome from './pages/BlogHome';
 import Content from './pages/Content';
 
-import BlogEditor from './components/BlogEditor';
-// import QuillEditor from './components/QuillEditor';
-
-import QuillEditor from './components/QuillEditor';
-import Editor from './components/ReadQuill';
+import QuillEditor from './components/PostCreate';
+import PostPage from './pages/Post';
 
 function App() {
   return (
@@ -57,15 +54,7 @@ function App() {
           <Route path="/blog/:id/:postId" element={<Content />} />
 
           {/* <Route path="/comments/:postId" element={<Comment />} /> */}
-          <Route
-            path="/blog/write"
-            element={
-              <QuillEditor
-                placeholder={'내용을 입력해주세요'}
-                value={undefined}
-              />
-            }
-          />
+          <Route path="/post/write" element={<PostPage position="글 작성" />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

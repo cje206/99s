@@ -130,10 +130,10 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
             <ToggleBtn active={Boolean(darkmode)} />
           </div>
         </div>
-        <div className="blogIcons">
+        <Link to="/post/write" className="blogIcons">
           <IcoWrite stroke="#fbc02d" />
           <span>글 작성하기</span>
-        </div>
+        </Link>
         <div className="blogIcons">
           <IcoSubscribe stroke="#fbc02d" />
           <span>구독</span>

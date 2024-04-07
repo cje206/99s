@@ -131,7 +131,7 @@ export const ButtonExtra = styled.div`
 `;
 
 interface ButtonProps {
-  smallBtn: boolean;
+  smallbtn: boolean;
 }
 
 export const ButtonExtraStyled = styled.button<ButtonProps>`
@@ -143,8 +143,8 @@ export const ButtonExtraStyled = styled.button<ButtonProps>`
   font-weight: bold;
   cursor: pointer;
   &:hover {
-    background-color: #43a046;
-    color: 'black';
+    background-color: #c5e4c6;
+    color: black;
   }
   &:focus {
     outline: none;
@@ -153,9 +153,14 @@ export const ButtonExtraStyled = styled.button<ButtonProps>`
 
   // 조건부 스타일 적용
   ${(props) =>
-    props.smallBtn &&
+    props.smallbtn &&
     css`
       padding: 10px 30px;
       color: #fbc02d;
     `}
+`;
+export const TitleInput = styled.input`
+  margin-bottom: 9px;
+  border-radius: 0.5em;
+  width: 100%;
 `;
