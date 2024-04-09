@@ -29,12 +29,11 @@ db.Category.belongsTo(db.Blog);
 db.Blog.hasMany(db.Comment, { foreignKey: 'postId', as: 'comments' });
 db.Comment.belongsTo(db.Blog, { foreignKey: 'postId', as: 'blog' });
 
-db.Blog.hasMany(db.Post, { foreignKey: 'blogId', onDelete: 'CASCADE' });
-db.Post.belongsTo(db.Blog, {
-  foreignKey: 'blogId',
-  targetKey: 'id',
-  onDelete: 'CASCADE',
-});
+db.Blog.hasOne(db.Post);
+db.Post.belongsTo(db.Blog);
+
+db.Category.hasOne(db.Post);
+db.Post.belongsTo(db.Category);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

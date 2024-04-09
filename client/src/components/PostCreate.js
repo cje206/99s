@@ -4,15 +4,16 @@ import { uploadBytes, getDownloadURL, ref } from 'firebase/storage';
 import DOMPurify from 'isomorphic-dompurify';
 import axios from 'axios';
 import ImageResize from '@looop/quill-image-resize-module-react';
-
+import styled from 'styled-components';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.core.css'; // 이 위치로 옮겼습니다.
 import '../styles/test.scss';
 
 import { storage } from '../config/Firebase';
 import { ButtonExtraStyled, ButtonExtra, TitleInput } from './MainPopularStyle';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import { EditBox } from './Settings';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -106,18 +107,45 @@ const modules = {
 };
 
 function QuillEditor({ placeholder, value, ...rest }) {
+  const navigate = useNavigate();
   const quillRef = useRef();
+  const [user, setUser] = useAuth();
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
+  const [hashtag, setHashtag] = useState('');
+  const [category, setCategory] = useState('');
+  const [categoryList, setCategoryList] = useState([]);
+  const [postId, setPostId] = useState();
   const sanitizer = DOMPurify.sanitize;
 
+  const getCategory = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/blog/getCategory',
+      params: { memberId: user.id },
+    });
+    setCategoryList(res.data.result);
+  };
+
   useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    }
+    if (localStorage.getItem('postId')) {
+      setPostId(localStorage.getItem('postId'));
+    }
     if (quillRef.current) {
       const editor = quillRef.current.getEditor();
       const toolbar = editor.getModule('toolbar');
       toolbar.addHandler('image', () => imageHandler(quillRef, storage));
     }
   }, []);
+  useEffect(() => {
+    if (user.id) {
+      getCategory();
+      console.log(user.id);
+    }
+  }, [user]);
 
   const DisplayContents = ({ content }) => {
     console.log(DOMPurify.sanitize(content));
@@ -131,60 +159,127 @@ function QuillEditor({ placeholder, value, ...rest }) {
     );
   };
   const addFunc = async () => {
-    const data = {
-      postTitle: title, //칸 만들어서 그 값 넣기
-      content: content,
-      // blogId: blog.id,
+    if (!content.trim() || content.trim() === '<p><br></p>') {
+      alert('내용을 입력해주세요');
+      return;
+    }
+    const findBlog = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/blog/find',
+      params: { memberId: user.id },
+    });
+    const categoryId = () => {
+      if (category === 'none') {
+        return null;
+      }
+      return Number(category);
     };
+    const data = {
+      postTitle: title,
+      content: content,
+      blogId: findBlog.data.result.id,
+      hashtag: hashtag.split(', ').filter((val) => val !== ''),
+      categoryId: categoryId(),
+    };
+    if (postId) {
+      data.id = postId;
+    }
     const res = await axios({
       method: 'POST',
       url: 'http://localhost:8000/api/post/write',
       data,
     });
     console.log(res);
-    document.querySelector('.result').innerHTML = DOMPurify.sanitize(content);
-    document.querySelector('.title').innerHTML = DOMPurify.sanitize(title);
+    if (res.data.success) {
+      alert('게시글 작성이 완료되었습니다.');
+      navigate(`/blog/${user.id}/${res.data.result.id}`);
+    }
+  };
+  const checkKeyCode = (e) => {
+    console.log();
+    const kcode = e.keyCode;
+    if (kcode == 32) {
+      setHashtag(hashtag + ', #');
+      console.log('onKeyDown');
+    } else if (kcode == 13) {
+      setHashtag(hashtag + ', #');
+    }
+  };
+  const changeFunc = (e) => {
+    let newHashtag = e.target.value.replace(/\s$/, '');
+    setHashtag(newHashtag);
+  };
+  const focusFunc = () => {
+    if (!hashtag) {
+      setHashtag('#');
+    }
+  };
+  const focusOut = () => {
+    if (hashtag === '#') {
+      setHashtag('');
+    }
   };
   return (
-    <>
-      <div style={{ margin: '30px' }}>
-        <TitleInput
-          className="ql-snow ql-toolbar"
-          type="text"
-          placeholder="제목을 입력해주세요"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        ></TitleInput>
-
-        <ReactQuill
-          style={{ height: '600px' }}
-          {...rest}
-          placeholder={placeholder}
-          theme="snow"
-          ref={quillRef}
-          value={content || ''}
-          onChange={setContent}
-          modules={modules}
-          formats={formats}
-        />
-        <ButtonExtra style={{ marginTop: '60px' }}>
-          {/* <Link to="/blog/:id/:postId"> */}
-          <ButtonExtraStyled onClick={addFunc} smallbtn={true}>
-            작성하기
-          </ButtonExtraStyled>
-          {/* </Link> */}
-          <Link to="/blog/:id">
-            <ButtonExtraStyled smallbtn={true} style={{ color: 'gray' }}>
-              취소
-            </ButtonExtraStyled>
-          </Link>
-        </ButtonExtra>
-
-        {/* <DisplayContents content={content} /> */}
+    <div className="wrap">
+      <div className="postHeader">
+        <button onClick={() => navigate(-1)}>취소</button>
+        <select onChange={(e) => setCategory(e.target.value)}>
+          <option value="none">카테고리 없음</option>
+          {categoryList.map((value) => (
+            <option key={value.id} value={value.id}>
+              {value.categoryName}
+            </option>
+          ))}
+        </select>
+        {title.trim().length && content.trim().length ? (
+          <button className="write on" onClick={addFunc}>
+            작성
+          </button>
+        ) : (
+          <button className="write" onClick={addFunc}>
+            작성
+          </button>
+        )}
       </div>
-      <div className="result"></div>
-      <div className="title"></div>
-    </>
+      <input
+        className="ql-snow ql-toolbar ql-title"
+        type="text"
+        placeholder="제목을 입력해주세요"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      ></input>
+
+      <ReactQuill
+        style={{ height: 'fit-content' }}
+        {...rest}
+        placeholder={placeholder}
+        theme="snow"
+        ref={quillRef}
+        value={content || ''}
+        onChange={setContent}
+        modules={modules}
+        formats={formats}
+      />
+      <input
+        className="hashtag"
+        type="text"
+        placeholder="해시태그를 입력해주세요(#제외 입력)"
+        value={hashtag}
+        onChange={changeFunc}
+        onKeyDown={checkKeyCode}
+        onFocus={focusFunc}
+        onBlur={focusOut}
+      />
+
+      {/* <EditBox>
+          <button className="btn btnCancle" onClick={() => navigate(-1)}>
+            취소
+          </button>
+          <button className="btn btnEdit" onClick={addFunc}>
+            작성
+          </button>
+        </EditBox> */}
+    </div>
   );
 }
 export default QuillEditor;
