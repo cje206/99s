@@ -16,8 +16,8 @@ const ProfileImg = styled.div<{ link?: string }>`
     padding-bottom: 100%;
   }
 `;
-const DefaultImg = styled.div<{ link?: string }>`
-  width: 20%;
+const DefaultImg = styled.div<{ imgwidth: string; link?: string }>`
+  width: ${(props) => props.imgwidth};
   height: fit-content;
   border-radius: 50%;
   overflow: hidden;
@@ -30,10 +30,12 @@ const DefaultImg = styled.div<{ link?: string }>`
 
 export default function ProfileImage({
   id,
-  profileImgUrl,
+  imgwidth,
+  profileimgurl,
 }: {
   id: number;
-  profileImgUrl?: string | null;
+  imgwidth?: string;
+  profileimgurl?: string | null;
 }) {
   const [profile, setProfile] = useState<{ img: string | null }>({ img: '' });
   const [file, setFile] = useState(null);
@@ -55,7 +57,7 @@ export default function ProfileImage({
         setProfile({
           img: writerImg,
         });
-        getColor(res.data.result.theme, bgColor, fontColor, setTheme);
+        getColor(setTheme, res.data.result.theme, fontColor, bgColor);
       } else {
         // res.data.result가 null이거나 undefined일 경우 처리
         console.log('No result found');
@@ -78,17 +80,17 @@ export default function ProfileImage({
   }, [id]);
 
   useEffect(() => {
-    if (profileImgUrl) {
-      setProfile({ img: profileImgUrl });
+    if (profileimgurl) {
+      setProfile({ img: profileimgurl });
     } else if (id !== 0) {
       getProfile();
     }
-  }, [profileImgUrl, id]);
+  }, [profileimgurl, id]);
 
   return (
     <>
       {Boolean(id) ? (
-        <DefaultImg className="imgBox">
+        <DefaultImg className="imgBox" imgwidth={imgwidth ? imgwidth : '20px'}>
           {profile.img ? (
             <ProfileImg link={profile.img} />
           ) : (
@@ -96,7 +98,7 @@ export default function ProfileImage({
           )}
         </DefaultImg>
       ) : (
-        <DefaultImg className="imgBox">
+        <DefaultImg className="imgBox" imgwidth={imgwidth ? imgwidth : '20px'}>
           <DefaultPropfile fill={theme.background} />
         </DefaultImg>
       )}
