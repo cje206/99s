@@ -638,6 +638,8 @@ export function SetBlog() {
   const [customText, setCustomText] = useState<string>('');
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
   const toggleBtn = (idx: number) => {
     const btns = document.querySelectorAll('.btn');
@@ -674,6 +676,15 @@ export function SetBlog() {
       alert('블로그 제목을 입력해주세요.');
       return;
     }
+    let imageUrl = uploadedImageUrl; // 기존 업로드된 이미지 URL 사용
+    // if (selectedFile && !uploadedImageUrl) {
+    //   const uploadUrl = await uploadImage(selectedFile);
+    //   if (uploadUrl) {
+    //     imageUrl = uploadUrl;
+    //     setUploadedImageUrl(uploadUrl);
+    //     setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
+    //   }
+    // }
     const res = await axios({
       method: 'PATCH',
       url: 'http://localhost:8000/api/blog/update',
@@ -685,6 +696,7 @@ export function SetBlog() {
         theme,
         bgColor: customBg,
         fontColor: customText,
+        writerImg: imageUrl,
       },
     });
     if (res.data.success) {
@@ -695,17 +707,13 @@ export function SetBlog() {
   // uploadImage 함수 수정
   const uploadImage = async (file: File): Promise<string | undefined> => {
     if (!file) return;
-    const fileId = user.id; // 파일명을 사용자 ID로 설정합니다.
-    const imageRef = ref(storage, `profileImages/${fileId}`); // 스토리지 내의 저장 경로를 지정합니다.
-    await uploadBytes(imageRef, file); // 파일을 업로드합니다.
-    const url = await getDownloadURL(imageRef); // 업로드된 파일의 URL을 가져옵니다.
-    return url; // URL을 반환합니다.
-  };
-  const triggerFileInputClick = () => {
-    fileInputRef.current?.click();
+    const fileId = user.id; // 파일명을 사용자 ID로 설정
+    const imageRef = ref(storage, `profileImages/${fileId}`); // 스토리지 내의 저장 경로를 지정
+    await uploadBytes(imageRef, file); // 파일을 업로드
+    const url = await getDownloadURL(imageRef); // 업로드된 파일의 URL을 가져온다.
+    return url; // URL을 반환
   };
 
-  // handleImageUpload 함수 수정
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (!file) return;
@@ -713,6 +721,22 @@ export function SetBlog() {
     if (url)
       setUploadedImageUrl(url); // 업로드된 이미지 URL을 상태 변수에 저장합니다.
     else setUploadedImageUrl(null); // 업로드에 실패했다면 null을 설정합니다.
+  };
+  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files ? e.target.files[0] : null;
+  //   if (!file) return;
+  //   setSelectedFile(file); // 선택된 파일을 상태에 저장
+  // };
+  //   // 미리보기 URL 생성 및 저장
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setPreviewImageUrl(reader.result as string);
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
+
+  const triggerFileInputClick = () => {
+    fileInputRef.current?.click();
   };
 
   useEffect(() => {
@@ -730,9 +754,11 @@ export function SetBlog() {
   return (
     <>
       <BlogBox>
+
         {/* <div className="profileImg"> */}
         <ProfileImage id={user.id || 0} />
         {/* </div> */}
+
         <input
           type="file"
           style={{ display: 'none' }} // 파일 입력 숨김

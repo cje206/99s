@@ -67,12 +67,14 @@ export default function ProfileImage({
   };
   useEffect(() => {
     getProfile();
+
     console.log(profile);
   }, []);
 
   useEffect(() => {
     if (id !== 0) getProfile();
   }, [id]);
+
 
   return (
     <>
