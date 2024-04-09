@@ -225,7 +225,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
         <button onClick={() => navigate(-1)}>취소</button>
         <select onChange={(e) => setCategory(e.target.value)}>
           <option value="none">카테고리 없음</option>
-          {categoryList.map((value) => (
+          {categoryList?.map((value) => (
             <option key={value.id} value={value.id}>
               {value.categoryName}
             </option>
