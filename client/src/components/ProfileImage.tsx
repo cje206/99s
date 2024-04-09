@@ -43,7 +43,7 @@ export default function ProfileImage({ id }: { id: number }) {
       setProfile({
         img: writerImg,
       });
-      getColor(res.data.result.theme, bgColor, fontColor, setTheme);
+      getColor(setTheme, res.data.result.theme, fontColor, bgColor);
     }
   };
   useEffect(() => {

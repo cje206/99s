@@ -4,9 +4,14 @@ Link {
   cursor: pointer;
 }
 @include mobile {
+  .categoryName {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #777;
+  }
   .contentTitle {
-    margin: 43px 0 28px 0;
-    font-size: 22px;
+    margin-bottom: 15px;
+    font-size: 18px;
     font-weight: bold;
   }
   .shareImg {
@@ -20,25 +25,33 @@ Link {
     justify-content: space-between;
     align-items: center;
     .shareImg {
-      width: 18px;
-      height: 18px;
+      width: 24px;
+      height: 24px;
       cursor: pointer;
       border-radius: 0;
+      margin: 0;
+    }
+    .writerImg {
+      width: 50px;
+      height: 50px;
+      background-color: #222;
+      border-radius: 50%;
     }
 
     .block {
-      flex-direction: column;
-      margin-left: -10px;
-      flex-grow: 1;
       display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      box-sizing: border-box;
+      padding: 0 10px;
       .writer {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
         margin-bottom: 5px;
       }
       .block1 {
         color: #777777;
-        font-size: 13px;
+        font-size: 12px;
         display: flex;
         justify-content: start;
         align-items: baseline;
