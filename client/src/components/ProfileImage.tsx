@@ -1,10 +1,7 @@
 import styled from 'styled-components';
 import { ReactComponent as DefaultPropfile } from '../images/default-profile.svg';
-import useAuth from '../hooks/useAuth';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { storage } from '../config/Firebase';
-import { uploadBytes, getDownloadURL, ref } from 'firebase/storage';
 import { getColor } from './Functions';
 import { ColorObject } from '../types';
 
@@ -16,13 +13,14 @@ const ProfileImg = styled.div<{ link?: string }>`
     padding-bottom: 100%;
   }
 `;
-const DefaultImg = styled.div<{ link?: string }>`
-  width: 20%;
+const DefaultImg = styled.div<{ imgwidth: string; link?: string }>`
+  width: ${(props) => props.imgwidth};
   height: fit-content;
   border-radius: 50%;
   overflow: hidden;
   background: #f6f7f9;
   svg {
+    display: block;
     width: 100%;
     height: auto;
   }
@@ -30,13 +28,12 @@ const DefaultImg = styled.div<{ link?: string }>`
 
 export default function ProfileImage({
   id,
-}: // profileimgurl,
-{
+  imgwidth,
+}: {
   id: number;
-  // profileimgurl?: string | null;
+  imgwidth?: string;
 }) {
-  const [profile, setProfile] = useState<{ img: string | null }>({ img: '' });
-  const [file, setFile] = useState(null);
+  const [profile, setProfile] = useState<{ img: string | null }>({ img: null });
   const [theme, setTheme] = useState<ColorObject>({
     color: '#fbc02d',
     background: '#fff',
@@ -55,7 +52,7 @@ export default function ProfileImage({
         setProfile({
           img: writerImg,
         });
-        getColor(res.data.result.theme, bgColor, fontColor, setTheme);
+        getColor(setTheme, res.data.result.theme, fontColor, bgColor);
       } else {
         // res.data.result가 null이거나 undefined일 경우 처리
         console.log('No result found');
@@ -78,18 +75,11 @@ export default function ProfileImage({
     if (id !== 0) getProfile();
   }, [id]);
 
-  // useEffect(() => {
-  //   if (profileimgurl) {
-  //     setProfile({ img: profileimgurl });
-  //   } else if (id !== 0) {
-  //     getProfile();
-  //   }
-  // }, [profileimgurl, id]);
 
   return (
     <>
       {Boolean(id) ? (
-        <DefaultImg className="imgBox">
+        <DefaultImg className="imgBox" imgwidth={imgwidth ? imgwidth : '20%'}>
           {profile.img ? (
             <ProfileImg link={profile.img} />
           ) : (
@@ -97,7 +87,7 @@ export default function ProfileImage({
           )}
         </DefaultImg>
       ) : (
-        <DefaultImg className="imgBox">
+        <DefaultImg className="imgBox" imgwidth={imgwidth ? imgwidth : '20%'}>
           <DefaultPropfile fill={theme.background} />
         </DefaultImg>
       )}

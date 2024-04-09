@@ -52,6 +52,11 @@ exports.update = async (req, res) => {
   }
   res.json({ success: true, msg: '블로그 수정 완료' });
 };
+// 카테고리 하나 조회
+exports.findCategory = async (req, res) => {
+  const result = await Category.findOne({ where: { id: req.query.id } });
+  res.json({ success: true, result, msg: '카테고리 조회 완료' });
+};
 
 // 카테고리 리스트 조회
 exports.getCategory = async (req, res) => {

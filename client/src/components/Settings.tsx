@@ -754,10 +754,11 @@ export function SetBlog() {
   return (
     <>
       <BlogBox>
-        <ProfileImage
-          id={user.id || 0}
-          // profileimgurl={previewImageUrl || uploadedImageUrl}
-        />
+
+        {/* <div className="profileImg"> */}
+        <ProfileImage id={user.id || 0} />
+        {/* </div> */}
+
         <input
           type="file"
           style={{ display: 'none' }} // 파일 입력 숨김

@@ -57,3 +57,21 @@ export interface ColorObject {
   color: string;
   background: string;
 }
+
+export interface BlogObject {
+  id: number;
+  blogTitle: string;
+  nickname: string;
+  writerImg?: string | null;
+  subscribeCount?: number;
+  memberId?: number | null;
+}
+export interface PostObject {
+  id: number;
+  postTitle: string;
+  content: string;
+  hashtag: any[];
+  likeCount?: number;
+  categoryId?: number | null;
+  createdAt?: string;
+}

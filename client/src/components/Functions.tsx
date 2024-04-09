@@ -1,8 +1,8 @@
 export const getColor = (
+  setfunc: (colors: any) => void,
   type: number,
-  background: string,
-  color: string,
-  setfunc: (colors: any) => void
+  color?: string,
+  background?: string
 ) => {
   switch (type) {
     case 1:
