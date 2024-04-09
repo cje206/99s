@@ -22,12 +22,20 @@ exports.find = async (req, res) => {
 
 // 블로그 정보 수정
 exports.update = async (req, res) => {
-  const { memberId, nickname, blogTitle, theme, blogInfo, bgColor, fontColor } =
-    req.body;
+  const {
+    memberId,
+    nickname,
+    blogTitle,
+    theme,
+    blogInfo,
+    bgColor,
+    fontColor,
+    writerImg,
+  } = req.body;
   const find = await Blog.findOne({ where: { memberId } });
   if (find) {
     const result = await Blog.update(
-      { nickname, blogTitle, theme, blogInfo, bgColor, fontColor },
+      { nickname, blogTitle, theme, blogInfo, bgColor, fontColor, writerImg },
       { where: { memberId } }
     );
   } else {
@@ -39,6 +47,7 @@ exports.update = async (req, res) => {
       blogInfo,
       bgColor,
       fontColor,
+      writerImg,
     });
   }
   res.json({ success: true, msg: '블로그 수정 완료' });

@@ -30,10 +30,10 @@ const DefaultImg = styled.div<{ link?: string }>`
 
 export default function ProfileImage({
   id,
-  profileImgUrl,
-}: {
+}: // profileimgurl,
+{
   id: number;
-  profileImgUrl?: string | null;
+  // profileimgurl?: string | null;
 }) {
   const [profile, setProfile] = useState<{ img: string | null }>({ img: '' });
   const [file, setFile] = useState(null);
@@ -70,6 +70,7 @@ export default function ProfileImage({
   };
   useEffect(() => {
     getProfile();
+
     console.log(profile);
   }, []);
 
@@ -77,13 +78,13 @@ export default function ProfileImage({
     if (id !== 0) getProfile();
   }, [id]);
 
-  useEffect(() => {
-    if (profileImgUrl) {
-      setProfile({ img: profileImgUrl });
-    } else if (id !== 0) {
-      getProfile();
-    }
-  }, [profileImgUrl, id]);
+  // useEffect(() => {
+  //   if (profileimgurl) {
+  //     setProfile({ img: profileimgurl });
+  //   } else if (id !== 0) {
+  //     getProfile();
+  //   }
+  // }, [profileimgurl, id]);
 
   return (
     <>
