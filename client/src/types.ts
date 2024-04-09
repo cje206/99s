@@ -63,7 +63,6 @@ export interface BlogObject {
   blogTitle: string;
   nickname: string;
   writerImg?: string | null;
-  hashtag?: any[];
   subscribeCount?: number;
   memberId?: number | null;
 }
@@ -71,7 +70,7 @@ export interface PostObject {
   id: number;
   postTitle: string;
   content: string;
-  hashtag?: any[];
+  hashtag: any[];
   likeCount?: number;
   categoryId?: number | null;
   createdAt?: string;

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { ButtonExtraStyled } from './MainPopularStyle';
 import { PostContent, PostTitle, PostTop } from './PostComponent';
-import { ColorObject } from '../types';
+import { BlogObject, ColorObject, PostObject } from '../types';
 const ContentMiddleContainer = styled.div`
   margin: 20px 20px 0 20px;
 `;
@@ -17,9 +17,11 @@ const WriterInfo = styled.div`
 export default function Content({
   post,
   theme,
+  blog,
 }: {
-  post: any;
+  post: PostObject;
   theme: ColorObject;
+  blog: BlogObject;
 }) {
   console.log(post);
   const { id, postId } = useParams<{ id?: string; postId?: string }>();
@@ -71,7 +73,7 @@ export default function Content({
       {Boolean(post) && (
         <div>
           <PostTop>{post.postTitle}</PostTop>
-          <PostTitle post={post} />
+          <PostTitle post={post} blog={blog} />
           <PostContent content={post.content} hashtag={post.hashtag} />
           <ContentMiddleContainer>
             {/* 여기엔 블로그 내용  */}

@@ -15,7 +15,12 @@ export default function ContentPage() {
   const item = items.find((item) => item.id === itemId);
   const navigate = useNavigate();
   const [user, setUser] = useAuth();
-  const [post, setPost] = useState<PostObject>();
+  const [post, setPost] = useState<PostObject>({
+    id: 0,
+    postTitle: '',
+    content: '',
+    hashtag: [],
+  });
   const [theme, setTheme] = useState<ColorObject>({
     background: '#333',
     color: '#fff',
@@ -59,7 +64,7 @@ export default function ContentPage() {
   return (
     <>
       <BlogHeader theme={theme}>{blog?.blogTitle || 'NOT FOUND'}</BlogHeader>
-      <Content post={post} theme={theme} />
+      <Content post={post} theme={theme} blog={blog} />
       <CommentComponent />
     </>
   );

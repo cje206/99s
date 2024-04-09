@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { PostObject } from '../types';
+import { BlogObject, PostObject } from '../types';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 import { spawn } from 'child_process';
+import ProfileImage from './ProfileImage';
 
 const ContentInfo = styled.div`
   position: sticky;
@@ -76,7 +77,13 @@ export function PostTop({ children }: { children: string }) {
   );
 }
 
-export function PostTitle({ post }: { post: PostObject }) {
+export function PostTitle({
+  post,
+  blog,
+}: {
+  post: PostObject;
+  blog: BlogObject;
+}) {
   const [categoryName, setCategoryName] = useState<string>('카테고리 없음');
   const getTime = (): string => {
     if (post.createdAt) {
@@ -106,7 +113,7 @@ export function PostTitle({ post }: { post: PostObject }) {
       <div className="categoryName">{categoryName}</div>
       <div className="contentTitle">{post.postTitle}</div>
       <div className="contentDetail">
-        <div className="writerImg"></div>
+        <ProfileImage id={blog?.memberId || 1} imgwidth="50px" />
         <div className="block">
           <div className="writer">작성자</div>
           <div className="block1">
