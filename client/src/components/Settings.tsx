@@ -102,7 +102,7 @@ const BoxStyle = styled.div`
 
 const AddButton = styled.button``;
 
-const EditBox = styled.div`
+export const EditBox = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 30px;
@@ -319,7 +319,7 @@ export function SetCategory() {
   const [list, setList] = useState<any[]>([]);
   const [isBlogExist, setIsbBlogExist] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>('');
-  const [newGroup, setNewGroup] = useState<number>(1);
+  const [newGroup, setNewGroup] = useState<string>('일상');
   const [create, setCreate] = useState<boolean>(false);
   const [editId, setEditId] = useState<number>(0);
   const categoryStyle = {
@@ -343,7 +343,7 @@ export function SetCategory() {
             setEditId(id);
             setCreate(false);
             setNewName(name);
-            setNewGroup(getGroupId(group));
+            setNewGroup(group);
           }}
         >
           수정
@@ -363,15 +363,12 @@ export function SetCategory() {
           onChange={(e) => setNewName(e.target.value)}
           value={newName}
         />
-        <select
-          onChange={(e) => setNewGroup(Number(e.target.value))}
-          value={newGroup}
-        >
-          <option value="1">일상</option>
-          <option value="2">스포츠</option>
-          <option value="3">IT&#183;과학</option>
-          <option value="4">시사&#183;경제</option>
-          <option value="5">글로벌</option>
+        <select onChange={(e) => setNewGroup(e.target.value)} value={newGroup}>
+          <option value="일상">일상</option>
+          <option value="스포츠">스포츠</option>
+          <option value="IT&#183;과학">IT&#183;과학</option>
+          <option value="시사&#183;경제">시사&#183;경제</option>
+          <option value="글로벌">글로벌</option>
         </select>
       </div>
       <BtnBox>
@@ -384,7 +381,7 @@ export function SetCategory() {
       </BtnBox>
     </CheckBox>
   );
-  const newCate = () => {
+  const newCate = () => (
     <CheckBox style={categoryStyle}>
       <div className="add">
         <input
@@ -392,12 +389,12 @@ export function SetCategory() {
           placeholder="카테고리명"
           onChange={(e) => setNewName(e.target.value)}
         />
-        <select onChange={(e) => setNewGroup(Number(e.target.value))}>
-          <option value="1">일상</option>
-          <option value="2">스포츠</option>
-          <option value="3">IT&#183;과학</option>
-          <option value="4">시사&#183;경제</option>
-          <option value="5">글로벌</option>
+        <select onChange={(e) => setNewGroup(e.target.value)}>
+          <option value="일상">일상</option>
+          <option value="스포츠">스포츠</option>
+          <option value="IT&#183;과학">IT&#183;과학</option>
+          <option value="시사&#183;경제">시사&#183;경제</option>
+          <option value="글로벌">글로벌</option>
         </select>
       </div>
       <BtnBox>
@@ -408,8 +405,8 @@ export function SetCategory() {
           삭제
         </div>
       </BtnBox>
-    </CheckBox>;
-  };
+    </CheckBox>
+  );
   const getList = async () => {
     if (user.id) {
       const res = await axios({
@@ -424,41 +421,9 @@ export function SetCategory() {
       }
     }
   };
-  const getGroupName = (idx: number): string => {
-    switch (idx) {
-      case 1:
-        return '일상';
-      case 2:
-        return '스포츠';
-      case 3:
-        return 'IT·과학';
-      case 4:
-        return '시사·경제';
-      case 5:
-        return '글로벌';
-      default:
-        return '';
-    }
-  };
-  const getGroupId = (idx: string): number => {
-    switch (idx) {
-      case '일상':
-        return 1;
-      case '스포츠':
-        return 2;
-      case 'IT·과학':
-        return 3;
-      case '시사·경제':
-        return 4;
-      case '글로벌':
-        return 5;
-      default:
-        return 1;
-    }
-  };
   const addFunc = async () => {
     const data = {
-      group: getGroupName(newGroup),
+      group: newGroup,
       categoryName: newName,
       memberId: user.id,
     };
@@ -475,7 +440,7 @@ export function SetCategory() {
       method: 'PATCH',
       url: 'http://localhost:8000/api/blog/updateCategory',
       data: {
-        group: getGroupName(newGroup),
+        group: newGroup,
         categoryName: newName,
         id,
       },
@@ -518,7 +483,7 @@ export function SetCategory() {
           }
         })}
       {create && newCate()}
-      {isBlogExist && (
+      {isBlogExist && !create && (
         <RectBtn
           onClick={() => {
             setEditId(0);

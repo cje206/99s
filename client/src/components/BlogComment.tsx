@@ -41,7 +41,7 @@ export default function CommentComponent() {
         setComments(sortedComments);
       }
     };
-    fetchComments();
+    // fetchComments();
   }, [id, postId]);
 
   const sortComments = (comments: any[]) => {

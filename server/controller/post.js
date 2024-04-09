@@ -1,20 +1,35 @@
 const { Post } = require('../models');
 
-//새로운 포스트 등록
+// 포스트 등록
 exports.newPost = async (req, res) => {
   try {
-    const { postTitle, content, likeCount, blogId } = req.body;
-    console.log(req.body);
-    console.log('blogid', blogId);
+    const { postTitle, content, blogId, hashtag } = req.body;
+    let categoryId = null;
+    if (req.body.categoryId) {
+      categoryId = req.body.categoryId;
+    }
+    if (req.body.id) {
+      const result = await Post.update(
+        { postTitle, content, blogId, hashtag, categoryId },
+        { where: { id: req.body.id } }
+      );
+      res.json({
+        success: true,
+        result: { id: req.body.id },
+        msg: '글 수정 완료',
+      });
+    } else {
+      const result = await Post.create({
+        postTitle,
+        content,
+        blogId,
+        hashtag,
+        categoryId,
+      });
+      res.json({ success: true, result, msg: '글 등록 완료' });
+    }
 
-    const result = await Post.create({
-      blogId,
-      postTitle,
-      content,
-      likeCount,
-    });
     console.log('result', result);
-    res.json({ success: true, result, msg: '글 등록 완료' });
   } catch (error) {
     console.log(error);
     res.json({ success: false, result: error, msg: '글 등록 실패' });

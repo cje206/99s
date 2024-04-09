@@ -65,7 +65,7 @@ const SideBox = styled.div`
       justify-content: space-between;
       align-items: center;
     }
-    &.logout {
+    &.darkmode {
       position: absolute;
       bottom: 0;
       width: 100%;
@@ -118,45 +118,45 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
           </Link>
         )}
       </div>
-      <div className="menuBox">
-        <div
-          className="blogIcons"
-          onClick={() => setDarkmode(!darkmode)}
-          style={{ cursor: 'pointer' }}
-        >
-          <IcoDarkmode stroke="#fbc02d" />
-          <div className="iconBox">
-            <p>다크모드</p>
-            <ToggleBtn active={Boolean(darkmode)} />
+      {Boolean(localStorage.getItem('token')) && (
+        <div className="menuBox">
+          <Link to="/post/write" className="blogIcons">
+            <IcoWrite stroke="#fbc02d" />
+            <span>글 작성하기</span>
+          </Link>
+          <div className="blogIcons">
+            <IcoSubscribe stroke="#fbc02d" />
+            <span>구독</span>
           </div>
-        </div>
-        <Link to="/post/write" className="blogIcons">
-          <IcoWrite stroke="#fbc02d" />
-          <span>글 작성하기</span>
-        </Link>
-        <div className="blogIcons">
-          <IcoSubscribe stroke="#fbc02d" />
-          <span>구독</span>
-        </div>
-        <div className="blogIcons">
-          <IcoLike stroke="#fbc02d" fill="none" />
-          <span>좋아요</span>
-        </div>
-        <Link to="/setting" className="blogIcons">
-          <IcoSet stroke="#fbc02d" />
-          <span>설정</span>
-        </Link>
-        <Link to="/chat" className="blogIcons">
-          <IcoChat stroke="#fbc02d" />
-          <span>메세지</span>
-        </Link>
-        {Boolean(localStorage.getItem('token')) && (
-          <div className="blogIcons logout" onClick={logoutFun}>
+          <div className="blogIcons">
+            <IcoLike stroke="#fbc02d" fill="none" />
+            <span>좋아요</span>
+          </div>
+          <Link to="/setting" className="blogIcons">
+            <IcoSet stroke="#fbc02d" />
+            <span>설정</span>
+          </Link>
+          <Link to="/chat" className="blogIcons">
+            <IcoChat stroke="#fbc02d" />
+            <span>메세지</span>
+          </Link>
+          <div className="blogIcons" onClick={logoutFun}>
             <IcoLogout stroke="#fbc02d" />
             <span>로그아웃</span>
           </div>
-        )}
-      </div>
+          <div
+            className="blogIcons darkmode"
+            onClick={() => setDarkmode(!darkmode)}
+            style={{ cursor: 'pointer' }}
+          >
+            <IcoDarkmode stroke="#fbc02d" />
+            <div className="iconBox">
+              <p>다크모드</p>
+              <ToggleBtn active={Boolean(darkmode)} />
+            </div>
+          </div>
+        </div>
+      )}
     </SideBox>
   );
 }
