@@ -1,12 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { UserProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 import { ErrorMsgGrey, ErrorMsgRed } from './ErrorMsg';
 import { ToggleBtn } from './Btns';
 import { ArrList } from './Lists';
+import { storage } from '../config/Firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import ProfileImage from './ProfileImage';
 const TableStyle = styled.table`
   width: 100%;
   margin: 10px 0 30px;
@@ -633,6 +636,9 @@ export function SetBlog() {
   const [theme, setTheme] = useState<number>(1);
   const [customBg, setCustomBg] = useState<string>('');
   const [customText, setCustomText] = useState<string>('');
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const toggleBtn = (idx: number) => {
     const btns = document.querySelectorAll('.btn');
     for (let i = 0; i < btns.length; i++) {
@@ -685,6 +691,30 @@ export function SetBlog() {
       alert('블로그 수정이 완료되었습니다.');
     }
   };
+
+  // uploadImage 함수 수정
+  const uploadImage = async (file: File): Promise<string | undefined> => {
+    if (!file) return;
+    const fileId = user.id; // 파일명을 사용자 ID로 설정합니다.
+    const imageRef = ref(storage, `profileImages/${fileId}`); // 스토리지 내의 저장 경로를 지정합니다.
+    await uploadBytes(imageRef, file); // 파일을 업로드합니다.
+    const url = await getDownloadURL(imageRef); // 업로드된 파일의 URL을 가져옵니다.
+    return url; // URL을 반환합니다.
+  };
+  const triggerFileInputClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  // handleImageUpload 함수 수정
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (!file) return;
+    const url = await uploadImage(file); // 업로드 함수를 호출하여 이미지를 업로드하고 URL을 받아옵니다.
+    if (url)
+      setUploadedImageUrl(url); // 업로드된 이미지 URL을 상태 변수에 저장합니다.
+    else setUploadedImageUrl(null); // 업로드에 실패했다면 null을 설정합니다.
+  };
+
   useEffect(() => {
     setUser();
     setInfo();
@@ -700,8 +730,19 @@ export function SetBlog() {
   return (
     <>
       <BlogBox>
-        <div className="profileImg"></div>
-        <button className="editImg">프로필 사진 변경</button>
+        {/* <div className="profileImg"> */}
+        <ProfileImage id={user.id || 0} profileImgUrl={uploadedImageUrl} />
+        {/* </div> */}
+        <input
+          type="file"
+          style={{ display: 'none' }} // 파일 입력 숨김
+          onChange={handleImageUpload}
+          ref={fileInputRef} // 참조 연결
+        />
+        <button className="editImg" onClick={triggerFileInputClick}>
+          프로필 사진 변경
+        </button>
+
         <button className="editImg">기본이미지</button>
       </BlogBox>
       <BoxStyle>
