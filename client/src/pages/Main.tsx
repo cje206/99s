@@ -8,6 +8,7 @@ import MainCategory from '../components/MainCategory';
 import { items } from '../data/MainCategory';
 import { MainHeader } from '../components/Headers';
 import '../styles/common.scss';
+import Footer from '../components/Footer';
 
 export default function Main() {
   return (
@@ -29,6 +30,7 @@ export default function Main() {
       <div>
         <MainCategory items={items} ShowContent={true} showPagination={false} />
       </div>
+      <Footer />
     </div>
   );
 }

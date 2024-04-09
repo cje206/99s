@@ -132,6 +132,7 @@ export const ButtonExtra = styled.div`
 
 interface ButtonProps {
   smallbtn: boolean;
+  subscribebtn: boolean;
 }
 
 export const ButtonExtraStyled = styled.button<ButtonProps>`
@@ -141,7 +142,6 @@ export const ButtonExtraStyled = styled.button<ButtonProps>`
   margin-right: 5px;
   color: #43a046;
   font-weight: bold;
-  cursor: pointer;
   &:hover {
     background-color: #c5e4c6;
     color: black;
@@ -157,6 +157,20 @@ export const ButtonExtraStyled = styled.button<ButtonProps>`
     css`
       padding: 10px 30px;
       color: #fbc02d;
+    `}
+  ${(props) =>
+    props.subscribebtn &&
+    css`
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 30px; /* 텍스트와 이미지 사이의 공간을 조정 */
+      color: #fbc02d;
+      img {
+        margin-left: 5px; // 이미지와 텍스트 사이의 간격
+        width: 20px;
+        height: auto;
+      }
     `}
 `;
 export const TitleInput = styled.input`

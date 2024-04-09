@@ -11,7 +11,6 @@ import SearchResult from './pages/SearchResult';
 import BlogHome from './pages/BlogHome';
 import Content from './pages/Content';
 
-import QuillEditor from './components/PostCreate';
 import PostPage from './pages/Post';
 
 function App() {

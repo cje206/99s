@@ -103,7 +103,12 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
   return (
     <SideBox>
       <div className="profileBox">
-        <img src="/images/ico-close.png" className="btnClose" onClick={func} />
+        <img
+          src="/images/ico-close.png"
+          className="btnClose"
+          onClick={func}
+          style={{ cursor: 'pointer' }}
+        />
         <ProfileImage id={user.id || 0} />
         {user.id ? (
           <div className="profileText">

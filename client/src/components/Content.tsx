@@ -33,6 +33,7 @@ const WriterInfo = styled.div`
 
 export default function Content() {
   const { id, postId } = useParams<{ id?: string; postId?: string }>();
+  const [subscribe, setSubscribe] = useState(false);
   const navigate = useNavigate();
   const numericId = parseInt(id || '', 10);
   const numericPostId = parseInt(postId || '', 10);
@@ -72,6 +73,10 @@ export default function Content() {
       navigate(`/blog/${id}`);
     }
   }, [matchedItemIndex, id, navigate]);
+
+  const toggleSubscribe = () => {
+    setSubscribe(!subscribe);
+  };
   return (
     <>
       <ContentInfo>
@@ -130,9 +135,7 @@ export default function Content() {
           <div className="likeIcon">좋아요</div>
           <div className="likesContainer">
             {/* 좋아요 누른 사람들 이미지 3개까지 보여주게 하기 */}
-            <div className="likeImg">
-              <img src="" alt="img" />
-            </div>
+
             <div className="viewCount">{`${matchedItem.view}명이 좋아합니다.`}</div>
             {/* </div> */}
           </div>
@@ -190,15 +193,35 @@ export default function Content() {
           className="writerInfo"
           style={{ width: '100%', height: '110px', backgroundColor: '#F3F3F3' }}
         >
-          <img src={matchedItem.writerImgUrl} alt="작성자이미지" />
+          <img
+            style={{ margin: '0 30px 0 20px' }}
+            src={matchedItem.writerImgUrl}
+            alt="작성자이미지"
+          />
           <div className="block2">
             <div className="writer">{matchedItem.writer} </div>
             <div className="subscribe">구독자 {matchedItem.subscribe}명</div>
           </div>
-          <ButtonExtraStyled smallbtn className="subscribeBtn">
-            {/* 구독하기 버튼 */}
-            구독하기
-          </ButtonExtraStyled>
+          {subscribe ? (
+            <ButtonExtraStyled
+              onClick={toggleSubscribe}
+              smallbtn={false}
+              subscribebtn={true}
+              className="subscribeBtn"
+            >
+              구독
+              <img src="/images/ico-check.png" alt="체크" />
+            </ButtonExtraStyled>
+          ) : (
+            <ButtonExtraStyled
+              onClick={toggleSubscribe}
+              subscribebtn={false}
+              smallbtn={true}
+              className="subscribeBtn"
+            >
+              구독하기
+            </ButtonExtraStyled>
+          )}
         </div>
       </WriterInfo>
     </>
