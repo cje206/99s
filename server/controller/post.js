@@ -1,4 +1,4 @@
-const { Post } = require('../models');
+const { Post, Like } = require('../models');
 
 // 포스트 등록
 exports.newPost = async (req, res) => {
@@ -40,4 +40,41 @@ exports.newPost = async (req, res) => {
 exports.find = async (req, res) => {
   const result = await Post.findOne({ where: { id: req.query.id } });
   res.json({ success: true, result, msg: '포스트 조회 완료' });
+};
+
+// 좋아요 여부 조회
+exports.checkLike = async (req, res) => {
+  const { memberId, postId } = req.query;
+  const result = await Like.findOne({ where: { memberId, postId } });
+  if (result) {
+    res.json({ success: true, msg: '좋아요 중' });
+  } else {
+    res.json({ success: false, msg: '좋아요 안 함' });
+  }
+};
+
+// 좋아요 리스트 조회
+exports.findLike = async (req, res) => {
+  const { postId } = req.query;
+  const find = await Like.findAll({ where: { postId } });
+  const result = {
+    count: find.length,
+    memberList: find.map(({ memberId }) => {
+      return memberId;
+    }),
+  };
+  res.json({ success: true, result, msg: '좋아요 리스트 조회 완료' });
+};
+
+// 좋아요 버튼 클릭
+exports.clickLike = async (req, res) => {
+  const { memberId, postId } = req.body;
+  const find = await Like.findOne({ where: { memberId, postId } });
+  if (find) {
+    const result = await Like.destroy({ where: { memberId, postId } });
+    res.json({ success: true, msg: '좋아요 삭제 완료' });
+  } else {
+    const result = await Like.create({ memberId, postId });
+    res.json({ success: true, msg: '좋아요 추가 완료' });
+  }
 };

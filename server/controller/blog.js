@@ -1,4 +1,6 @@
-const { Blog, Category } = require('../models');
+const { list } = require('firebase/storage');
+const { Blog, Category, Subscribe } = require('../models');
+const { where } = require('sequelize');
 
 // exports.blogDetail = async (req, res) => {
 //   try {
@@ -52,6 +54,44 @@ exports.update = async (req, res) => {
   }
   res.json({ success: true, msg: '블로그 수정 완료' });
 };
+
+// 구독 확인
+exports.checkSub = async (req, res) => {
+  const { memberId, blogId } = req.query;
+  const result = await Subscribe.findOne({ where: { memberId, blogId } });
+  if (result) {
+    res.json({ success: true, msg: '구독 중' });
+  } else {
+    res.json({ success: false, msg: '구독 안 함' });
+  }
+};
+
+// 구독자 리스트 조회
+exports.findSub = async (req, res) => {
+  const { blogId } = req.query;
+  const find = await Subscribe.findAll({ where: { blogId } });
+  const result = {
+    count: find.length,
+    memberList: find.map(({ memberId }) => {
+      return memberId;
+    }),
+  };
+  res.json({ success: true, result, msg: '구독자 리스트 조회 완료' });
+};
+
+// 구독하기 버튼 클릭
+exports.clickSub = async (req, res) => {
+  const { memberId, blogId } = req.body;
+  const find = await Subscribe.findOne({ where: { memberId, blogId } });
+  if (find) {
+    const result = await Subscribe.destroy({ where: { memberId, blogId } });
+    res.json({ success: true, msg: '구독 삭제 완료' });
+  } else {
+    const result = await Subscribe.create({ memberId, blogId });
+    res.json({ success: true, msg: '구독 추가 완료' });
+  }
+};
+
 // 카테고리 하나 조회
 exports.findCategory = async (req, res) => {
   const result = await Category.findOne({ where: { id: req.query.id } });

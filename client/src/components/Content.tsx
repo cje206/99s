@@ -6,6 +6,10 @@ import { useEffect, useState } from 'react';
 import { ButtonExtraStyled } from './MainPopularStyle';
 import { PostContent, PostTitle, PostTop } from './PostComponent';
 import { BlogObject, ColorObject, PostObject } from '../types';
+import useAuth from '../hooks/useAuth';
+import axios from 'axios';
+import { ReactComponent as IcoLike } from '../images/ico-like.svg';
+
 const ContentMiddleContainer = styled.div`
   margin: 20px 20px 0 20px;
 `;
@@ -23,9 +27,14 @@ export default function Content({
   theme: ColorObject;
   blog: BlogObject;
 }) {
-  console.log(post);
+  const [user, setUser] = useAuth();
   const { id, postId } = useParams<{ id?: string; postId?: string }>();
-  const [subscribe, setSubscribe] = useState(false);
+  const [subscribe, setSubscribe] = useState<Boolean>(false);
+  const [like, setLike] = useState<Boolean>(true);
+  const [likeList, setLikeList] = useState({
+    count: 0,
+    memberList: [],
+  });
   const navigate = useNavigate();
   const numericId = parseInt(id || '', 10);
   const numericPostId = parseInt(postId || '', 10);
@@ -58,14 +67,68 @@ export default function Content({
   const goToPreviousPage = () => {
     navigate(-1);
   };
+  const checkLike = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/post/checkLike',
+      params: { memberId: user.id, postId },
+    });
+    setLike(res.data.success);
+  };
+  const getLike = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/post/findLike',
+      params: { postId },
+    });
+    setLikeList(res.data.result);
+  };
+  const checkSub = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/blog/checkSub',
+      params: { memberId: user.id, blogId: blog.id },
+    });
+    console.log(res.data.success);
+    setSubscribe(res.data.success);
+  };
   useEffect(() => {
     if (matchedItemIndex === -1) {
       alert('해당하는 게시물을 찾을 수 없습니다.');
       navigate(`/blog/${id}`);
     }
   }, [matchedItemIndex, id, navigate]);
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    }
+  }, []);
+  useEffect(() => {
+    if (user.id) {
+      checkLike();
+      checkSub();
+      getLike();
+    }
+  }, [user]);
+  useEffect(() => {
+    getLike();
+  }, [like]);
 
-  const toggleSubscribe = () => {
+  const toggleLike = async () => {
+    const res = await axios({
+      method: 'POST',
+      url: 'http://localhost:8000/api/post/clickLike',
+      data: { memberId: user.id, postId },
+    });
+    setLike(!like);
+  };
+
+  const toggleSubscribe = async () => {
+    const res = await axios({
+      method: 'POST',
+      url: 'http://localhost:8000/api/blog/clickSub',
+      data: { memberId: user.id, blogId: blog.id },
+    });
     setSubscribe(!subscribe);
   };
   return (
@@ -83,11 +146,25 @@ export default function Content({
             <div className="hastag"></div>
             <div className="postReact">
               {/* <div className="likeSection"> */}
-              <div className="likeIcon">좋아요</div>
+              {like ? (
+                <IcoLike
+                  className="likeIcon"
+                  fill={theme.background}
+                  onClick={toggleLike}
+                ></IcoLike>
+              ) : (
+                <IcoLike
+                  className="likeIcon"
+                  fill="none"
+                  stroke="#333"
+                  onClick={toggleLike}
+                ></IcoLike>
+              )}
+
               <div className="likesContainer">
                 {/* 좋아요 누른 사람들 이미지 3개까지 보여주게 하기 */}
 
-                <div className="viewCount">{`${matchedItem.view}명이 좋아합니다.`}</div>
+                <div className="viewCount">{`${likeList.count}명이 좋아합니다.`}</div>
                 {/* </div> */}
               </div>
               <button className="shareBtn">
@@ -166,7 +243,7 @@ export default function Content({
                   subscribebtn={true}
                   className="subscribeBtn"
                 >
-                  구독
+                  구독 중
                   <img src="/images/ico-check.png" alt="체크" />
                 </ButtonExtraStyled>
               ) : (
