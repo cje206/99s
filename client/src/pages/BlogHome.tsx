@@ -80,10 +80,10 @@ export default function BlogHome({ position }: { position?: string }) {
       setBlogInfo(res.data.result);
     }
     getColor(
+      setTheme,
       res.data.result.theme,
-      res.data.result.bgColor,
       res.data.result.fontColor,
-      setTheme
+      res.data.result.bgColor
     );
   };
 

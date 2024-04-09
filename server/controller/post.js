@@ -35,3 +35,9 @@ exports.newPost = async (req, res) => {
     res.json({ success: false, result: error, msg: '글 등록 실패' });
   }
 };
+
+// 포스트 조회
+exports.find = async (req, res) => {
+  const result = await Post.findOne({ where: { id: req.query.id } });
+  res.json({ success: true, result, msg: '포스트 조회 완료' });
+};
