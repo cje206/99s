@@ -19,6 +19,10 @@ const PostModel = (sequelize) => {
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    hashtag: {
+      type: DataTypes.JSON,
+      defaultValue: [],
+    },
   });
 };
 module.exports = PostModel;

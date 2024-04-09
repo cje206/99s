@@ -1,3 +1,5 @@
+//나중에 페이지네이션도 추가
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -16,6 +18,9 @@ interface Params {
 }
 const BlogComment = styled.div`
   margin: 20px;
+  img {
+    margin-bottom: 10px;
+  }
 `;
 
 export default function CommentComponent() {
@@ -86,17 +91,64 @@ export default function CommentComponent() {
     }
   };
 
+  const addReply = async (parentId: number, newComment: string) => {
+    if (newComment.trim() !== '') {
+      try {
+        const response = await axios({
+          method: 'POST',
+          url: `http://localhost:8000/api/blog/${id}/${postId}/comments`,
+          data: {
+            author: 'author',
+            content: newComment,
+            isSecret: false,
+            parentId: parentId,
+            postId: postId,
+          },
+        });
+
+        const updatedComments = [...comments, response.data];
+        setComments(sortComments(updatedComments));
+        setNewComment('');
+        setReplyTo(null);
+      } catch (error) {
+        console.error('답글 추가 에러', error);
+      }
+    }
+  };
+
   const renderComments = (
     comments: Comment[],
     depth: number = 0
   ): JSX.Element[] => {
     return comments.map((comment: Comment) => (
       <div
+        className="replyArea"
         key={comment.id}
         style={{ marginLeft: `${depth * 20}px`, marginTop: '10px' }}
       >
         <p>{comment.content}</p>
         <button onClick={() => setReplyTo(comment.id)}>답글 달기</button>
+
+        {replyTo === comment.id && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              addReply(comment.id, newComment); // 대댓글을 추가하는 함수, 구현 필요
+              setNewComment('');
+              setReplyTo(null); // 대댓글 추가 후 textarea 숨기기
+            }}
+          >
+            <textarea
+              className="commentArea"
+              style={{ width: '100%', height: '50px', marginTop: '10px' }}
+              value={newComment}
+              placeholder="답글을 입력하세요."
+              onChange={(e) => setNewComment(e.target.value)}
+            ></textarea>
+            <button type="submit">답글 추가</button>
+          </form>
+        )}
+
         {comment.children && renderComments(comment.children, depth + 1)}
       </div>
     ));
@@ -108,7 +160,7 @@ export default function CommentComponent() {
         <div className="commentCount">{`${comments.length}개의 댓글`}</div>
         <button onClick={toggleComments}>
           <img
-            style={{ width: '25px', height: '10px' }}
+            style={{ width: '20px', height: 'auto' }}
             src={`${process.env.PUBLIC_URL}/images/${
               showComments ? 'ico-arrowDown' : 'ico-arrowUp'
             }.png`}
@@ -116,12 +168,20 @@ export default function CommentComponent() {
           />
         </button>
       </div>
+      <hr
+        style={{
+          border: '1px solid #E1E1E1',
+        }}
+      />
       {showComments && (
         <>
           <form onSubmit={addComment}>
-            {replyTo && <p>대댓글 작성 중...</p>}
+            {/* {replyTo && <p>대댓글 작성 중...</p>} */}
             <textarea
+              className="commentArea"
+              style={{ width: '100%', height: '50px' }}
               value={newComment}
+              placeholder="블로그가 훈훈해지는 댓글 부탁드립니다."
               onChange={(e) => setNewComment(e.target.value)}
             ></textarea>
             <button type="submit">댓글 추가</button>

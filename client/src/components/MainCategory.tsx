@@ -125,7 +125,9 @@ export default function MainCategory({
       ))}
       {ShowContent && showMoreButton && (
         <ButtonExtra onClick={handleShowMore}>
-          <ButtonExtraStyled smallbtn={false}>더보기</ButtonExtraStyled>
+          <ButtonExtraStyled smallbtn={false} subscribebtn={false}>
+            더보기
+          </ButtonExtraStyled>
         </ButtonExtra>
       )}
       {showPagination && (
