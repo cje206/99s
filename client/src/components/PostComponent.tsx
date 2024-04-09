@@ -60,7 +60,7 @@ const ContentBox = styled.div`
       line-height: 2;
       border-radius: 20px;
       color: #777;
-      margin-right: 10px;
+      margin: 0 10px 10px 0;
     }
   }
 `;
@@ -101,13 +101,12 @@ export function PostTitle({
         url: 'http://localhost:8000/api/blog/findCategory',
         params: { id: post.categoryId },
       });
-      console.log(res);
       setCategoryName(res.data.result.categoryName);
     }
   };
   useEffect(() => {
     getCategory();
-  }, []);
+  }, [post]);
   return (
     <ContentTopContainer>
       <div className="categoryName">{categoryName}</div>

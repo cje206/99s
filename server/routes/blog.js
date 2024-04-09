@@ -8,12 +8,18 @@ const {
   delCategory,
   updateCategory,
   findCategory,
+  checkSub,
+  findSub,
+  clickSub,
 } = require('../controller/blog');
 
 const router = express.Router();
 
 router.get('/find', find);
 router.patch('/update', update);
+router.get('/checkSub', checkSub);
+router.get('/findSub', findSub);
+router.post('/clickSub', clickSub);
 router.get('/findCategory', findCategory);
 router.get('/getCategory', getCategory);
 router.post('/newCategory', newCategory);

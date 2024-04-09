@@ -40,7 +40,7 @@ export default function ContentPage() {
     // console.log(res);
     const { bgColor, fontColor } = res.data.result;
     getColor(setTheme, res.data.result.theme, fontColor, bgColor);
-    setBlog(res.data.result.blogTitle);
+    setBlog(res.data.result);
   };
   const getPost = async () => {
     const res = await axios({
