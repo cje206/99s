@@ -731,7 +731,7 @@ export function SetBlog() {
     <>
       <BlogBox>
         {/* <div className="profileImg"> */}
-        <ProfileImage id={user.id || 0} profileimgurl={uploadedImageUrl} />
+        <ProfileImage id={user.id || 0} />
         {/* </div> */}
         <input
           type="file"
