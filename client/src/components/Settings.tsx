@@ -731,6 +731,7 @@ export function SetBlog() {
   };
 
   const triggerFileInputClick = () => {
+    console.log('프로필 사진 변경 버튼 클릭됨');
     fileInputRef.current?.click();
   };
 
