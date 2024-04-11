@@ -1,10 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { UserProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 import { ErrorMsgGrey, ErrorMsgRed } from './ErrorMsg';
+import { ToggleBtn } from './Btns';
+import { ArrList } from './Lists';
+import { storage } from '../config/Firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import ProfileImage from './ProfileImage';
 const TableStyle = styled.table`
   width: 100%;
   margin: 10px 0 30px;
@@ -22,20 +27,6 @@ const TdStyle = styled.td`
   border-right: 1px solid #ececec;
   border-bottom: 1px solid #ececec;
 `;
-const LinkBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #eee;
-  .title {
-    line-height: 50px;
-    font-weight: 700;
-  }
-  .ico-arrR {
-    width: 24px;
-    height: 50px;
-    background: url('./images/ico-arrR.png') no-repeat center/contain;
-  }
-`;
 const CheckBox = styled.div`
   padding: 15px 0;
   border-bottom: 1px solid #eee;
@@ -50,6 +41,21 @@ const CheckBox = styled.div`
       }
     }
   }
+  .add {
+    width: 100%;
+    input {
+      line-height: 30px;
+      background-color: #f5f7fa;
+      padding: 0 15px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    select {
+      width: 100%;
+      padding: 8px 10px;
+    }
+  }
 `;
 const BtnBox = styled.div`
   display: flex;
@@ -59,6 +65,7 @@ const BtnBox = styled.div`
     padding: 0 10px;
     margin-left: 10px;
     border-radius: 4px;
+    word-break: keep-all;
     &.active {
       border: 1px solid #fbc02d;
       color: #fbc02d;
@@ -98,7 +105,7 @@ const BoxStyle = styled.div`
 
 const AddButton = styled.button``;
 
-const EditBox = styled.div`
+export const EditBox = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 30px;
@@ -145,228 +152,6 @@ const BlogBox = styled.div`
     margin-left: 15px;
   }
 `;
-
-interface Props {
-  user: UserProps;
-}
-
-export function SetHome() {
-  return (
-    <>
-      <TableStyle className="settingTable">
-        <thead>
-          <tr>
-            <ThStyle>분류</ThStyle>
-            <ThStyle>24시간</ThStyle>
-            <ThStyle style={{ border: 'none' }}>누적</ThStyle>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <TdStyle>조회수</TdStyle>
-            <TdStyle>0회</TdStyle>
-            <TdStyle style={{ borderRight: 'none' }}>10회</TdStyle>
-          </tr>
-          <tr>
-            <TdStyle>구독자 수</TdStyle>
-            <TdStyle>0회</TdStyle>
-            <TdStyle style={{ borderRight: 'none' }}>10회</TdStyle>
-          </tr>
-        </tbody>
-      </TableStyle>
-      <Link to="/setting/post">
-        <LinkBox>
-          <div className="title">글 관리</div>
-          <div className="ico-arrR"></div>
-        </LinkBox>
-      </Link>
-      <Link to="/setting/category">
-        <LinkBox>
-          <div className="title">카테고리 관리</div>
-          <div className="ico-arrR"></div>
-        </LinkBox>
-      </Link>
-      <Link to="/setting/info">
-        <LinkBox>
-          <div className="title">개인정보 수정</div>
-          <div className="ico-arrR"></div>
-        </LinkBox>
-      </Link>
-      <Link to="/setting/blog">
-        <LinkBox>
-          <div className="title">블로그 편집</div>
-          <div className="ico-arrR"></div>
-        </LinkBox>
-      </Link>
-    </>
-  );
-}
-export function SetPost() {
-  return (
-    <>
-      <CheckBox>
-        <div className="flexBox" style={{ marginBottom: '10px' }}>
-          <input type="checkbox" id="check1" />
-          <label htmlFor="check01">
-            글 제목
-            <br />
-            <span>카테고리 &#183; 2024-04-01 12:37</span>
-          </label>
-        </div>
-        <BtnBox>
-          <div className="btn active">수정</div>
-          <div className="btn disabled">삭제</div>
-        </BtnBox>
-      </CheckBox>
-    </>
-  );
-}
-export function SetCategory() {
-  const categoryStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  };
-  return (
-    <>
-      <CheckBox style={categoryStyle}>
-        <div className="flexBox" style={{ alignItems: 'center' }}>
-          <input type="checkbox" id="check1" />
-          <label htmlFor="check01">
-            카테고리명
-            <span> 분류</span>
-          </label>
-        </div>
-        <BtnBox>
-          <div className="btn active">수정</div>
-          <div className="btn disabled">삭제</div>
-        </BtnBox>
-      </CheckBox>
-      <CheckBox style={categoryStyle}>
-        <div className="flexBox" style={{ alignItems: 'center' }}>
-          <input type="checkbox" id="check1" />
-          <label htmlFor="check01">
-            카테고리명
-            <span> 분류</span>
-          </label>
-        </div>
-        <BtnBox>
-          <div className="btn active">수정</div>
-          <div className="btn disabled">삭제</div>
-        </BtnBox>
-      </CheckBox>
-    </>
-  );
-}
-
-export function SetInfo() {
-  const navigate = useNavigate();
-  const [user, setUser] = useAuth();
-  useEffect(() => {
-    setUser();
-  }, []);
-  const [email, setEmail] = useState<string>('');
-  const [nowPw, setNowPw] = useState<string>('');
-  const [pw, setPw] = useState<string>('');
-  const [confirmPw, setConfirmPw] = useState<string>('');
-  const nowPwRef = useRef<HTMLInputElement>(null);
-  const pwRef = useRef<HTMLInputElement>(null);
-  const editFunc = async () => {
-    let data;
-    if (confirmPw !== pw) {
-      alert('비밀번호가 일치하지 않습니다.');
-      pwRef.current?.focus();
-      return;
-    }
-    if (nowPw) {
-      data = {
-        id: user.id,
-        email,
-        nowPw,
-        pw,
-      };
-    } else {
-      data = { id: user.id, email };
-    }
-    const res = await axios({
-      method: 'PATCH',
-      url: 'http://localhost:8000/api/member/update',
-      data,
-    });
-    if (res.data.success) {
-      alert('개인 정보 수정이 완료되었습니다.');
-      document.location.reload();
-    } else {
-      alert('현재 비밀번호가 일치하지 않습니다.');
-      nowPwRef.current?.focus();
-    }
-  };
-  return (
-    <>
-      <div
-        className="disabledInfo"
-        style={{ borderBottom: '1px solid #eee', margin: '0 0 20px' }}
-      >
-        <BoxStyle>
-          <label>이름</label>
-          <input type="text" value={user.username || ''} readOnly />
-        </BoxStyle>
-        <BoxStyle>
-          <label>생년월일</label>
-          <input type="text" value={user.birth || ''} readOnly />
-        </BoxStyle>
-      </div>
-      <div className="activeInfo">
-        <BoxStyle>
-          <label>이메일</label>
-          <input
-            type="email"
-            value={email || user.email || ''}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </BoxStyle>
-        <ErrorMsgGrey>
-          * 비밀번호 변경 시에만 아래의 정보를 입력해주세요.
-        </ErrorMsgGrey>
-        <BoxStyle>
-          <label>현재 비밀번호</label>
-          <input
-            type="password"
-            onChange={(e) => setNowPw(e.target.value)}
-            ref={nowPwRef}
-          />
-        </BoxStyle>
-        <BoxStyle>
-          <label>변경 비밀번호</label>
-          <input
-            type="password"
-            onChange={(e) => setPw(e.target.value)}
-            ref={pwRef}
-          />
-        </BoxStyle>
-        <BoxStyle>
-          <label>비밀번호 확인</label>
-          <input
-            type="password"
-            onChange={(e) => setConfirmPw(e.target.value)}
-          />
-        </BoxStyle>
-        {confirmPw == pw || (
-          <ErrorMsgRed>* 비밀번호가 일치하지 않습니다.</ErrorMsgRed>
-        )}
-      </div>
-      <EditBox>
-        <button className="btn btnCancle" onClick={() => navigate('/setting')}>
-          취소
-        </button>
-        <button className="btn btnEdit" onClick={editFunc}>
-          수정
-        </button>
-      </EditBox>
-      <TextBtn>회원탈퇴</TextBtn>
-    </>
-  );
-}
 const ThemeBox = styled.div<{ bgcolor?: string; txtcolor?: string }>`
   display: flex;
   align-items: center;
@@ -450,87 +235,623 @@ const ThemeBox = styled.div<{ bgcolor?: string; txtcolor?: string }>`
     }
   }
 `;
+const RectBtn = styled.button`
+  display: block;
+  margin: 0 auto;
+  color: #fff;
+  background: #fbc02d;
+  line-height: 30px;
+  padding: 0 20px;
+  border-radius: 6px;
+  margin-top: 20px;
+`;
+
+interface Props {
+  user: UserProps;
+}
+
+export function SetMenu() {
+  return (
+    <>
+      <Link to="/setting/post">
+        <ArrList>글 관리</ArrList>
+      </Link>
+      <Link to="/setting/category">
+        <ArrList>카테고리 관리</ArrList>
+      </Link>
+      <Link to="/setting/info">
+        <ArrList>개인정보 수정</ArrList>
+      </Link>
+      <Link to="/setting/blog">
+        <ArrList>블로그 편집</ArrList>
+      </Link>
+    </>
+  );
+}
+
+export function SetHome() {
+  return (
+    <>
+      <TableStyle className="settingTable">
+        <thead>
+          <tr>
+            <ThStyle>분류</ThStyle>
+            <ThStyle>24시간</ThStyle>
+            <ThStyle style={{ border: 'none' }}>누적</ThStyle>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <TdStyle>조회수</TdStyle>
+            <TdStyle>0회</TdStyle>
+            <TdStyle style={{ borderRight: 'none' }}>10회</TdStyle>
+          </tr>
+          <tr>
+            <TdStyle>구독자 수</TdStyle>
+            <TdStyle>0회</TdStyle>
+            <TdStyle style={{ borderRight: 'none' }}>10회</TdStyle>
+          </tr>
+        </tbody>
+      </TableStyle>
+      <SetMenu />
+    </>
+  );
+}
+export function SetPost() {
+  return (
+    <>
+      <CheckBox>
+        <div className="flexBox" style={{ marginBottom: '10px' }}>
+          <input type="checkbox" id="check1" />
+          <label htmlFor="check01">
+            글 제목
+            <br />
+            <span>카테고리 &#183; 2024-04-01 12:37</span>
+          </label>
+        </div>
+        <BtnBox>
+          <div className="btn active">수정</div>
+          <div className="btn disabled">삭제</div>
+        </BtnBox>
+      </CheckBox>
+    </>
+  );
+}
+export function SetCategory() {
+  const [user, setUser] = useAuth();
+  const [list, setList] = useState<any[]>([]);
+  const [isBlogExist, setIsbBlogExist] = useState<boolean>(false);
+  const [newName, setNewName] = useState<string>('');
+  const [newGroup, setNewGroup] = useState<string>('일상');
+  const [create, setCreate] = useState<boolean>(false);
+  const [editId, setEditId] = useState<number>(0);
+  const categoryStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  };
+  const unchangeCate = (id: number, name: string, group: string) => (
+    <CheckBox key={id} style={categoryStyle}>
+      <div className="flexBox" style={{ alignItems: 'center' }}>
+        <input type="checkbox" id="check1" />
+        <label htmlFor="check01">
+          {name}
+          <span> {group}</span>
+        </label>
+      </div>
+      <BtnBox>
+        <div
+          className="btn active"
+          onClick={() => {
+            setEditId(id);
+            setCreate(false);
+            setNewName(name);
+            setNewGroup(group);
+          }}
+        >
+          수정
+        </div>
+        <div className="btn disabled" onClick={() => deleteFunc(id)}>
+          삭제
+        </div>
+      </BtnBox>
+    </CheckBox>
+  );
+  const changeCate = (id: number) => (
+    <CheckBox style={categoryStyle}>
+      <div className="add">
+        <input
+          type="text"
+          placeholder="카테고리명"
+          onChange={(e) => setNewName(e.target.value)}
+          value={newName}
+        />
+        <select onChange={(e) => setNewGroup(e.target.value)} value={newGroup}>
+          <option value="일상">일상</option>
+          <option value="스포츠">스포츠</option>
+          <option value="IT&#183;과학">IT&#183;과학</option>
+          <option value="시사&#183;경제">시사&#183;경제</option>
+          <option value="글로벌">글로벌</option>
+        </select>
+      </div>
+      <BtnBox>
+        <div className="btn active" onClick={() => editFunc(id)}>
+          저장
+        </div>
+        <div className="btn disabled" onClick={() => deleteFunc(id)}>
+          삭제
+        </div>
+      </BtnBox>
+    </CheckBox>
+  );
+  const newCate = () => (
+    <CheckBox style={categoryStyle}>
+      <div className="add">
+        <input
+          type="text"
+          placeholder="카테고리명"
+          onChange={(e) => setNewName(e.target.value)}
+        />
+        <select onChange={(e) => setNewGroup(e.target.value)}>
+          <option value="일상">일상</option>
+          <option value="스포츠">스포츠</option>
+          <option value="IT&#183;과학">IT&#183;과학</option>
+          <option value="시사&#183;경제">시사&#183;경제</option>
+          <option value="글로벌">글로벌</option>
+        </select>
+      </div>
+      <BtnBox>
+        <div className="btn active" onClick={addFunc}>
+          등록
+        </div>
+        <div className="btn disabled" onClick={() => setCreate(false)}>
+          삭제
+        </div>
+      </BtnBox>
+    </CheckBox>
+  );
+  const getList = async () => {
+    if (user.id) {
+      const res = await axios({
+        method: 'GET',
+        url: 'http://localhost:8000/api/blog/getCategory',
+        params: { memberId: user.id },
+      });
+      console.log(res);
+      setIsbBlogExist(res.data.success);
+      if (res.data.result) {
+        setList(res.data.result);
+      }
+    }
+  };
+  const addFunc = async () => {
+    const data = {
+      group: newGroup,
+      categoryName: newName,
+      memberId: user.id,
+    };
+    const res = await axios({
+      method: 'POST',
+      url: 'http://localhost:8000/api/blog/newCategory',
+      data,
+    });
+    getList();
+    setCreate(false);
+  };
+  const editFunc = async (id: number) => {
+    const res = await axios({
+      method: 'PATCH',
+      url: 'http://localhost:8000/api/blog/updateCategory',
+      data: {
+        group: newGroup,
+        categoryName: newName,
+        id,
+      },
+    });
+    document.location.reload();
+  };
+  const deleteFunc = async (id: number) => {
+    if (!window.confirm('삭제하시겠습니까?')) {
+      return;
+    }
+    const res = await axios({
+      method: 'DELETE',
+      url: 'http://localhost:8000/api/blog/delCategory',
+      data: { id },
+    });
+    alert(res.data.msg);
+    getList();
+  };
+  useEffect(() => {
+    setUser();
+  }, []);
+  useEffect(() => {
+    getList();
+  }, [user]);
+  return (
+    <>
+      {isBlogExist || (
+        <Link to="/setting/blog">
+          블로그가 없습니다.{' '}
+          <span style={{ textDecoration: 'underline' }}> 블로그 생성하기</span>
+        </Link>
+      )}
+      {isBlogExist && list.length === 0 && <p>카테고리를 생성해주세요!</p>}
+      {isBlogExist &&
+        list.map(({ id, categoryName, group }) => {
+          if (editId == id) {
+            return changeCate(id);
+          } else {
+            return unchangeCate(id, categoryName, group);
+          }
+        })}
+      {create && newCate()}
+      {isBlogExist && !create && (
+        <RectBtn
+          onClick={() => {
+            setEditId(0);
+            setCreate(true);
+            setNewName('');
+          }}
+        >
+          카테고리 추가
+        </RectBtn>
+      )}
+    </>
+  );
+}
+
+export function SetInfo() {
+  const navigate = useNavigate();
+  const [user, setUser] = useAuth();
+  const [email, setEmail] = useState<string>('');
+  const [nowPw, setNowPw] = useState<string>('');
+  const [pw, setPw] = useState<string>('');
+  const [confirmPw, setConfirmPw] = useState<string>('');
+  const nowPwRef = useRef<HTMLInputElement>(null);
+  const pwRef = useRef<HTMLInputElement>(null);
+  const editFunc = async () => {
+    let data;
+    if (confirmPw !== pw) {
+      alert('비밀번호가 일치하지 않습니다.');
+      pwRef.current?.focus();
+      return;
+    }
+    if (nowPw) {
+      data = {
+        id: user.id,
+        email,
+        nowPw,
+        pw,
+      };
+    } else {
+      data = { id: user.id, email };
+    }
+    const res = await axios({
+      method: 'PATCH',
+      url: 'http://localhost:8000/api/member/update',
+      data,
+    });
+    if (res.data.success) {
+      alert('개인 정보 수정이 완료되었습니다.');
+      document.location.reload();
+    } else {
+      alert('현재 비밀번호가 일치하지 않습니다.');
+      nowPwRef.current?.focus();
+    }
+  };
+  const deleteFunc = async () => {
+    // confirm('pw');
+    if (!window.confirm('탈퇴하시겠습니까?')) {
+      return;
+    }
+    const res = await axios({
+      method: 'DELETE',
+      url: 'http://localhost:8000/api/member/destroy',
+      data: { id: user.id },
+    });
+    if (res.data.success) {
+      alert('회원 탈퇴가 완료되었습니다.');
+      document.location.href = '/';
+    }
+  };
+  useEffect(() => {
+    setUser();
+  }, []);
+  useEffect(() => {
+    setEmail(user.email);
+  }, [user]);
+  return (
+    <>
+      <div
+        className="disabledInfo"
+        style={{ borderBottom: '1px solid #eee', margin: '0 0 20px' }}
+      >
+        <BoxStyle>
+          <label>이름</label>
+          <input type="text" value={user.username || ''} readOnly />
+        </BoxStyle>
+        <BoxStyle>
+          <label>생년월일</label>
+          <input type="text" value={user.birth || ''} readOnly />
+        </BoxStyle>
+      </div>
+      <div className="activeInfo">
+        <BoxStyle>
+          <label>이메일</label>
+          <input
+            type="email"
+            value={email || user.email || ''}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </BoxStyle>
+        <ErrorMsgGrey>
+          * 비밀번호 변경 시에만 아래의 정보를 입력해주세요.
+        </ErrorMsgGrey>
+        <BoxStyle>
+          <label>현재 비밀번호</label>
+          <input
+            type="password"
+            onChange={(e) => setNowPw(e.target.value)}
+            ref={nowPwRef}
+          />
+        </BoxStyle>
+        <BoxStyle>
+          <label>변경 비밀번호</label>
+          <input
+            type="password"
+            onChange={(e) => setPw(e.target.value)}
+            ref={pwRef}
+          />
+        </BoxStyle>
+        <BoxStyle>
+          <label>비밀번호 확인</label>
+          <input
+            type="password"
+            onChange={(e) => setConfirmPw(e.target.value)}
+          />
+        </BoxStyle>
+        {confirmPw == pw || (
+          <ErrorMsgRed>* 비밀번호가 일치하지 않습니다.</ErrorMsgRed>
+        )}
+      </div>
+      <EditBox>
+        <button className="btn btnCancle" onClick={() => navigate('/setting')}>
+          취소
+        </button>
+        <button className="btn btnEdit" onClick={editFunc}>
+          수정
+        </button>
+      </EditBox>
+      <TextBtn onClick={deleteFunc}>회원탈퇴</TextBtn>
+    </>
+  );
+}
 export function SetBlog() {
   const navigate = useNavigate();
-  const [customBg, setCustomBg] = useState<string>('#fff');
-  const [customText, setCustomText] = useState<string>('#333');
-  const btnClick = (idx: number) => {
+  const [user, setUser] = useAuth();
+  const [nickname, setNickname] = useState<string>('');
+  const [blogTitle, setBlogTitle] = useState<string>('');
+  const [blogInfo, setBlogInfo] = useState<string>('');
+  const [theme, setTheme] = useState<number>(1);
+  const [customBg, setCustomBg] = useState<string>('');
+  const [customText, setCustomText] = useState<string>('');
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [useDefaultImg, setUseDefaultImg] = useState<boolean>(false);
+
+  const toggleBtn = (idx: number) => {
     const btns = document.querySelectorAll('.btn');
     for (let i = 0; i < btns.length; i++) {
       btns[i].classList.remove('active');
-      btns[idx].classList.add('active');
+      btns[idx - 1].classList.add('active');
     }
   };
+  const setInfo = async () => {
+    if (user.id) {
+      const res = await axios({
+        method: 'GET',
+        url: 'http://localhost:8000/api/blog/find',
+        params: { memberId: user.id },
+      });
+      console.log(user);
+      console.log(res);
+      if (res.data.result) {
+        setNickname(res.data.result.nickname);
+        setBlogTitle(res.data.result.blogTitle);
+        setBlogInfo(res.data.result.blogInfo || '');
+        setTheme(res.data.result.theme);
+        setCustomBg(res.data.result.bgColor || '#fff');
+        setCustomText(res.data.result.fontColor || '#333');
+      }
+    }
+  };
+  const editFunc = async () => {
+    if (!nickname.trim()) {
+      alert('닉네임을 입력해주세요.');
+      return;
+    }
+    if (!blogTitle.trim()) {
+      alert('블로그 제목을 입력해주세요.');
+      return;
+    }
+    let imageUrl = uploadedImageUrl; // 기존 업로드된 이미지 URL 사용
+    if (selectedFile && !uploadedImageUrl) {
+      const uploadUrl = await uploadImage(selectedFile);
+      if (uploadUrl) {
+        imageUrl = uploadUrl;
+        setUploadedImageUrl(uploadUrl);
+        setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
+      }
+    }
+    const res = await axios({
+      method: 'PATCH',
+      url: 'http://localhost:8000/api/blog/update',
+      data: {
+        memberId: user.id,
+        nickname,
+        blogTitle,
+        blogInfo,
+        theme,
+        bgColor: customBg,
+        fontColor: customText,
+        writerImg: imageUrl,
+      },
+    });
+    if (res.data.success) {
+      alert('블로그 수정이 완료되었습니다.');
+      setInfo();
+      window.scrollTo(0, 0);
+    }
+  };
+
+  // uploadImage 함수 수정
+  const uploadImage = async (file: File): Promise<string | undefined> => {
+    if (!file) return;
+    const fileId = user.id; // 파일명을 사용자 ID로 설정
+    const imageRef = ref(storage, `profileImages/${fileId}`); // 스토리지 내의 저장 경로를 지정
+    await uploadBytes(imageRef, file); // 파일을 업로드
+    const url = await getDownloadURL(imageRef); // 업로드된 파일의 URL 가져옴
+    return url; // URL을 반환
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (!file) return;
+    setSelectedFile(file); // 선택된 파일을 상태에 저장
+
+    // 미리보기 URL 생성 및 저장
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewImageUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const triggerFileInputClick = () => {
+    console.log('프로필 사진 변경 버튼 클릭됨');
+    console.log(fileInputRef.current);
+    fileInputRef.current?.click();
+  };
+
+  const setToDefaultImage = () => {
+    setUseDefaultImg(true); // 기본 이미지 사용 상태를 true로 설정
+    setPreviewImageUrl(null); // 미리보기 이미지 URL을 초기화
+    setUploadedImageUrl(null); // 업로드된 이미지 URL을 초기화
+  };
+
+  useEffect(() => {
+    setUser();
+    setInfo();
+  }, []);
+  useEffect(() => {
+    setInfo();
+  }, [user]);
+
+  useEffect(() => {
+    // toggleBtn(theme);
+    console.log(theme);
+  }, [theme]);
+
   return (
     <>
       <BlogBox>
-        <div className="profileImg"></div>
-        <button className="editImg">프로필 사진 변경</button>
+        <ProfileImage
+          id={user.id || 0}
+          profileimg={previewImageUrl || ''}
+          imgwidth={'80px'}
+        />
+        <input
+          type="file"
+          style={{ display: 'none' }}
+          onChange={handleImageUpload}
+          ref={fileInputRef}
+        />
+        <button className="editImg" onClick={triggerFileInputClick}>
+          프로필 사진 변경
+        </button>
+
+        <button className="editImg">기본이미지</button>
       </BlogBox>
       <BoxStyle>
-        <label>닉네임</label>
-        <input type="text" placeholder="닉네임을 입력해주세요" />
+        <label>닉네임 *</label>
+        <input
+          type="text"
+          placeholder="닉네임을 입력해주세요"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+        />
+      </BoxStyle>
+      <BoxStyle>
+        <label>블로그 제목 *</label>
+        <input
+          type="text"
+          placeholder="블로그 제목을 입력해주세요"
+          value={blogTitle}
+          onChange={(e) => setBlogTitle(e.target.value)}
+        />
       </BoxStyle>
       <BoxStyle>
         <label>소개</label>
         <textarea
           rows={3}
           placeholder="블로그 소개 문구를 입력해주세요"
+          value={blogInfo}
+          onChange={(e) => setBlogInfo(e.target.value)}
         ></textarea>
       </BoxStyle>
       <h3>블로그 색상 변경</h3>
-      <ThemeBox bgcolor="#fff" txtcolor="#fbc02d">
+      <ThemeBox bgcolor="#f6f7f9" txtcolor="#333">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 1</p>
         </div>
-        <button className="btn" onClick={() => btnClick(0)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(1)}>
+          <ToggleBtn active={theme === 1} btncolor="#333" />
+        </div>
       </ThemeBox>
-      <ThemeBox bgcolor="#fff" txtcolor="#fbc02d">
+      <ThemeBox bgcolor="#f6f7f9" txtcolor="#fbc02d">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 2</p>
         </div>
-        <button className="btn" onClick={() => btnClick(1)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(2)}>
+          <ToggleBtn active={theme === 2} btncolor="#fbc02d" />
+        </div>
       </ThemeBox>
-      <ThemeBox bgcolor="#fff" txtcolor="#fbc02d">
+      <ThemeBox bgcolor="#f6f7f9" txtcolor="#11804b">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 3</p>
         </div>
-        <button className="btn" onClick={() => btnClick(2)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(3)}>
+          <ToggleBtn active={theme === 3} btncolor="#11804b" />
+        </div>
       </ThemeBox>
-      <ThemeBox bgcolor="#fff" txtcolor="#fbc02d">
+      <ThemeBox bgcolor="#f2f1ff" txtcolor="#352e91">
         <div className="text">
           <p className="colorIcon"></p>
           <p className="colorName">색상 4</p>
         </div>
-        <button className="btn" onClick={() => btnClick(3)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(4)}>
+          <ToggleBtn active={theme === 4} btncolor="#352e91" />
+        </div>
       </ThemeBox>
       <ThemeBox bgcolor={customBg} txtcolor={customText}>
         <div className="text">
           <p className="colorIcon"></p>
           <div className="colorName custom">
             <p>색상 커스텀</p>
+            <ErrorMsgGrey>* 색상은 #~~의 형태로 입력해주세요.</ErrorMsgGrey>
             <div className="customInput">
-              <ErrorMsgGrey>* 색상은 #~~의 형태로 입력해주세요.</ErrorMsgGrey>
               <label>배경색</label>
               <input
                 type="text"
                 className="bgColor"
                 placeholder="#ffffff"
+                value={customBg}
                 onChange={(e) => setCustomBg(e.target.value)}
               />
             </div>
@@ -540,21 +861,23 @@ export function SetBlog() {
                 type="text"
                 className="textColor"
                 placeholder="#333333"
+                value={customText}
                 onChange={(e) => setCustomText(e.target.value)}
               />
             </div>
           </div>
         </div>
-        <button className="btn" onClick={() => btnClick(4)}>
-          <span className="btnText on">ON</span>
-          <span className="btnText off">OFF</span>
-        </button>
+        <div className="toggle" onClick={() => setTheme(5)}>
+          <ToggleBtn active={theme === 5} btncolor={customText} />
+        </div>
       </ThemeBox>
       <EditBox>
         <button className="btn btnCancle" onClick={() => navigate('/setting')}>
           취소
         </button>
-        <button className="btn btnEdit">수정</button>
+        <button className="btn btnEdit" onClick={editFunc}>
+          수정
+        </button>
       </EditBox>
     </>
   );

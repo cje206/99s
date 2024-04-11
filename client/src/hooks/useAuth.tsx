@@ -5,14 +5,18 @@ export default function useAuth() {
   const [userInfo, setUserInfo] = useState<any>([]);
 
   const confirmAuth = async () => {
-    const res = await axios({
-      method: 'GET',
-      url: 'http://localhost:8000/api/member/find',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    setUserInfo(res.data.result);
+    if (localStorage.getItem('token')) {
+      const res = await axios({
+        method: 'GET',
+        url: 'http://localhost:8000/api/member/find',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setUserInfo(res.data.result);
+    } else {
+      setUserInfo({ userId: 0 });
+    }
   };
 
   return [userInfo, confirmAuth];

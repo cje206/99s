@@ -1,3 +1,4 @@
+import { SetStateAction } from 'react';
 export interface Info {
   name: string;
   birth: string;
@@ -11,7 +12,8 @@ export interface InputRef {
 export interface ChatDataProps {
   open: boolean;
   data: any[];
-  roomId?: string;
+  roomId: string;
+  nickname: string;
 }
 
 export interface ChatListProps {
@@ -39,4 +41,37 @@ export interface UserProps {
   password: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface EditorProps {
+  body: string;
+  setBody: React.Dispatch<SetStateAction<string>>;
+}
+export interface ThemeStyle {
+  color: string;
+  background: string;
+  fontWeight?: string;
+}
+
+export interface ColorObject {
+  color: string;
+  background: string;
+}
+
+export interface BlogObject {
+  id: number;
+  blogTitle: string;
+  nickname: string;
+  writerImg?: string | null;
+  subscribeCount?: number;
+  memberId?: number | null;
+}
+export interface PostObject {
+  id: number;
+  postTitle: string;
+  content: string;
+  hashtag: any[];
+  likeCount?: number;
+  categoryId?: number | null;
+  createdAt?: string;
 }

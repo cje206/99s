@@ -15,6 +15,8 @@ export interface Info {
   blogintro?: string;
   id: number;
   blogTitle?: string;
+  view?: number;
+  postId?: number;
 }
 interface InfoProps {
   items: Info[];
@@ -57,10 +59,9 @@ const PostNum = styled.div`
 export default function SearchWriter({
   items,
   showPagination,
-  itemsPerPage = 3, //나중에 10으로 바꾸면된다
+  itemsPerPage = 10, //나중에 10으로 바꾸면된다
 }: InfoProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  // const itemsPerPage = 3; //실험차 3이고 나중에 10으로 변경하면 됌
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

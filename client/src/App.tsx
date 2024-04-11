@@ -9,13 +9,16 @@ import Chat from './pages/Chat';
 import Setting from './pages/Setting';
 import SearchResult from './pages/SearchResult';
 import BlogHome from './pages/BlogHome';
+import Content from './pages/Content';
+
+import PostPage from './pages/Post';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Main />}></Route>
+          <Route path="/" element={<Main />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/setting" element={<Setting position="설정" />} />
           <Route
@@ -38,7 +41,20 @@ function App() {
           <Route path="/signup/email" element={<SignupEmail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/search" element={<SearchResult />} />
-          <Route path="/blog/:id" element={<BlogHome />} />
+          <Route path="/blog/:id" element={<BlogHome position="블로그 홈" />} />
+          <Route
+            path="/blog/:id/category"
+            element={<BlogHome position="카테고리 전체" />}
+          />
+          <Route
+            path="/blog/:id/category/:categoryId"
+            element={<BlogHome position="카테고리 하나" />}
+          />
+          <Route path="/blog/:id/:postId" element={<Content />} />
+
+          {/* <Route path="/comments/:postId" element={<Comment />} /> */}
+          <Route path="/post/write" element={<PostPage position="글 작성" />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -1,0 +1,23 @@
+@import './variables';
+
+@include mobile {
+  .commentTop {
+    display: flex;
+
+    .commentCount {
+      font-weight: 700;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+  }
+}
+form {
+  margin: 20px;
+
+  .commentArea {
+    border: 1px solid #000000;
+  }
+}
+.replyArea {
+  margin: 20px;
+}

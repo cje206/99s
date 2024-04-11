@@ -1,9 +1,11 @@
+
 *.git
 node_modules/
 package-lock.json
 *.env
 config.json
 .vscode/
+
 
 
 

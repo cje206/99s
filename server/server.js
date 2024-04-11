@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('./models');
 const http = require('http');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const { Server } = require('socket.io');
 
 const app = express();
@@ -16,6 +17,7 @@ const io = new Server(server, {
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 const memberRouter = require('./routes/member');
 app.use('/api/member', memberRouter);
@@ -23,6 +25,10 @@ const chatRouter = require('./routes/chat');
 app.use('/api/chat', chatRouter);
 const blogRouter = require('./routes/blog');
 app.use('/api/blog', blogRouter);
+const commentRoutes = require('./routes/comment');
+app.use('/api', commentRoutes);
+const postRoutes = require('./routes/post');
+app.use('/api/post', postRoutes);
 
 // 채팅(소켓)
 io.on('connection', (socket) => [

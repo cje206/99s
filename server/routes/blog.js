@@ -1,7 +1,33 @@
 const express = require('express');
-const controller = require('../controller/blog');
+const {
+  blogDetail,
+  find,
+  update,
+  getCategory,
+  newCategory,
+  delCategory,
+  updateCategory,
+  findCategory,
+  checkSub,
+  findSub,
+  clickSub,
+} = require('../controller/blog');
+
 const router = express.Router();
 
-router.get('/:id', controller.blogDetail);
+router.get('/find', find);
+router.patch('/update', update);
+router.get('/checkSub', checkSub);
+router.get('/findSub', findSub);
+router.post('/clickSub', clickSub);
+router.get('/findCategory', findCategory);
+router.get('/getCategory', getCategory);
+router.post('/newCategory', newCategory);
+router.delete('/delCategory', delCategory);
+
+// router.post('/write',)
+
+router.patch('/updateCategory', updateCategory);
+// router.get('/:id', blogDetail);
 
 module.exports = router;
