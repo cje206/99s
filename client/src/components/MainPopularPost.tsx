@@ -63,9 +63,9 @@ export default function MainPopularPost({ images }: MainPopularPostProps) {
 
   return (
     <>
-      <p className="category" style={{ fontWeight: 'bold', fontSize: '18px' }}>
+      {/* <p className="category" style={{ fontWeight: 'bold', fontSize: '18px' }}>
         인기 게시글
-      </p>
+      </p> */}
       <Container>
         <PostImage>
           <Swipe onSwipeEnd={onSwipeEnd} onSwipeMove={onSwipeMove}>
@@ -77,8 +77,12 @@ export default function MainPopularPost({ images }: MainPopularPostProps) {
               {images.map((image, index) => {
                 return (
                   <div
+                    className="popularPost"
                     key={index}
-                    style={{ minWidth: '100%', textAlign: 'center' }}
+                    style={{
+                      minWidth: '100%',
+                      textAlign: 'center',
+                    }}
                   >
                     {' '}
                     <Img src={image.imageUrl}></Img>
@@ -88,8 +92,8 @@ export default function MainPopularPost({ images }: MainPopularPostProps) {
             </StyledImgDiv>
           </Swipe>
         </PostImage>
-        <div className="postTitle">{images[imgCount - 1].title}</div>
-        <div className="writerInfo">
+        <div className="postTitle popular">{images[imgCount - 1].title}</div>
+        <div className="postWriterInfo">
           {images[imgCount - 1].writerImgUrl && (
             <img
               className="writerImg"
@@ -98,7 +102,7 @@ export default function MainPopularPost({ images }: MainPopularPostProps) {
             />
           )}
           <div className="writerDetail">
-            <div style={{ fontSize: '20px', paddingBottom: '5px' }}>
+            <div className="writerDetail block">
               {images[imgCount - 1].writer}
             </div>
             <div

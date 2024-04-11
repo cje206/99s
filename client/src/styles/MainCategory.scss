@@ -1,6 +1,9 @@
 @import './variables';
 @import './utils';
 
+.postDetail {
+  align-items: center;
+}
 @include mobile {
   .imageWrapper {
     width: 100%;
@@ -20,4 +23,9 @@
     color: #7e7f81;
     margin-bottom: 30px;
   }
+}
+.postsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* 요소들 사이에 공간을 균등하게 분배 */
 }
