@@ -21,6 +21,8 @@ const Span = styled.div`
   display: flex;
   font-weight: bold;
   margin-bottom: 10px;
+  text-align: center;
+  line-height: 1.5;
 `;
 const LinkInfo = styled.div`
   display: flex;

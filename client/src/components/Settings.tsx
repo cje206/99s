@@ -640,6 +640,7 @@ export function SetBlog() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [useDefaultImg, setUseDefaultImg] = useState<boolean>(false);
 
   const toggleBtn = (idx: number) => {
     const btns = document.querySelectorAll('.btn');
@@ -677,14 +678,14 @@ export function SetBlog() {
       return;
     }
     let imageUrl = uploadedImageUrl; // 기존 업로드된 이미지 URL 사용
-    // if (selectedFile && !uploadedImageUrl) {
-    //   const uploadUrl = await uploadImage(selectedFile);
-    //   if (uploadUrl) {
-    //     imageUrl = uploadUrl;
-    //     setUploadedImageUrl(uploadUrl);
-    //     setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
-    //   }
-    // }
+    if (selectedFile && !uploadedImageUrl) {
+      const uploadUrl = await uploadImage(selectedFile);
+      if (uploadUrl) {
+        imageUrl = uploadUrl;
+        setUploadedImageUrl(uploadUrl);
+        setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
+      }
+    }
     const res = await axios({
       method: 'PATCH',
       url: 'http://localhost:8000/api/blog/update',
@@ -701,6 +702,8 @@ export function SetBlog() {
     });
     if (res.data.success) {
       alert('블로그 수정이 완료되었습니다.');
+      setInfo();
+      window.scrollTo(0, 0);
     }
   };
 
@@ -710,33 +713,31 @@ export function SetBlog() {
     const fileId = user.id; // 파일명을 사용자 ID로 설정
     const imageRef = ref(storage, `profileImages/${fileId}`); // 스토리지 내의 저장 경로를 지정
     await uploadBytes(imageRef, file); // 파일을 업로드
-    const url = await getDownloadURL(imageRef); // 업로드된 파일의 URL을 가져온다.
+    const url = await getDownloadURL(imageRef); // 업로드된 파일의 URL 가져옴
     return url; // URL을 반환
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (!file) return;
-    const url = await uploadImage(file); // 업로드 함수를 호출하여 이미지를 업로드하고 URL을 받아옵니다.
-    if (url)
-      setUploadedImageUrl(url); // 업로드된 이미지 URL을 상태 변수에 저장합니다.
-    else setUploadedImageUrl(null); // 업로드에 실패했다면 null을 설정합니다.
+    setSelectedFile(file); // 선택된 파일을 상태에 저장
+
+    // 미리보기 URL 생성 및 저장
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewImageUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
-  // const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files ? e.target.files[0] : null;
-  //   if (!file) return;
-  //   setSelectedFile(file); // 선택된 파일을 상태에 저장
-  // };
-  //   // 미리보기 URL 생성 및 저장
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     setPreviewImageUrl(reader.result as string);
-  //   };
-  //   reader.readAsDataURL(file);
-  // };
 
   const triggerFileInputClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const setToDefaultImage = () => {
+    setUseDefaultImg(true); // 기본 이미지 사용 상태를 true로 설정
+    setPreviewImageUrl(null); // 미리보기 이미지 URL을 초기화
+    setUploadedImageUrl(null); // 업로드된 이미지 URL을 초기화
   };
 
   useEffect(() => {
@@ -746,6 +747,7 @@ export function SetBlog() {
   useEffect(() => {
     setInfo();
   }, [user]);
+
   useEffect(() => {
     // toggleBtn(theme);
     console.log(theme);
@@ -754,16 +756,16 @@ export function SetBlog() {
   return (
     <>
       <BlogBox>
-
-        {/* <div className="profileImg"> */}
-        <ProfileImage id={user.id || 0} />
-        {/* </div> */}
-
+        <ProfileImage
+          id={user.id || 0}
+          profileimg={previewImageUrl || ''}
+          imgwidth={'80px'}
+        />
         <input
           type="file"
-          style={{ display: 'none' }} // 파일 입력 숨김
+          style={{ display: 'none' }}
           onChange={handleImageUpload}
-          ref={fileInputRef} // 참조 연결
+          ref={fileInputRef}
         />
         <button className="editImg" onClick={triggerFileInputClick}>
           프로필 사진 변경

@@ -14,7 +14,7 @@ export const Container = styled.div`
 export const PostImage = styled.div`
   /* width: 100%;
   height: 100%; */
-  margin: 20px 20px 0 20px;
+  margin: 20px 20px 10px 20px;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
@@ -70,8 +70,8 @@ export const StyledImgDiv = styled.div<StyledImgDivProps>`
 //가로로 된 post정보
 
 export const PostInfoContainer = styled.div`
-  /* width: 100%; */
-  /* margin: 20px 20px 0 20px; */
+  @media (min-width: 1160px) {
+  }
 `;
 
 export const ImgPost = styled.img`
@@ -82,17 +82,27 @@ export const ImgPost = styled.img`
 `;
 
 //category 게시글
-export const PostCategoryContainer = styled.div``;
+export const PostCategoryContainer = styled.div`
+  @media (min-width: 1160px) {
+    width: calc(33.333% - 40px);
+    margin: 20px;
+  }
+`;
 
 export const ImgCategory = styled.img`
   width: 100%;
   height: 100%;
+  @media (min-width: 1160px) {
+    height: 250px;
+  }
   border-radius: 10px;
   object-fit: cover;
 `;
 export const ButtonWrapper = styled.div`
   display: flex;
-  justify-content: space-around;
+  @media (max-width: 1160px) {
+    justify-content: space-around;
+  }
   align-items: center;
   margin: 40px 20px 0 20px;
 `;
@@ -103,12 +113,15 @@ interface StyledButtonProps {
 export const StyledButton = styled.button<StyledButtonProps>`
   border-radius: 20px;
   padding: 10px 20px;
-  background-color: ${(props) => (props.isSelected ? '#43A046' : '#abbed1')};
-  color: white;
+  background-color: ${(props) => (props.isSelected ? '#ffcf58' : '#ffffff')};
+  color: #313030;
   font-weight: bold;
-  cursor: pointer;
+  @media (min-width: 1160px) {
+    margin-right: 20px;
+    font-size: 17px;
+  }
   &:hover {
-    background-color: #43a046;
+    background-color: #ffcf58;
   }
 
   &:focus {

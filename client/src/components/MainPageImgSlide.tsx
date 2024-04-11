@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import '../styles/MainPageImgSlide.scss';
 import { useState, useEffect } from 'react';
+import styled from 'styled-components';
 
 export interface Slide {
   imageUrl: string;
@@ -17,7 +18,7 @@ export default function MainPageImgSlide({ slides }: MainPageImgSlideProps) {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length);
-    }, 3000); // 3초마다 슬라이드 변경
+    }, 3500); // 3초마다 슬라이드 변경
     return () => clearInterval(timer);
   }, [slides.length]); // slides.length를 의존성 배열에 추가
 
@@ -27,19 +28,21 @@ export default function MainPageImgSlide({ slides }: MainPageImgSlideProps) {
 
   return (
     <>
-      <p
-        style={{
-          width: '70%',
-          wordWrap: 'break-word',
-          margin: '0 auto',
-          fontWeight: 'bold',
-        }}
-      >
-        {slides[currentIndex].text}
-      </p>
-      <button>
-        <Link to=""></Link>자세히 보기
-      </button>
+      <div className="mainContainer">
+        <p
+          style={{
+            wordWrap: 'break-word',
+            fontWeight: 'bold',
+            lineHeight: '1.5',
+            marginBottom: '20px',
+          }}
+        >
+          {slides[currentIndex].text}
+        </p>
+        <button>
+          <Link to=""></Link>자세히 보기
+        </button>
+      </div>
       <div
         className="imgBorder"
         style={{ backgroundImage: `url(${slides[currentIndex].imageUrl})` }}

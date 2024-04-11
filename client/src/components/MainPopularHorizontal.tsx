@@ -42,10 +42,12 @@ export default function MainPopularHorizontal({
         <PostInfoContainer key={index} style={{ margin: '20px 20px 0 20px' }}>
           <div className="contentWrapper">
             <div className="imageWrapper">
-              <ImgPost src={data.imageUrl} alt={data.title}></ImgPost>
+              <img src={data.imageUrl} alt={data.title}></img>
             </div>
             <div className="textWrapper">
-              <div className="postTitle">{data.title}</div>
+              <div className="postTitle" style={{ fontWeight: '700' }}>
+                {data.title}
+              </div>
               <div className="textDetail">
                 <div className="postWriter">{data.writer}</div>
                 <div className="postDate">{data.date}</div>

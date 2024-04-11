@@ -29,9 +29,11 @@ const DefaultImg = styled.div<{ imgwidth: string; link?: string }>`
 export default function ProfileImage({
   id,
   imgwidth,
+  profileimg,
 }: {
   id: number;
   imgwidth?: string;
+  profileimg?: string;
 }) {
   const [profile, setProfile] = useState<{ img: string | null }>({ img: null });
   const [theme, setTheme] = useState<ColorObject>({
@@ -66,15 +68,12 @@ export default function ProfileImage({
     }
   };
   useEffect(() => {
-    getProfile();
-
-    console.log(profile);
-  }, []);
+    if (profileimg) setProfile({ img: profileimg });
+  }, [profileimg]);
 
   useEffect(() => {
     if (id !== 0) getProfile();
   }, [id]);
-
 
   return (
     <>

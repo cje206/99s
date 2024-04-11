@@ -40,23 +40,19 @@ interface MainCategoryProps {
 export default function MainCategory({
   items,
   ShowContent,
-  itemsPerPage = 4,
   showPagination,
 }: MainCategoryProps) {
   const [selectedCategory, setSelectedCategory] = useState('일상');
-  const [shownItems, setShownItems] = useState(4); // 초기에 보여줄 아이템 수
+  const [shownItems, setShownItems] = useState(6); // 초기에 보여줄 아이템 수
   const [showMoreButton, setShowMoreButton] = useState(true); // 더보기 버튼의 표시 여부
   const [currentPage, setCurrentPage] = useState(1);
-  // const itemsPerPage = 3; //실험차 3이고 나중에 10으로 변경하면 됌
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = items.slice(0, shownItems);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleShowMore = () => {
-    const newShownItems = shownItems + 4; //더보기 +4개씩 증가
+    const newShownItems = shownItems + 6; //더보기 +6개씩 증가
     setShownItems(newShownItems);
 
     // shownItems가 12개 이상이 되면 더보기 버튼을 숨김
@@ -100,29 +96,31 @@ export default function MainCategory({
           </StyledButton>
         </ButtonWrapper>
       )}
-      {currentItems.map((item, index) => (
-        <PostCategoryContainer
-          key={index}
-          style={{ margin: '20px 20px 0 20px' }}
-        >
-          <div className="imageWrapper">
-            <ImgCategory src={item.imageUrl} alt={item.title}></ImgCategory>
-          </div>
-          <TextDetail>
-            <div className="postWriter">{item.writer}</div>
-            <div
-              className="postDate"
-              style={{ color: '#7e7f81', fontSize: '13px' }}
-            >
-              {item.date}
+      <div className="postsContainer">
+        {currentItems.map((item, index) => (
+          <PostCategoryContainer
+            key={index}
+            style={{ margin: '20px 20px 0 20px' }}
+          >
+            <div className="imageWrapper">
+              <ImgCategory src={item.imageUrl} alt={item.title}></ImgCategory>
             </div>
-          </TextDetail>
-          <PostDetail>
-            <div className="postTitle">{item.title}</div>
-            <div className="postContent">{item.content}</div>
-          </PostDetail>
-        </PostCategoryContainer>
-      ))}
+            <TextDetail>
+              <div className="postWriter">{item.writer}</div>
+              <div
+                className="postDate"
+                style={{ color: '#7e7f81', fontSize: '13px' }}
+              >
+                {item.date}
+              </div>
+            </TextDetail>
+            <PostDetail>
+              <div className="postTitle">{item.title}</div>
+              <div className="postContent">{item.content}</div>
+            </PostDetail>
+          </PostCategoryContainer>
+        ))}
+      </div>
       {ShowContent && showMoreButton && (
         <ButtonExtra onClick={handleShowMore}>
           <ButtonExtraStyled smallbtn={false} subscribebtn={false}>
@@ -132,7 +130,7 @@ export default function MainCategory({
       )}
       {showPagination && (
         <Pagination
-          itemsPerPage={itemsPerPage}
+          itemsPerPage={shownItems}
           totalItems={items.length}
           paginate={paginate}
           currentPage={currentPage}
