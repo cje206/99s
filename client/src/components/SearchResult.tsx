@@ -35,9 +35,18 @@ export default function SearchBar() {
   const [showMoreContent, setShowMoreContent] = useState(false);
   const [showMoreTitle, setShowMoreTitle] = useState(false);
 
-  const handleShowMoreWriter = () => setSelectedBar('작성자');
-  const handleShowMoreContent = () => setSelectedBar('내용');
-  const handleShowMoreTitle = () => setSelectedBar('제목');
+  const handleShowMoreWriter = () => {
+    setSelectedBar('작성자');
+    window.scrollTo(0, 0);
+  };
+  const handleShowMoreContent = () => {
+    setSelectedBar('내용');
+    window.scrollTo(0, 0);
+  };
+  const handleShowMoreTitle = () => {
+    setSelectedBar('제목');
+    window.scrollTo(0, 0);
+  };
 
   //전체 눌렀을떄만 버튼보이게
   useEffect(() => {
