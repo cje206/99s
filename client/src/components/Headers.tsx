@@ -107,7 +107,7 @@ export function MainHeader() {
           alt="Blo9"
           onClick={() => navigate('/')}
         />
-        <Icon $url="search"></Icon>
+        <Icon $url="search" onClick={() => navigate('/search')}></Icon>
       </BoxStyle>
       {sidemenu && <DefaultSidemenu func={closeFunc} />}
     </>
