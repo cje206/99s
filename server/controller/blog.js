@@ -19,7 +19,11 @@ const { where } = require('sequelize');
 exports.find = async (req, res) => {
   const { memberId } = req.query;
   const result = await Blog.findOne({ where: { memberId } });
-  res.json({ success: true, msg: '블로그 조회 완료', result });
+  if (result) {
+    res.json({ success: true, msg: '블로그 조회 완료', result });
+  } else {
+    res.json({ success: false, msg: '블로그 없음' });
+  }
 };
 
 // 블로그 정보 수정
@@ -53,6 +57,14 @@ exports.update = async (req, res) => {
     });
   }
   res.json({ success: true, msg: '블로그 수정 완료' });
+};
+
+// 회원별 구독 리스트 조회
+exports.subList = async (req, res) => {
+  const result = await Subscribe.findAll({
+    where: { memberId: req.query.memberId },
+  });
+  res.json({ success: true, result, msg: '구독 리스트 조회 완료' });
 };
 
 // 구독 확인

@@ -2,7 +2,7 @@ const { Chat, Room, Member, Blog } = require('../models');
 const { Op, where } = require('sequelize');
 
 // 시간
-const getTimeText = (time) => {
+exports.getTimeText = (time) => {
   let recentTime = new Date(time);
   let nowTime = new Date();
   let displayTime = '';
