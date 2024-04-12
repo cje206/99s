@@ -57,7 +57,7 @@ export default function ProfileImage({
         getColor(setTheme, res.data.result.theme, fontColor, bgColor);
       } else {
         // res.data.result가 null이거나 undefined일 경우 처리
-        console.log('No result found');
+        // console.log('No result found');
         // 필요한 경우 기본값 설정
         setProfile({ img: null });
         setTheme({

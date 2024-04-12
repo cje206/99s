@@ -23,7 +23,8 @@ const SideBox = styled.div`
   width: 100%;
   height: 100%;
   background: #fff;
-  z-index: 150;
+  z-index: 200;
+  box-sizing: border-box;
   .btnClose {
     position: absolute;
     top: 20px;
@@ -76,6 +77,7 @@ const SideBox = styled.div`
 export function DefaultSidemenu({ func }: { func?: () => void }) {
   const location = useLocation();
   const [user, setUser] = useAuth();
+  const [blog, setBlog] = useState<Boolean>(false);
   const [darkmode, setDarkmode] = useState<Boolean>(false);
   const logoutFun = () => {
     if (!window.confirm('로그아웃 하시겠습니까?')) {
@@ -91,6 +93,16 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
       localStorage.removeItem('darkmode');
     }
   };
+  const getBlog = async () => {
+    if (user.id) {
+      const res = await axios({
+        method: 'GET',
+        url: 'http://localhost:8000/api/blog/find',
+        params: { memberId: user.id },
+      });
+      setBlog(res.data.success);
+    }
+  };
   useEffect(() => {
     setUser();
     if (localStorage.getItem('darkmode') === 'on') {
@@ -100,6 +112,10 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
   useEffect(() => {
     applyDark();
   }, [darkmode]);
+  useEffect(() => {
+    getBlog();
+  }, [user]);
+
   return (
     <SideBox>
       <div className="profileBox">
@@ -112,9 +128,16 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
         <ProfileImage id={user.id || 0} />
         {user.id ? (
           <div className="profileText">
-            <Link to={`/blog/${user.id}`} className="blogLink">
-              http://localhost:3000/blog/{user.id}
-            </Link>
+            {blog ? (
+              <Link to={`/blog/${user.id}`} className="blogLink">
+                내 블로그
+              </Link>
+            ) : (
+              <Link to={`/setting/blog`} className="blogLink">
+                블로그 생성하기
+              </Link>
+            )}
+
             <p className="profileName">{user.username}</p>
           </div>
         ) : (
@@ -129,14 +152,14 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
             <IcoWrite stroke="#fbc02d" />
             <span>글 작성하기</span>
           </Link>
-          <div className="blogIcons">
+          <Link to="/subscribe" className="blogIcons">
             <IcoSubscribe stroke="#fbc02d" />
             <span>구독</span>
-          </div>
-          <div className="blogIcons">
+          </Link>
+          <Link to="/like" className="blogIcons">
             <IcoLike stroke="#fbc02d" fill="none" />
             <span>좋아요</span>
-          </div>
+          </Link>
           <Link to="/setting" className="blogIcons">
             <IcoSet stroke="#fbc02d" />
             <span>설정</span>

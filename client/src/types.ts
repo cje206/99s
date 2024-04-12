@@ -75,3 +75,8 @@ export interface PostObject {
   categoryId?: number | null;
   createdAt?: string;
 }
+
+export interface OtherPostObj {
+  id: number;
+  postTitle: string;
+}

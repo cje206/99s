@@ -1,4 +1,5 @@
-const { Post, Like } = require('../models');
+const { Post, Like, Blog } = require('../models');
+const { Op, where } = require('sequelize');
 
 // 포스트 등록
 exports.newPost = async (req, res) => {
@@ -42,6 +43,14 @@ exports.find = async (req, res) => {
   res.json({ success: true, result, msg: '포스트 조회 완료' });
 };
 
+// 회원별 좋아요 리스트 조회
+exports.likeList = async (req, res) => {
+  const result = await Like.findAll({
+    where: { memberId: req.query.memberId },
+  });
+  res.json({ success: true, result, msg: '좋아요 리스트 조회 완료' });
+};
+
 // 좋아요 여부 조회
 exports.checkLike = async (req, res) => {
   const { memberId, postId } = req.query;
@@ -76,5 +85,43 @@ exports.clickLike = async (req, res) => {
   } else {
     const result = await Like.create({ memberId, postId });
     res.json({ success: true, msg: '좋아요 추가 완료' });
+  }
+};
+
+// 이전글, 다음글 검색
+exports.otherPost = async (req, res) => {
+  const { postId, blogId } = req.query;
+  console.log(blogId);
+  const next = await Post.findOne({
+    where: { id: { [Op.gt]: postId }, blogId },
+    order: [['id', 'asc']],
+  });
+  const prev = await Post.findOne({
+    where: { id: { [Op.lt]: postId }, blogId },
+    order: [['id', 'desc']],
+  });
+  console.log(next);
+  res.json({
+    success: true,
+    result: [prev, next],
+    msg: '이전 글 다음 글 조회 완료',
+  });
+};
+
+// 카테고리별 게시글 검색
+exports.category = async (req, res) => {
+  if (req.query.categoryId) {
+    const result = await Post.findAll({
+      where: { categoryId: req.query.categoryId },
+    });
+    res.json({ success: true, result, msg: '카테고리 게시글 조회 완료' });
+  } else if (req.query.id) {
+    const find = await Blog.findOne({ where: { memberId: req.query.id } });
+    const result = await Post.findAll({
+      where: { blogId: find.id },
+    });
+    res.json({ success: true, result, msg: '전체 게시글 조회 완료' });
+  } else {
+    res.json({ success: false, msg: '조회 실패' });
   }
 };

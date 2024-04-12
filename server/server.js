@@ -29,6 +29,10 @@ const commentRoutes = require('./routes/comment');
 app.use('/api', commentRoutes);
 const postRoutes = require('./routes/post');
 app.use('/api/post', postRoutes);
+const subscribeRoutes = require('./routes/subscribe');
+app.use('/api/sub', subscribeRoutes);
+const likeRoutes = require('./routes/like');
+app.use('/api/like', likeRoutes);
 
 // 채팅(소켓)
 io.on('connection', (socket) => [

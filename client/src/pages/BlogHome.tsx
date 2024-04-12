@@ -29,6 +29,7 @@ import { ThemeStyle } from '../types';
 import { getColor } from '../components/Functions';
 import BlogPosts, { BlogPopular } from '../components/BlogComponent';
 import BlogMain from '../components/BlogMain';
+import { NewPostBtn } from '../components/Btns';
 
 interface Blog {
   id: number;
@@ -96,17 +97,12 @@ export default function BlogHome({ position }: { position?: string }) {
   }, [user]);
   useEffect(() => {}, [blogInfo]);
 
-  useEffect(() => {
-    if (!post) {
-      alert('해당하는 게시글을 찾을 수 없습니다.');
-    }
-  }, [post]);
-
   return (
     <div className="wrap">
       <BlogHeader theme={theme}>
         {blogInfo.id !== 0 ? blogInfo.blogTitle : 'NOT FOUND'}
       </BlogHeader>
+      {blogInfo.memberId === user.id && <NewPostBtn theme={theme} />}
       {blogInfo.id !== 0 ? (
         <BlogMain bloginfo={blogInfo} theme={theme} />
       ) : (

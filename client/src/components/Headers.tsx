@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ThemeStyle } from '../types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BlogSidemenu, DefaultSidemenu, SetSidemenu } from './Sidemenus';
+import axios from 'axios';
+import { getColor } from './Functions';
 
 const BoxStyle = styled.div`
   width: 100%;
@@ -114,6 +116,24 @@ export function MainHeader() {
   );
 }
 
+export function SubHeader({ children }: { children: string }) {
+  const [sidemenu, setSidemenu] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const closeFunc = () => {
+    setSidemenu(false);
+  };
+  return (
+    <>
+      <BoxStyle>
+        <Icon $url="lmenu" onClick={() => setSidemenu(true)}></Icon>
+        <Text>{children}</Text>
+        <Icon $url="search" onClick={() => navigate('/search')}></Icon>
+      </BoxStyle>
+      {sidemenu && <DefaultSidemenu func={closeFunc} />}
+    </>
+  );
+}
+
 export function SearchHeader() {
   const navigate = useNavigate();
   return (
@@ -153,6 +173,55 @@ export function BlogHeader({
         }}
       >
         <Text>{children}</Text>
+        <BtnsWrap>
+          <Icon $url="search"></Icon>
+          <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
+        </BtnsWrap>
+      </BoxStyle>
+      {sidemenu && <BlogSidemenu func={closeFunc} />}
+    </>
+  );
+}
+
+export function BlogHeaderid({ id }: { id: number }) {
+  const [theme, setTheme] = useState<ThemeStyle>({
+    color: '#fff',
+    background: '#333',
+  });
+  const [title, setTitle] = useState<string>('');
+  const getBlogInfo = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/blog/find',
+      params: { memberId: id },
+    });
+    console.log(res.data.result);
+    if (res.data.result) {
+      setTitle(res.data.result.blogTitle);
+    }
+    getColor(
+      setTheme,
+      res.data.result.theme,
+      res.data.result.fontColor,
+      res.data.result.bgColor
+    );
+  };
+  const [sidemenu, setSidemenu] = useState<boolean>(false);
+  const closeFunc = () => {
+    setSidemenu(false);
+  };
+  useEffect(() => {
+    getBlogInfo();
+  }, []);
+  return (
+    <>
+      <BoxStyle
+        style={{
+          background: theme.color,
+          color: theme.background,
+        }}
+      >
+        <Text>{title}</Text>
         <BtnsWrap>
           <Icon $url="search"></Icon>
           <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>

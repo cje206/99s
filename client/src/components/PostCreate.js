@@ -4,16 +4,13 @@ import { uploadBytes, getDownloadURL, ref } from 'firebase/storage';
 import DOMPurify from 'isomorphic-dompurify';
 import axios from 'axios';
 import ImageResize from '@looop/quill-image-resize-module-react';
-import styled from 'styled-components';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.core.css'; // 이 위치로 옮겼습니다.
 import '../styles/test.scss';
 
 import { storage } from '../config/Firebase';
-import { ButtonExtraStyled, ButtonExtra, TitleInput } from './MainPopularStyle';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-import { EditBox } from './Settings';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -127,26 +124,6 @@ function QuillEditor({ placeholder, value, ...rest }) {
     setCategoryList(res.data.result);
   };
 
-  useEffect(() => {
-    if (localStorage.getItem('token')) {
-      setUser();
-    }
-    if (localStorage.getItem('postId')) {
-      setPostId(localStorage.getItem('postId'));
-    }
-    if (quillRef.current) {
-      const editor = quillRef.current.getEditor();
-      const toolbar = editor.getModule('toolbar');
-      toolbar.addHandler('image', () => imageHandler(quillRef, storage));
-    }
-  }, []);
-  useEffect(() => {
-    if (user.id) {
-      getCategory();
-      console.log(user.id);
-    }
-  }, [user]);
-
   const DisplayContents = ({ content }) => {
     console.log(DOMPurify.sanitize(content));
     return (
@@ -195,6 +172,45 @@ function QuillEditor({ placeholder, value, ...rest }) {
       navigate(`/blog/${user.id}/${res.data.result.id}`);
     }
   };
+  const getPost = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/post/find',
+      params: { id: postId },
+    });
+    // const newHash = () => {
+    //   let newString;
+    //   console.log(res.data.result.hashtag.length);
+    //   for (let i = 0; i < res.data.result.hashtag; i++) {
+    //     console.log(res.data.result.hashtag[i]);
+    //     if (newString.length > 0) {
+    //       newHash += res.data.result.hashtag[i];
+    //       console.log(newString);
+    //     } else {
+    //       newString = res.data.result.hashtag[i];
+    //     }
+    //   }
+    // };
+    // newHash();
+    const { categoryId, content, postTitle } = res.data.result;
+    let newString;
+    res.data.result.hashtag.map((val, idx) => {
+      console.log(val, idx);
+      if (idx > 0) {
+        newString += `, ${val}`;
+        setHashtag(newString);
+      } else {
+        newString = val;
+        setHashtag(newString);
+      }
+    });
+    setTitle(postTitle);
+    if (categoryId) {
+      setCategory(String(categoryId));
+    }
+    document.querySelector('.ql-editor').innerHTML = content;
+    localStorage.removeItem('postId');
+  };
   const checkKeyCode = (e) => {
     console.log();
     const kcode = e.keyCode;
@@ -219,11 +235,35 @@ function QuillEditor({ placeholder, value, ...rest }) {
       setHashtag('');
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    }
+    if (localStorage.getItem('postId')) {
+      setPostId(Number(localStorage.getItem('postId')));
+    }
+    if (quillRef.current) {
+      const editor = quillRef.current.getEditor();
+      const toolbar = editor.getModule('toolbar');
+      toolbar.addHandler('image', () => imageHandler(quillRef, storage));
+    }
+  }, []);
+  useEffect(() => {
+    if (user.id) {
+      getCategory();
+    }
+  }, [user]);
+  useEffect(() => {
+    if (postId) {
+      getPost();
+    }
+  }, [postId]);
   return (
     <div className="wrap">
       <div className="postHeader">
         <button onClick={() => navigate(-1)}>취소</button>
-        <select onChange={(e) => setCategory(e.target.value)}>
+        <select onChange={(e) => setCategory(e.target.value)} value={category}>
           <option value="none">카테고리 없음</option>
           {categoryList?.map((value) => (
             <option key={value.id} value={value.id}>

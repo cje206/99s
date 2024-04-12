@@ -12,6 +12,9 @@ import BlogHome from './pages/BlogHome';
 import Content from './pages/Content';
 
 import PostPage from './pages/Post';
+import Category from './pages/Category';
+import Like from './pages/Like';
+import Subscribe from './pages/Subscribe';
 
 function App() {
   return (
@@ -20,6 +23,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/like" element={<Like />} />
+          <Route path="/subscribe" element={<Subscribe />} />
           <Route path="/setting" element={<Setting position="설정" />} />
           <Route
             path="/setting/post"
@@ -42,14 +47,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/search" element={<SearchResult />} />
           <Route path="/blog/:id" element={<BlogHome position="블로그 홈" />} />
-          <Route
-            path="/blog/:id/category"
-            element={<BlogHome position="카테고리 전체" />}
-          />
-          <Route
-            path="/blog/:id/category/:categoryId"
-            element={<BlogHome position="카테고리 하나" />}
-          />
+          <Route path="/blog/:id/category" element={<Category />} />
+          <Route path="/blog/:id/category/:categoryId" element={<Category />} />
           <Route path="/blog/:id/:postId" element={<Content />} />
 
           {/* <Route path="/comments/:postId" element={<Comment />} /> */}
