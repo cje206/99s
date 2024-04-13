@@ -29,8 +29,6 @@ exports.newPost = async (req, res) => {
       });
       res.json({ success: true, result, msg: '글 등록 완료' });
     }
-
-    console.log('result', result);
   } catch (error) {
     console.log(error);
     res.json({ success: false, result: error, msg: '글 등록 실패' });

@@ -142,7 +142,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
     }
     const findBlog = await axios({
       method: 'GET',
-      url: '${process.env.REACT_APP_HOST}/api/blog/find',
+      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
       params: { memberId: user.id },
     });
     const categoryId = () => {
@@ -158,6 +158,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
       hashtag: hashtag.split(', ').filter((val) => val !== ''),
       categoryId: categoryId(),
     };
+    console.log('data', data);
     if (postId) {
       data.id = postId;
     }
