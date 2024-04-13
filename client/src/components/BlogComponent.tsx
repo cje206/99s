@@ -31,7 +31,7 @@ export function BlogPopular() {
   const getPost = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/post/popular',
+      url: `${process.env.REACT_APP_HOST}/api/post/popular`,
       params: { id: Number(id) },
     });
     setPost(res.data.result[0]);
@@ -73,7 +73,7 @@ export default function BlogPosts({
     if (id) {
       const res = await axios({
         method: 'GET',
-        url: 'http://localhost:8000/api/post/category',
+        url: `${process.env.REACT_APP_HOST}/api/post/category`,
         params: { id },
       });
       console.log(res);
