@@ -37,3 +37,40 @@ export const getColor = (
       break;
   }
 };
+
+export const getTimeText = (time: string) => {
+  let recentTime = new Date(time);
+  let nowTime = new Date();
+  let displayTime = '';
+  let hDiff = (nowTime.getTime() - recentTime.getTime()) / (60 * 60 * 1000);
+  if (hDiff < 24) {
+    recentTime.getHours() <= 12
+      ? (displayTime = `오전 ${recentTime.getHours()}:${recentTime.getMinutes()}`)
+      : (displayTime = `오후 ${
+          recentTime.getHours() - 12
+        }:${recentTime.getMinutes()}`);
+  } else {
+    displayTime = `${recentTime.getMonth() + 1}월 ${recentTime.getDate()}일`;
+  }
+  return displayTime;
+};
+
+export const htmlToText = (html: string): string => {
+  let newHtml = html;
+  while (newHtml.includes('<')) {
+    const s = newHtml.indexOf('<');
+    const e = newHtml.indexOf('>') + 1;
+    const subString = newHtml.slice(s, e);
+    newHtml = newHtml.replaceAll(subString, '');
+  }
+  return newHtml;
+};
+
+export const getThumbnail = (html: string): string => {
+  if (html.includes('<img src="')) {
+    const [_, start] = html.split('<img src="');
+    const [imgUrl, __] = start.split('">');
+    return imgUrl;
+  }
+  return '/images/no-image.jpg';
+};

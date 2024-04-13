@@ -51,7 +51,7 @@ export default function ContentPage() {
 
   return (
     <>
-      <BlogHeader theme={theme}>{blog?.blogTitle || 'NOT FOUND'}</BlogHeader>
+      <BlogHeader id={Number(id)} />
       <Content post={post} theme={theme} blog={blog} />
       <CommentComponent />
     </>

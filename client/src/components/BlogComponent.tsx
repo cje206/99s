@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { Info, items } from '../data/SearchData';
 import styled from 'styled-components';
 import { ReactComponent as IcoLike } from '../images/ico-like.svg';
 import { ReactComponent as IcoComment } from '../images/ico-comment.svg';
 import { ReactComponent as IcoHorizon } from '../images/ico-horizon.svg';
 import { ReactComponent as IcoVertical } from '../images/ico-vertical.svg';
-import { ThemeStyle } from '../types';
+import { PostObject, ThemeStyle } from '../types';
 import MainCategory from '../components/MainCategory';
 import MainPopularHorizontal from '../components/MainPopularHorizontal';
 import { data } from '../data/PopularHorizontalPost';
+import axios from 'axios';
+import { getThumbnail, getTimeText, htmlToText } from './Functions';
+import { VerticalPost } from './Lists';
 
 const PopularPost = styled.div`
   margin: 20px 20px 70px 20px;
@@ -23,44 +26,26 @@ export function BlogCategory() {
 
 export function BlogPopular() {
   const { id } = useParams<{ id?: string }>();
-  const [highestView, setHighestView] = useState<Info | null>(null);
+  const [post, setPost] = useState<PostObject>();
 
+  const getPost = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:8000/api/post/popular',
+      params: { id: Number(id) },
+    });
+    setPost(res.data.result[0]);
+  };
   useEffect(() => {
-    const postId = id ? parseInt(id) : NaN;
-    // 현재 페이지 ID와 일치하고, 가장 조회수가 높은 게시물 찾기
-    const relatedPosts = items.filter((item) => item.id === postId);
-    const mostPopularPost =
-      relatedPosts.sort((a, b) => (b.view || 0) - (a.view || 0))[0] || null;
-    setHighestView(mostPopularPost);
-  }, [id, items]);
+    getPost();
+  }, []);
   return (
     <>
       <div className="Info">인기 게시글</div>
       {/* DB에서 조회수 가장 높은 걸로 가져오게(연결만 다시) , 지금 현재는 만든 db에서 view 높은걸로 가져오게 설정함*/}
       <PopularPost>
-        {highestView ? (
-          <>
-            <img
-              className="postImg"
-              src={highestView.imageUrl}
-              alt="Popular Post"
-            />
-            <div className="blogPostTitle">{highestView.title}</div>
-            <div className="blogPostContent">{highestView.content}</div>
-            <div className="postInfo">
-              <div className="Date">{highestView.date}</div>
-              <div className="postInfoDetail">
-                <div className="blogIcons likeCount">
-                  <IcoLike stroke="#333" fill="none" />
-                  <span>3</span>
-                </div>
-                <div className="blogIcons comment">
-                  <IcoComment stroke="#333" fill="none" />
-                  <span>30</span>
-                </div>
-              </div>
-            </div>
-          </>
+        {post ? (
+          <VerticalPost id={Number(id)} post={post} />
         ) : (
           <p>게시물이 없습니다.</p>
         )}
@@ -78,10 +63,27 @@ export default function BlogPosts({
 }) {
   const { id } = useParams<{ id?: string }>();
   const [layoutMode, setLayoutMode] = useState('horizontal');
+  const [postList, setPostList] = useState<PostObject[]>();
 
   const handleLayoutChange = (mode: string) => {
     setLayoutMode(mode);
   };
+
+  const getPostList = async () => {
+    if (id) {
+      const res = await axios({
+        method: 'GET',
+        url: 'http://localhost:8000/api/post/category',
+        params: { id },
+      });
+      console.log(res);
+      setPostList(res.data.result);
+    }
+  };
+
+  useEffect(() => {
+    getPostList();
+  }, []);
 
   return (
     <>

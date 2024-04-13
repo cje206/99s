@@ -3,6 +3,10 @@ import ProfileImage from './ProfileImage';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getThumbnail, getTimeText, htmlToText } from './Functions';
+import { PostObject } from '../types';
+import { ReactComponent as IcoLike } from '../images/ico-like.svg';
+import { ReactComponent as IcoComment } from '../images/ico-comment.svg';
 
 const ArrBox = styled.div`
   display: flex;
@@ -68,7 +72,7 @@ const PostContainter = styled.div`
 interface WriterInfoObj {
   memberId: number;
   nickname: string;
-  subCount: number;
+  subscribeCount: number;
   postCount: number;
 }
 interface PostInfoObj {
@@ -91,7 +95,7 @@ export function WriterList({ id }: { id: number }) {
   const [info, setInfo] = useState<WriterInfoObj>({
     memberId: 0,
     nickname: '',
-    subCount: 0,
+    subscribeCount: 0,
     postCount: 0,
   });
   const getInfo = async () => {
@@ -100,12 +104,12 @@ export function WriterList({ id }: { id: number }) {
       url: `${process.env.REACT_APP_HOST}/api/sub/getInfo`,
       params: { blogId: id },
     });
-    const { memberId, nickname, subscribe, postList } = res.data.result;
+    const { memberId, nickname, subscribeCount, postCount } = res.data.result;
     setInfo({
       memberId,
       nickname,
-      subCount: subscribe.length,
-      postCount: postList.length,
+      subscribeCount,
+      postCount,
     });
   };
   useEffect(() => {
@@ -117,14 +121,14 @@ export function WriterList({ id }: { id: number }) {
     }
   }, [id]);
   return (
-    <Link to={`/blog/${id}`}>
+    <Link to={`/blog/${info.memberId}`}>
       <WriterContainer>
         <ProfileImage id={info.memberId} imgwidth="50px" />
         <div className="textBox">
           <div className="nickname">{info.nickname}</div>
           <div className="countBox">
-            <p className="count">구독자 {info.subCount}명 · </p>
-            <p className="count">게시글 {info.subCount}개</p>
+            <p className="count">구독자 {info.subscribeCount}명 · </p>
+            <p className="count">게시글 {info.postCount}개</p>
           </div>
         </div>
       </WriterContainer>
@@ -160,9 +164,7 @@ export function PostList({ id }: { id: number }) {
     <Link to={`/blog/${info.blogId}/${id}`}>
       <PostContainter>
         <div className="title">{info.title}</div>
-        <div className="content">
-          {info.content.replaceAll('<p>', '').replaceAll('</p>', '')}
-        </div>
+        <div className="content">{htmlToText(info.content)}</div>
         <div className="writerInfo">
           <ProfileImage id={info.memberId} imgwidth="40px" />
           <div className="writerText">
@@ -171,6 +173,37 @@ export function PostList({ id }: { id: number }) {
           </div>
         </div>
       </PostContainter>
+    </Link>
+  );
+}
+export function VerticalPost({ post, id }: { post: PostObject; id: number }) {
+  return (
+    <Link to={`/blog/${id}/${post.id}`}>
+      <div className="postImg">
+        <img src={getThumbnail(post.content)} alt="Popular Post" />
+      </div>
+      <div className="blogPostTitle">{post?.postTitle}</div>
+      <div
+        className="blogPostContent"
+        // dangerouslySetInnerHTML={{ __html: post?.content }}
+      >
+        {htmlToText(post?.content)}
+      </div>
+      <div className="postInfo">
+        <div className="Date">
+          {post?.createdAt && getTimeText(post?.createdAt)}
+        </div>
+        <div className="postInfoDetail">
+          <div className="blogIcons likeCount">
+            <IcoLike stroke="#333" fill="none" />
+            <span>3</span>
+          </div>
+          <div className="blogIcons comment">
+            <IcoComment stroke="#333" fill="none" />
+            <span>30</span>
+          </div>
+        </div>
+      </div>
     </Link>
   );
 }

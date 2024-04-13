@@ -119,6 +119,7 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
       open: true,
       data: [...chatData.data, res.data.result],
       roomId: chatData.roomId,
+      nickname: chatData.nickname,
     });
     setChatMsg('');
   };

@@ -14,6 +14,7 @@ export default function Chat() {
   const [chatData, setChatData] = useState<ChatDataProps>({
     open: false,
     data: [],
+    opId: 0,
     roomId: '',
     nickname: '',
   });
@@ -53,6 +54,7 @@ export default function Chat() {
         console.log(searchName.data.result);
         setChatData({
           open: true,
+          opId,
           data: res.data.result,
           roomId,
           nickname: searchName.data.result.nickname,
@@ -72,7 +74,9 @@ export default function Chat() {
     <div className="wrap">
       {chatData.open || <ChattingHeader />}
       {chatData.open && (
-        <ChatDetailHeader>{chatData.nickname}</ChatDetailHeader>
+        <ChatDetailHeader id={chatData.opId}>
+          {chatData.nickname}
+        </ChatDetailHeader>
       )}
       <div className="body" style={{ marginBottom: '100px' }}>
         {chatData.open ||
@@ -81,6 +85,7 @@ export default function Chat() {
             return (
               <Chatlist
                 key={value.id}
+                id={value.id}
                 nickname={value.nickname}
                 recentMsg={value.recentMsg}
                 sendTime={value.updatedAt}

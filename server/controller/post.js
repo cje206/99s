@@ -1,3 +1,4 @@
+const { limit } = require('firebase/firestore');
 const { Post, Like, Blog } = require('../models');
 const { Op, where } = require('sequelize');
 
@@ -79,9 +80,19 @@ exports.clickLike = async (req, res) => {
   const find = await Like.findOne({ where: { memberId, postId } });
   if (find) {
     const result = await Like.destroy({ where: { memberId, postId } });
+    const count = await Like.findAll({ where: { postId } });
+    const update = await Post.update(
+      { likeCount: count.length },
+      { where: { id: postId } }
+    );
     res.json({ success: true, msg: '좋아요 삭제 완료' });
   } else {
     const result = await Like.create({ memberId, postId });
+    const count = await Like.findAll({ where: { postId } });
+    const update = await Post.update(
+      { likeCount: count.length },
+      { where: { id: postId } }
+    );
     res.json({ success: true, msg: '좋아요 추가 완료' });
   }
 };
@@ -122,4 +133,16 @@ exports.category = async (req, res) => {
   } else {
     res.json({ success: false, msg: '조회 실패' });
   }
+};
+
+// 인기 게시글
+exports.popular = async (req, res) => {
+  const { id } = req.query;
+  const find = await Blog.findOne({ where: { memberId: id } });
+  const result = await Post.findAll({
+    where: { blogId: find.id },
+    order: [['likeCount', 'desc']],
+    limit: 1,
+  });
+  res.json({ success: true, result, msg: '인기 게시글 조회 완료' });
 };

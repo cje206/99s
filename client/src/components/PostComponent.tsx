@@ -1,12 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { BlogObject, OtherPostObj, PostObject, ThemeStyle } from '../types';
+import { BlogObject, PostObject, ThemeStyle } from '../types';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import DOMPurify from 'isomorphic-dompurify';
 import ProfileImage from './ProfileImage';
 import { ReactComponent as IcoLike } from '../images/ico-like.svg';
-import { ButtonExtraStyled } from './MainPopularStyle';
 import '../styles/Content.scss';
 import { PostSetBtn } from './Btns';
 
@@ -215,7 +213,7 @@ export function PostContent({
     <ContentBox>
       <div
         dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(content),
+          __html: content,
         }}
       ></div>
       <div className="hashtags">

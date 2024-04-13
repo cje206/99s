@@ -12,11 +12,13 @@ export interface InputRef {
 export interface ChatDataProps {
   open: boolean;
   data: any[];
+  opId: number;
   roomId: string;
   nickname: string;
 }
 
 export interface ChatListProps {
+  id: number;
   nickname: string;
   recentMsg: string;
   sendTime: string;
