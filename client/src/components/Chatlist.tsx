@@ -28,7 +28,7 @@ export default function Chatlist({
   roomId,
   data,
 }: ChatListProps) {
-  const socket = socketIOClient('localhost:8000');
+  const socket = socketIOClient(`${process.env.REACT_APP_HOST}`);
   const goChat = async (roomId: string) => {
     socket.emit('enter', { roomId });
     const res = await axios({

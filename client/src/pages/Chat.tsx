@@ -8,7 +8,7 @@ import socketIOClient from 'socket.io-client';
 import axios from 'axios';
 
 export default function Chat() {
-  const socket = socketIOClient('localhost:8000');
+  const socket = socketIOClient(':8000');
   const [user, setUser] = useAuth();
   const [roomList, setRoomList] = useState<any[]>([]);
   const [chatData, setChatData] = useState<ChatDataProps>({
