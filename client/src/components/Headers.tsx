@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { BlogSidemenu, DefaultSidemenu, SetSidemenu } from './Sidemenus';
 import axios from 'axios';
 import { getColor } from './Functions';
+import ProfileImage from './ProfileImage';
 
 const BoxStyle = styled.div`
   width: 100%;
@@ -70,6 +71,9 @@ const BtnsWrap = styled.div`
   p {
     margin-left: 10px;
   }
+  .imgBox {
+    margin: 15px 6px 15px 0;
+  }
 `;
 const TextCenter = styled.div`
   position: absolute;
@@ -81,14 +85,6 @@ const TextCenter = styled.div`
   font-size: 16px;
   font-weight: bold;
   line-height: 70px;
-`;
-const Profile = styled.div`
-  margin: 15px 0;
-  width: 40px;
-  height: 40px;
-  background: #ddd;
-  border-radius: 50%;
-  margin-right: 6px;
 `;
 const Title = styled.p`
   font-size: 16px;
@@ -153,37 +149,8 @@ export function SearchHeader() {
   );
 }
 
-export function BlogHeader({
-  children,
-  theme,
-}: {
-  children: string;
-  theme: ThemeStyle;
-}) {
-  const [sidemenu, setSidemenu] = useState<boolean>(false);
-  const closeFunc = () => {
-    setSidemenu(false);
-  };
-  return (
-    <>
-      <BoxStyle
-        style={{
-          background: theme.color,
-          color: theme.background,
-        }}
-      >
-        <Text>{children}</Text>
-        <BtnsWrap>
-          <Icon $url="search"></Icon>
-          <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
-        </BtnsWrap>
-      </BoxStyle>
-      {sidemenu && <BlogSidemenu func={closeFunc} />}
-    </>
-  );
-}
-
-export function BlogHeaderid({ id }: { id: number }) {
+export function BlogHeader({ id }: { id: number }) {
+  const navigator = useNavigate();
   const [theme, setTheme] = useState<ThemeStyle>({
     color: '#fff',
     background: '#333',
@@ -195,7 +162,6 @@ export function BlogHeaderid({ id }: { id: number }) {
       url: 'http://localhost:8000/api/blog/find',
       params: { memberId: id },
     });
-    console.log(res.data.result);
     if (res.data.result) {
       setTitle(res.data.result.blogTitle);
     }
@@ -221,7 +187,12 @@ export function BlogHeaderid({ id }: { id: number }) {
           color: theme.background,
         }}
       >
-        <Text>{title}</Text>
+        <Text
+          onClick={() => navigator(`/blog/${id}`)}
+          style={{ cursor: 'pointer' }}
+        >
+          {title}
+        </Text>
         <BtnsWrap>
           <Icon $url="search"></Icon>
           <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
@@ -267,11 +238,17 @@ export function ChattingHeader() {
   );
 }
 
-export function ChatDetailHeader({ children }: { children: string }) {
+export function ChatDetailHeader({
+  id,
+  children,
+}: {
+  id: number;
+  children: string;
+}) {
   return (
     <BoxStyle>
       <BtnsWrap>
-        <Profile />
+        <ProfileImage id={id} imgwidth="40px" />
         <Title>{children}</Title>
       </BtnsWrap>
       <Icon $url="search"></Icon>

@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { BlogHeaderid } from '../components/Headers';
+import { BlogHeader } from '../components/Headers';
 import styled from 'styled-components';
 import { PostObject } from '../types';
 import DOMPurify from 'isomorphic-dompurify';
+import { htmlToText } from '../components/Functions';
 
 const ContentBox = styled.div`
   border-bottom: 1px solid #e2e7e2;
@@ -47,7 +48,7 @@ export default function Category() {
   }, [categoryId]);
   return (
     <div className="wrap">
-      <BlogHeaderid id={Number(id)} />
+      <BlogHeader id={Number(id)} />
       <div className="body">
         {post?.map((val) => (
           <ContentBox
@@ -55,9 +56,7 @@ export default function Category() {
             onClick={() => (document.location.href = `/blog/${id}/${val.id}`)}
           >
             <div className="title">{val.postTitle}</div>
-            <div className="content">
-              {val.content.replaceAll('<p>', '').replaceAll('</p>', '')}
-            </div>
+            <div className="content">{htmlToText(val.content)}</div>
           </ContentBox>
         ))}
       </div>

@@ -8,6 +8,7 @@ const {
   otherPost,
   category,
   likeList,
+  popular,
 } = require('../controller/post');
 
 const router = express.Router();
@@ -20,5 +21,6 @@ router.get('/findLike', findLike);
 router.post('/clickLike', clickLike);
 router.get('/otherPost', otherPost);
 router.get('/category', category);
+router.get('/popular', popular);
 
 module.exports = router;

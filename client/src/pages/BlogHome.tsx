@@ -76,7 +76,6 @@ export default function BlogHome({ position }: { position?: string }) {
       url: 'http://localhost:8000/api/blog/find',
       params: { memberId: id },
     });
-    console.log(res.data.result);
     if (res.data.result) {
       setBlogInfo(res.data.result);
     }
@@ -93,15 +92,12 @@ export default function BlogHome({ position }: { position?: string }) {
   }, []);
   useEffect(() => {
     getBlogInfo();
-    console.log(blogInfo);
   }, [user]);
   useEffect(() => {}, [blogInfo]);
 
   return (
     <div className="wrap">
-      <BlogHeader theme={theme}>
-        {blogInfo.id !== 0 ? blogInfo.blogTitle : 'NOT FOUND'}
-      </BlogHeader>
+      <BlogHeader id={Number(id)} />
       {blogInfo.memberId === user.id && <NewPostBtn theme={theme} />}
       {blogInfo.id !== 0 ? (
         <BlogMain bloginfo={blogInfo} theme={theme} />

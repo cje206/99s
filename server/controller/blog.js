@@ -97,9 +97,19 @@ exports.clickSub = async (req, res) => {
   const find = await Subscribe.findOne({ where: { memberId, blogId } });
   if (find) {
     const result = await Subscribe.destroy({ where: { memberId, blogId } });
+    const count = await Subscribe.findAll({ where: { blogId } });
+    const update = await Blog.update(
+      { subscribeCount: count.length },
+      { where: { id: blogId } }
+    );
     res.json({ success: true, msg: '구독 삭제 완료' });
   } else {
     const result = await Subscribe.create({ memberId, blogId });
+    const count = await Subscribe.findAll({ where: { blogId } });
+    const update = await Blog.update(
+      { subscribeCount: count.length },
+      { where: { id: blogId } }
+    );
     res.json({ success: true, msg: '구독 추가 완료' });
   }
 };

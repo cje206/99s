@@ -108,7 +108,6 @@ select {
   font-family: 'NanumSquareNeo-Variable';
   border: none;
   background: none;
-  cursor: pointer;
 }
 select {
   border: 1px solid #d4d7db;

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { ChatListProps } from '../types';
 import socketIOClient from 'socket.io-client';
 import axios from 'axios';
+import ProfileImage from './ProfileImage';
 
 const BoxStyle = styled.div`
   width: 100%;
@@ -9,24 +10,18 @@ const BoxStyle = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-`;
-const Profile = styled.div`
-  width: 60px;
-  height: 60px;
-  background: #ddd;
-  border-radius: 50%;
-  margin-right: 20px;
-`;
-const Title = styled.p`
-  font-size: 16px;
-  margin-bottom: 6px;
-`;
-const Msg = styled.p`
-  font-size: 14px;
-  color: #808080;
+  .title {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .msg {
+    font-size: 14px;
+    color: #808080;
+  }
 `;
 
 export default function Chatlist({
+  id,
   nickname,
   recentMsg,
   sendTime,
@@ -45,18 +40,19 @@ export default function Chatlist({
     data({
       open: true,
       data: res.data.result,
+      opId: id,
       roomId,
       nickname,
     });
   };
   return (
     <BoxStyle onClick={() => goChat(roomId)}>
-      <Profile></Profile>
-      <div>
-        <Title>{nickname}</Title>
-        <Msg>
+      <ProfileImage id={id} />
+      <div style={{ marginLeft: '10px' }}>
+        <div className="title">{nickname}</div>
+        <div className="msg">
           {recentMsg} &#183; {sendTime}
-        </Msg>
+        </div>
       </div>
     </BoxStyle>
   );
