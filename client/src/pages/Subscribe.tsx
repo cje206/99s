@@ -14,7 +14,7 @@ export default function Subscribe() {
   const getSub = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/subList',
+      url: `${process.env.REACT_APP_HOST}/api/blog/subList`,
       params: { memberId: user.id },
     });
     console.log(res);

@@ -414,7 +414,7 @@ export function SetCategory() {
     if (user.id) {
       const res = await axios({
         method: 'GET',
-        url: 'http://localhost:8000/api/blog/getCategory',
+        url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
         params: { memberId: user.id },
       });
       console.log(res);
@@ -432,7 +432,7 @@ export function SetCategory() {
     };
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/blog/newCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/newCategory`,
       data,
     });
     getList();
@@ -441,7 +441,7 @@ export function SetCategory() {
   const editFunc = async (id: number) => {
     const res = await axios({
       method: 'PATCH',
-      url: 'http://localhost:8000/api/blog/updateCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/updateCategory`,
       data: {
         group: newGroup,
         categoryName: newName,
@@ -456,7 +456,7 @@ export function SetCategory() {
     }
     const res = await axios({
       method: 'DELETE',
-      url: 'http://localhost:8000/api/blog/delCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/delCategory`,
       data: { id },
     });
     alert(res.data.msg);
@@ -529,7 +529,7 @@ export function SetInfo() {
     }
     const res = await axios({
       method: 'PATCH',
-      url: 'http://localhost:8000/api/member/update',
+      url: `${process.env.REACT_APP_HOST}/api/member/update`,
       data,
     });
     if (res.data.success) {
@@ -547,7 +547,7 @@ export function SetInfo() {
     }
     const res = await axios({
       method: 'DELETE',
-      url: 'http://localhost:8000/api/member/destroy',
+      url: `${process.env.REACT_APP_HOST}/api/member/destroy`,
       data: { id: user.id },
     });
     if (res.data.success) {
@@ -653,7 +653,7 @@ export function SetBlog() {
     if (user.id) {
       const res = await axios({
         method: 'GET',
-        url: 'http://localhost:8000/api/blog/find',
+        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
         params: { memberId: user.id },
       });
       console.log(user);
@@ -688,7 +688,7 @@ export function SetBlog() {
     }
     const res = await axios({
       method: 'PATCH',
-      url: 'http://localhost:8000/api/blog/update',
+      url: `${process.env.REACT_APP_HOST}/api/blog/update`,
       data: {
         memberId: user.id,
         nickname,

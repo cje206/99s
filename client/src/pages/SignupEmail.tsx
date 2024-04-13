@@ -53,7 +53,7 @@ export default function SignupEmail() {
     }
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/member/signup',
+      url: `${process.env.REACT_APP_HOST}/api/member/signup`,
       data: {
         username,
         birth,

@@ -170,7 +170,7 @@ export function PostTitle({
     if (post.categoryId) {
       const res = await axios({
         method: 'GET',
-        url: 'http://localhost:8000/api/blog/findCategory',
+        url: `${process.env.REACT_APP_HOST}/api/blog/findCategory`,
         params: { id: post.categoryId },
       });
       setCategoryName(res.data.result.categoryName);
@@ -246,7 +246,7 @@ export function PostLike({
   const checkLike = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/post/checkLike',
+      url: `${process.env.REACT_APP_HOST}/api/post/checkLike`,
       params: { memberId: userid, postId: postid },
     });
     setLike(res.data.success);
@@ -254,7 +254,7 @@ export function PostLike({
   const getLike = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/post/findLike',
+      url: `${process.env.REACT_APP_HOST}/api/post/findLike`,
       params: { postId: postid },
     });
     setLikeList(res.data.result);
@@ -263,7 +263,7 @@ export function PostLike({
     if (userid) {
       const res = await axios({
         method: 'POST',
-        url: 'http://localhost:8000/api/post/clickLike',
+        url: `${process.env.REACT_APP_HOST}/api/post/clickLike`,
         data: { memberId: userid, postId: postid },
       });
       setLike(!like);
@@ -371,7 +371,7 @@ export function WriterProfile({
   const checkSub = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/checkSub',
+      url: `${process.env.REACT_APP_HOST}/api/blog/checkSub`,
       params: { memberId: userid, blogId: blog.id },
     });
     setSubscribe(res.data.success);
@@ -381,7 +381,7 @@ export function WriterProfile({
     if (userid) {
       const res = await axios({
         method: 'POST',
-        url: 'http://localhost:8000/api/blog/clickSub',
+        url: `${process.env.REACT_APP_HOST}/api/blog/clickSub`,
         data: { memberId: userid, blogId: blog.id },
       });
       setSubscribe(!subscribe);

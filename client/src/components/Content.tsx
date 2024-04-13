@@ -37,7 +37,7 @@ export default function Content({
     console.log(blog.id);
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/post/otherPost',
+      url: `${process.env.REACT_APP_HOST}/api/post/otherPost`,
       params: { postId, blogId: blog.id },
     });
     console.log(res.data.result);

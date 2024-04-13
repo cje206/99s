@@ -97,7 +97,7 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
     if (user.id) {
       const res = await axios({
         method: 'GET',
-        url: 'http://localhost:8000/api/blog/find',
+        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
         params: { memberId: user.id },
       });
       setBlog(res.data.success);
@@ -230,7 +230,7 @@ export function BlogSidemenu({ func }: { func?: () => void }) {
   const getCategory = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/getCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
       params: { memberId: Number(id) },
     });
     console.log(res);

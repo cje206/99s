@@ -16,7 +16,7 @@ export default function Login() {
   const loginFunc = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/member/login',
+      url: `${process.env.REACT_APP_HOST}/api/member/login`,
       params: { email, pw, maintain },
     });
     if (res.data.success) {

@@ -8,7 +8,7 @@ export default function useAuth() {
     if (localStorage.getItem('token')) {
       const res = await axios({
         method: 'GET',
-        url: 'http://localhost:8000/api/member/find',
+        url: `${process.env.REACT_APP_HOST}/api/member/find`,
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

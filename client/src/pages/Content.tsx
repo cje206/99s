@@ -28,7 +28,7 @@ export default function ContentPage() {
   const getBlog = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/find',
+      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
       params: { memberId: id },
     });
     const { bgColor, fontColor } = res.data.result;
@@ -38,7 +38,7 @@ export default function ContentPage() {
   const getPost = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/post/find',
+      url: `${process.env.REACT_APP_HOST}/api/post/find`,
       params: { id: postId },
     });
     setPost(res.data.result);

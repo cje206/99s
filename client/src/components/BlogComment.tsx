@@ -40,7 +40,7 @@ export default function CommentComponent() {
       if (postId) {
         const response = await axios({
           method: 'GET',
-          url: `http://localhost:8000/api/blog/${id}/${postId}/comments`,
+          url: `${process.env.REACT_APP_HOST}/api/blog/${id}/${postId}/comments`,
         });
         const sortedComments = sortComments(response.data);
         setComments(sortedComments);
@@ -72,7 +72,7 @@ export default function CommentComponent() {
       try {
         const response = await axios({
           method: 'POST', // 수정: POST 메서드 사용
-          url: `http://localhost:8000/api/blog/${id}/${postId}/comments`,
+          url: `${process.env.REACT_APP_HOST}/api/blog/${id}/${postId}/comments`,
           data: {
             author: 'author',
             content: newComment,
@@ -96,7 +96,7 @@ export default function CommentComponent() {
       try {
         const response = await axios({
           method: 'POST',
-          url: `http://localhost:8000/api/blog/${id}/${postId}/comments`,
+          url: `${process.env.REACT_APP_HOST}/api/blog/${id}/${postId}/comments`,
           data: {
             author: 'author',
             content: newComment,
