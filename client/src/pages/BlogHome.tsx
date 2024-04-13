@@ -73,7 +73,7 @@ export default function BlogHome({ position }: { position?: string }) {
   const getBlogInfo = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/find',
+      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
       params: { memberId: id },
     });
     console.log(res.data.result);

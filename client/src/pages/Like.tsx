@@ -15,7 +15,7 @@ export default function Like() {
   const getSub = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/post/likeList',
+      url: `${process.env.REACT_APP_HOST}/api/post/likeList`,
       params: { memberId: user.id },
     });
     console.log(res);

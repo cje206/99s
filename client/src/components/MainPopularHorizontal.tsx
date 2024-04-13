@@ -29,7 +29,6 @@ export default function MainPopularHorizontal({
   itemsPerPage = 10,
 }: MainPopularInfoProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  // const itemsPerPage = 3; //실험차 3이고 나중에 10으로 변경하면 됌
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

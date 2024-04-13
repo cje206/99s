@@ -38,7 +38,7 @@ export default function Chatlist({
     socket.emit('enter', { roomId });
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/chat/check',
+      url: `${process.env.REACT_APP_HOST}/api/chat/check`,
       params: { roomId },
     });
     console.log(res.data.result);

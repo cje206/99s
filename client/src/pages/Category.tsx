@@ -36,7 +36,7 @@ export default function Category() {
     }
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/post/category',
+      url: `${process.env.REACT_APP_HOST}/api/post/category`,
       params: data,
     });
     console.log(res);

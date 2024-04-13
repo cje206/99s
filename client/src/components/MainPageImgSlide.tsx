@@ -29,25 +29,25 @@ export default function MainPageImgSlide({ slides }: MainPageImgSlideProps) {
   return (
     <>
       <div className="mainContainer">
-        <p
-          style={{
-            wordWrap: 'break-word',
-            fontWeight: 'bold',
-            lineHeight: '1.5',
-            marginBottom: '20px',
-          }}
-        >
-          {slides[currentIndex].text}
-        </p>
-        <button>
-          <Link to=""></Link>자세히 보기
-        </button>
-      </div>
-      <div
-        className="imgBorder"
-        style={{ backgroundImage: `url(${slides[currentIndex].imageUrl})` }}
-      >
-        {/* <img src={slides[currentIndex].imageUrl} alt="이미지 슬라이드" /> */}
+        <div className="mainText">
+          <p
+            style={{
+              wordWrap: 'break-word',
+              fontWeight: 'bold',
+              lineHeight: '1.5',
+              marginBottom: '20px',
+            }}
+          >
+            {slides[currentIndex].text}
+          </p>
+          <button>
+            <Link to=""></Link>자세히 보기
+          </button>
+        </div>
+        <div
+          className="imgBorder"
+          style={{ backgroundImage: `url(${slides[currentIndex].imageUrl})` }}
+        ></div>
       </div>
     </>
   );

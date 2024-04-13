@@ -118,7 +118,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
   const getCategory = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/getCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
       params: { memberId: user.id },
     });
     setCategoryList(res.data.result);
@@ -142,7 +142,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
     }
     const findBlog = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/find',
+      url: '${process.env.REACT_APP_HOST}/api/blog/find',
       params: { memberId: user.id },
     });
     const categoryId = () => {
@@ -163,7 +163,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
     }
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/post/write',
+      url: `${process.env.REACT_APP_HOST}/api/post/write`,
       data,
     });
     console.log(res);
@@ -175,7 +175,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
   const getPost = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/post/find',
+      url: `${process.env.REACT_APP_HOST}/api/post/find`,
       params: { id: postId },
     });
     // const newHash = () => {

@@ -97,7 +97,7 @@ export function WriterList({ id }: { id: number }) {
   const getInfo = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/sub/getInfo',
+      url: `${process.env.REACT_APP_HOST}/api/sub/getInfo`,
       params: { blogId: id },
     });
     const { memberId, nickname, subscribe, postList } = res.data.result;
@@ -143,7 +143,7 @@ export function PostList({ id }: { id: number }) {
   const getInfo = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/like/getInfo',
+      url: `${process.env.REACT_APP_HOST}/api/like/getInfo`,
       params: { postId: id },
     });
     setInfo(res.data.result);

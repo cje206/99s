@@ -21,7 +21,7 @@ export default function Chat() {
   const findRoom = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/chat/find',
+      url: `${process.env.REACT_APP_HOST}/api/chat/find`,
       params: { userId: user.id },
     });
     console.log(res);
@@ -42,12 +42,12 @@ export default function Chat() {
         socket.emit('enter', { roomId });
         const res = await axios({
           method: 'GET',
-          url: 'http://localhost:8000/api/chat/check',
+          url: `${process.env.REACT_APP_HOST}/api/chat/check`,
           params: { roomId },
         });
         const searchName = await axios({
           method: 'GET',
-          url: 'http://localhost:8000/api/chat/nickname',
+          url: `${process.env.REACT_APP_HOST}/api/chat/nickname`,
           params: { memberId: opId },
         });
         console.log(searchName.data.result);
