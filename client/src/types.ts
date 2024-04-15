@@ -82,3 +82,29 @@ export interface OtherPostObj {
   id: number;
   postTitle: string;
 }
+
+export interface CommentObj {
+  id: number;
+  memberId: number;
+  content: string;
+  isSecret: number;
+  parentIndex: number | null;
+  createdAt: string;
+  nickname: string;
+}
+
+export interface WriterInfoObj {
+  memberId: number;
+  nickname: string;
+  subscribeCount: number;
+  postCount: number;
+  blogInfo: string;
+}
+export interface PostInfoObj {
+  memberId: number;
+  blogId: number;
+  nickname: string;
+  title: string;
+  content: string;
+  createdAt: string;
+}

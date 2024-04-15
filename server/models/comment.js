@@ -7,10 +7,6 @@ const CommentModel = (sequelize) => {
       primaryKey: true,
       autoIncrement: true,
     },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     content: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -22,14 +18,14 @@ const CommentModel = (sequelize) => {
     parentIndex: {
       type: DataTypes.INTEGER,
     },
-    postId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'blogs',
-        key: 'id',
-      },
-    },
+    // postId: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false,
+    //   references: {
+    //     model: 'blogs',
+    //     key: 'id',
+    //   },
+    // },
   });
 };
 module.exports = CommentModel;

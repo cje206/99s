@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { ChatMsgProps, SendMsgProps } from '../types';
 import React, { useState } from 'react';
 import axios from 'axios';
-import socketIOClient from 'socket.io-client';
+import socketIOClient, { io } from 'socket.io-client';
 
 const BoxStyle = styled.div`
   display: flex;
@@ -110,9 +110,10 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
       chatMsg,
       userId,
     });
+    console.log(chatData.roomId);
     const res = await axios({
       method: 'POST',
-      url: `${process.env.REACT_APP_HOST}/api/chat/write`,
+      url: `http://localhost:8000/api/chat/write`,
       data: { userId, roomId: chatData.roomId, chatMsg },
     });
     setChatData({
