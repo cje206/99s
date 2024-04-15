@@ -76,7 +76,7 @@ export default function BlogHome({ position }: { position?: string }) {
   useEffect(() => {}, [blogInfo]);
 
   return (
-    <div className="wrap">
+    <div className="wrap blogHome">
       <BlogHeader id={Number(id)} />
       {blogInfo.memberId === user.id && <NewPostBtn theme={theme} />}
       {blogInfo.id !== 0 ? (
