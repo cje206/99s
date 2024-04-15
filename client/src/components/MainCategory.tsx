@@ -102,7 +102,7 @@ export default function MainCategory({
             key={index}
             style={{ margin: '20px 20px 0 20px' }}
           >
-            <div className="imageWrapper">
+            <div className="categoryImg">
               <ImgCategory src={item.imageUrl} alt={item.title}></ImgCategory>
             </div>
             <TextDetail>
