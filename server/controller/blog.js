@@ -13,6 +13,16 @@ const { where } = require('sequelize');
 //     res.json({ success: false, result: error });
 //   }
 // };
+// id로 블로그 조회
+exports.blog = async (req, res) => {
+  const { id } = req.query;
+  const result = await Blog.findOne({ where: { id } });
+  if (result) {
+    res.json({ success: true, msg: '블로그 조회 완료', result });
+  } else {
+    res.json({ success: false, msg: '블로그 없음' });
+  }
+};
 
 // member id로 블로그 조회
 exports.find = async (req, res) => {

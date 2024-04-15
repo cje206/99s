@@ -77,16 +77,16 @@ export default function MainCategory({
             스포츠
           </StyledButton>
           <StyledButton
-            isSelected={selectedCategory === 'IT·과학'}
-            onClick={() => setSelectedCategory('IT·과학')}
+            isSelected={selectedCategory === 'IT&#183;과학'}
+            onClick={() => setSelectedCategory('IT&#183;과학')}
           >
-            IT·과학
+            IT&#183;과학
           </StyledButton>
           <StyledButton
-            isSelected={selectedCategory === '시사·경제'}
-            onClick={() => setSelectedCategory('시사·경제')}
+            isSelected={selectedCategory === '시사&#183;경제'}
+            onClick={() => setSelectedCategory('시사&#183;경제')}
           >
-            시사·경제
+            시사&#183;경제
           </StyledButton>
           <StyledButton
             isSelected={selectedCategory === '글로벌'}

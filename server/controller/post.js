@@ -1,5 +1,5 @@
 const { limit } = require('firebase/firestore');
-const { Post, Like, Blog } = require('../models');
+const { Post, Like, Blog, Comment } = require('../models');
 const { Op, where } = require('sequelize');
 
 // 포스트 등록
@@ -40,6 +40,16 @@ exports.newPost = async (req, res) => {
 exports.find = async (req, res) => {
   const result = await Post.findOne({ where: { id: req.query.id } });
   res.json({ success: true, result, msg: '포스트 조회 완료' });
+};
+
+// 포스트 삭제
+exports.deletePost = async (req, res) => {
+  const { id } = req.body;
+  const delLike = await Like.destroy({ where: { postId: id } });
+  const delComment = await Comment.destroy({ where: { postId: id } });
+  const result = await Post.destroy({ where: { id } });
+  // 해당 포스트 좋아요 삭제
+  res.json({ success: true, msg: '포스트 삭제 완료' });
 };
 
 // 회원별 좋아요 리스트 조회
@@ -141,6 +151,15 @@ exports.popular = async (req, res) => {
     where: { blogId: find.id },
     order: [['likeCount', 'desc']],
     limit: 1,
+  });
+  res.json({ success: true, result, msg: '인기 게시글 조회 완료' });
+};
+
+// 메인 인기 포스트
+exports.mainPop = async (req, res) => {
+  const result = await Post.findAll({
+    order: [['likeCount', 'desc']],
+    limit: 6,
   });
   res.json({ success: true, result, msg: '인기 게시글 조회 완료' });
 };

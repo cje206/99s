@@ -109,7 +109,7 @@ export function WriterList({ id }: { id: number }) {
         <div className="textBox">
           <div className="nickname">{info.nickname}</div>
           <div className="countBox">
-            <p className="count">구독자 {info.subscribeCount}명 · </p>
+            <p className="count">구독자 {info.subscribeCount}명 &#183; </p>
             <p className="count">게시글 {info.postCount}개</p>
           </div>
         </div>
@@ -158,57 +158,15 @@ export function PostList({ id }: { id: number }) {
     </Link>
   );
 }
-export function HorizonPost({ post, id }: { post: PostObject; id: number }) {
-  const [commentCount, setCommentCount] = useState<number>(0);
-  const getComment = async () => {
-    const res = await axios({
-      method: 'GET',
-      url: `${process.env.REACT_APP_HOST}/api/comment/find`,
-      params: { postId: post.id },
-    });
-    setCommentCount(res.data.result.length);
-  };
-  useEffect(() => {
-    getComment();
-  }, [post]);
-  return (
-    <Link
-      to={`/blog/${id}/${post.id}`}
-      style={{ display: 'block', marginBottom: '20px' }}
-    >
-      <div className="postImg">
-        <img src={getThumbnail(post.content)} alt="Popular Post" />
-      </div>
-      <div className="blogPostTitle">{post?.postTitle}</div>
-      <div className="blogPostContent">{htmlToText(post?.content)}</div>
-      <div className="postInfo">
-        <div className="Date">
-          {post?.createdAt && getTimeText(post?.createdAt)}
-        </div>
-        <div className="postInfoDetail">
-          <div className="blogIcons likeCount">
-            <IcoLike stroke="#333" fill="none" />
-            <span>{post.likeCount || '0'}</span>
-          </div>
-          <div className="blogIcons comment">
-            <IcoComment stroke="#333" fill="none" />
-            <span>{commentCount}</span>
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
-export function VerticalPost({
+export function PostLists({
   post,
-  id,
   vertical,
 }: {
   post: PostObject;
-  id: number;
   vertical: boolean;
 }) {
   const [commentCount, setCommentCount] = useState<number>(0);
+  const [memberId, setMemberId] = useState<number>(0);
   const [nickname, setNickname] = useState<string>('');
   const boxStyle = () => {
     if (vertical) {
@@ -228,20 +186,21 @@ export function VerticalPost({
   const getBlog = async () => {
     const res = await axios({
       method: 'GET',
-      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
-      params: { memberId: Number(id) },
+      url: `${process.env.REACT_APP_HOST}/api/blog/blog`,
+      params: { id: post?.blogId },
     });
     setNickname(res.data.result.nickname);
+    setMemberId(res.data.result.memberId);
   };
   useEffect(() => {
-    getBlog();
-  }, [id]);
-  useEffect(() => {
-    getComment();
+    if (post.id) {
+      getComment();
+      getBlog();
+    }
   }, [post]);
   return (
     <Link
-      to={`/blog/${id}/${post.id}`}
+      to={`/blog/${memberId}/${post.id}`}
       style={boxStyle()}
       className={vertical ? 'vertical' : ''}
     >
@@ -253,12 +212,12 @@ export function VerticalPost({
         <div className="blogPostContent">{htmlToText(post?.content)}</div>
         <div className="postInfo">
           <div className="postProfile">
+            <ProfileImage id={memberId} imgwidth="40px" />
             <div className="profile">
-              <ProfileImage id={Number(id)} imgwidth="24px" />
               <p className="nickname">{nickname}</p>
-            </div>
-            <div className="Date">
-              {post?.createdAt && getTimeText(post?.createdAt)}
+              <div className="Date">
+                {post?.createdAt && getTimeText(post?.createdAt)}
+              </div>
             </div>
           </div>
           <div className="postInfoDetail">

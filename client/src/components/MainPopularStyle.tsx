@@ -58,8 +58,8 @@ interface StyledImgDivProps {
 
 export const StyledImgDiv = styled.div<StyledImgDivProps>`
   display: flex;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: fit-content;
   transition: transform ${({ endSwipe }) => (endSwipe ? '0.2s' : '0s')};
   transform: translateX(
     ${({ imgCount, positionx }) =>

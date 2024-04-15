@@ -135,6 +135,20 @@ export function PostSetBtn() {
     localStorage.setItem('postId', `${postId}`);
     navigate('/post/write');
   };
+  const deleteBtn = async () => {
+    if (!window.confirm('게시글을 삭제하시겠습니까?')) {
+      return;
+    }
+    const res = await axios({
+      method: 'DELETE',
+      url: `${process.env.REACT_APP_HOST}/api/post/delete`,
+      data: { id: Number(postId) },
+    });
+    if (res.data.success) {
+      alert('게시글 삭제가 완료되었습니다.');
+      navigate(`/blog/${id}`);
+    }
+  };
   useEffect(() => {
     if (localStorage.getItem('token')) {
       setUser();
@@ -153,7 +167,11 @@ export function PostSetBtn() {
           수정
         </div>
       )}
-      {Number(id) === user?.id && <div className="btn">삭제</div>}
+      {Number(id) === user?.id && (
+        <div className="btn" onClick={deleteBtn}>
+          삭제
+        </div>
+      )}
       <div className="darkmodebtn" onClick={() => setDarkmode(!darkmode)}>
         <p className="text">다크모드</p>
         <ToggleBtn active={Boolean(darkmode)} />

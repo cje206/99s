@@ -32,27 +32,12 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
   const [showComments, setShowComments] = useState<boolean>(false);
   const [newComment, setNewComment] = useState<string>('');
   const [newReply, setNewReply] = useState<string>('');
+  const [editText, setEditText] = useState<string>('');
   const [replyTo, setReplyTo] = useState<number | null>(null); // 대댓글을 위한 상태
+  const [editId, setEditId] = useState<number | null>(null);
 
   const toggleComments = () => {
     setShowComments(!showComments);
-  };
-
-  const sortComments = (comments: any[]) => {
-    const parentComments = comments.filter(
-      (comment) => comment.parentIndex === null
-    );
-    const childComments = comments.filter(
-      (comment) => comment.parentIndex !== null
-    );
-
-    parentComments.forEach((parent) => {
-      parent.children = childComments.filter(
-        (child) => child.parentIndex === parent.id
-      );
-    });
-
-    return parentComments;
   };
 
   const addComment = async (e: React.FormEvent) => {
@@ -65,50 +50,45 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
       return;
     }
     if (newComment.trim() !== '') {
-      try {
-        const res = await axios({
-          method: 'POST', // 수정: POST 메서드 사용
-          url: `${process.env.REACT_APP_HOST}/api/comment/addComment`,
-          data: {
-            memberId: user.id,
-            content: newComment,
-            isSecret,
-            parentIndex: null,
-            postId: postId,
-          },
-        });
-        setNewComment('');
-        getComment();
-      } catch (error) {
-        // console.error('댓글 추가 에러', error);
-      }
+      const res = await axios({
+        method: 'POST', // 수정: POST 메서드 사용
+        url: `${process.env.REACT_APP_HOST}/api/comment/addComment`,
+        data: {
+          memberId: user.id,
+          content: newComment,
+          isSecret,
+          parentIndex: null,
+          postId: Number(postId),
+        },
+      });
+      setNewComment('');
+      getComment();
     }
   };
 
   const addReply = async (parentIndex: number) => {
     if (!user.id) {
+      if (window.confirm('로그인 후 댓글을 작성할 수 있습니다.')) {
+        document.location.href = '/signup';
+        return;
+      }
       return;
     }
     if (newReply.trim() !== '') {
-      try {
-        const res = await axios({
-          method: 'POST',
-          url: `${process.env.REACT_APP_HOST}/api/comment/addComment`,
-          data: {
-            memberId: user.id,
-            content: newReply,
-            isSecret,
-            parentIndex,
-            postId: postId,
-          },
-        });
-
-        setNewReply('');
-        setReplyTo(null);
-        getComment();
-      } catch (error) {
-        // console.error('답글 추가 에러', error);
-      }
+      const res = await axios({
+        method: 'POST',
+        url: `${process.env.REACT_APP_HOST}/api/comment/addComment`,
+        data: {
+          memberId: user.id,
+          content: newReply,
+          isSecret,
+          parentIndex,
+          postId: Number(postId),
+        },
+      });
+      setNewReply('');
+      setReplyTo(null);
+      getComment();
     }
   };
 
@@ -162,12 +142,20 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
     setComment(res.data.result);
   };
 
-  const editComment = async (id: number) => {
+  const editComment = async (data: CommentObj) => {
     const res = await axios({
       method: 'PATCH',
       url: `${process.env.REACT_APP_HOST}/api/comment/edit`,
-      data: { id },
+      data: {
+        id: data.id,
+        memberId: user.id,
+        content: editText,
+        isSecret,
+        parentIndex: data.parentIndex,
+        postId: Number(postId),
+      },
     });
+    setEditId(null);
     getComment();
   };
 
@@ -217,22 +205,35 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                         <ProfileImage id={val.memberId} imgwidth="30px" />
                         <div>{val.nickname}</div>
                       </div>
-                      {user.id === val.memberId && (
-                        <div className="commentBtns">
-                          <button
-                            type="button"
-                            onClick={() => editComment(val.id)}
-                          >
-                            수정
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => deleteComment(val.id)}
-                          >
-                            삭제
-                          </button>
-                        </div>
-                      )}
+                      {user.id === val.memberId &&
+                        (editId === val.id ? (
+                          <div className="commentBtns">
+                            <button
+                              type="button"
+                              onClick={() => editComment(val)}
+                            >
+                              댓글 수정하기
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="commentBtns">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditText(val.content);
+                                setEditId(val.id);
+                              }}
+                            >
+                              수정
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => deleteComment(val.id)}
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        ))}
                     </div>
                     {val.isSecret &&
                     user.id !== val.memberId &&
@@ -241,22 +242,38 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                         비밀 댓글입니다.
                       </div>
                     ) : (
-                      <div className="commentContent">{val.content}</div>
+                      <div className="commentContent">
+                        {editId === val.id ? (
+                          <textarea
+                            rows={5}
+                            style={{
+                              width: '100%',
+                              border: '1px solid #e2e7e2',
+                            }}
+                            value={editText}
+                            onChange={(e) => setEditText(e.target.value)}
+                          ></textarea>
+                        ) : (
+                          val.content
+                        )}
+                      </div>
                     )}
-                    <div className="commentBottom">
-                      <div className="commentTime">{val.createdAt}</div>
+                    {editId === val.id || (
+                      <div className="commentBottom">
+                        <div className="commentTime">{val.createdAt}</div>
 
-                      {(val.isSecret &&
-                        user.id !== val.memberId &&
-                        user.id !== Number(id)) || (
-                        <button
-                          className="replyBtn"
-                          onClick={() => setReplyTo(val.id)}
-                        >
-                          답댓글 달기
-                        </button>
-                      )}
-                    </div>
+                        {(val.isSecret &&
+                          user.id !== val.memberId &&
+                          user.id !== Number(id)) || (
+                          <button
+                            className="replyBtn"
+                            onClick={() => setReplyTo(val.id)}
+                          >
+                            답댓글 달기
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                   {replyTo === val.id && renderComments(val.id)}
                   {comment?.map((data) => {
@@ -271,22 +288,35 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                               />
                               <div>{data.nickname}</div>
                             </div>
-                            {user.id === data.memberId && (
-                              <div className="commentBtns">
-                                <button
-                                  type="button"
-                                  onClick={() => editComment(data.id)}
-                                >
-                                  수정
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => deleteComment(data.id)}
-                                >
-                                  삭제
-                                </button>
-                              </div>
-                            )}
+                            {user.id === data.memberId &&
+                              (editId === data.id ? (
+                                <div className="commentBtns">
+                                  <button
+                                    type="button"
+                                    onClick={() => editComment(data)}
+                                  >
+                                    댓글 수정하기
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="commentBtns">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setEditText(data.content);
+                                      setEditId(data.id);
+                                    }}
+                                  >
+                                    수정
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => deleteComment(data.id)}
+                                  >
+                                    삭제
+                                  </button>
+                                </div>
+                              ))}
                           </div>
                           {data.isSecret &&
                           user.id !== data.memberId &&
@@ -295,11 +325,29 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                               비밀 댓글입니다.
                             </div>
                           ) : (
-                            <div className="commentContent">{data.content}</div>
+                            <div className="commentContent">
+                              {editId === data.id ? (
+                                <textarea
+                                  rows={5}
+                                  style={{
+                                    width: '100%',
+                                    border: '1px solid #e2e7e2',
+                                  }}
+                                  value={editText}
+                                  onChange={(e) => setEditText(e.target.value)}
+                                ></textarea>
+                              ) : (
+                                data.content
+                              )}
+                            </div>
                           )}
-                          <div className="commentBottom">
-                            <div className="commentTime">{data.createdAt}</div>
-                          </div>
+                          {editId === data.id || (
+                            <div className="commentBottom">
+                              <div className="commentTime">
+                                {data.createdAt}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       );
                     }

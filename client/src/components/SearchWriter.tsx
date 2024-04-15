@@ -76,7 +76,7 @@ export default function SearchWriter({
           <PostWrapper>
             <PostWriter className="PostWriter">{item.writer}</PostWriter>
             <PostInfo>
-              <Subscribe>구독자 {item.subscribe} · </Subscribe>
+              <Subscribe>구독자 {item.subscribe} &#183; </Subscribe>
               <PostNum>게시글 {item.postNum}</PostNum>
             </PostInfo>
           </PostWrapper>

@@ -76,6 +76,7 @@ export interface PostObject {
   likeCount?: number;
   categoryId?: number | null;
   createdAt?: string;
+  blogId?: number;
 }
 
 export interface OtherPostObj {
