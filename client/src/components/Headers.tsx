@@ -6,6 +6,17 @@ import { BlogSidemenu, DefaultSidemenu, SetSidemenu } from './Sidemenus';
 import axios from 'axios';
 import { getColor } from './Functions';
 import ProfileImage from './ProfileImage';
+import { ReactComponent as IcoMenuLeft } from '../images/ico-menu-left.svg';
+import { ReactComponent as IcoMenuRight } from '../images/ico-menu-right.svg';
+import { ReactComponent as IcoSearch } from '../images/ico-search.svg';
+import { ReactComponent as Blo9Logo } from '../images/blo9_logo.svg';
+
+let defaultColor = '#333';
+let defaultBg = '#fff';
+if (localStorage.getItem('darkmode') === 'on') {
+  defaultBg = '#333';
+  defaultColor = '#fff';
+}
 
 const BoxStyle = styled.div`
   width: 100%;
@@ -21,7 +32,7 @@ const BoxStyle = styled.div`
   align-items: center;
   z-index: 100;
   border-bottom: 1px solid #f1f1f1;
-  background: #fff;
+  background: ${defaultBg};
   @media (min-width: 1160px) {
     width: 1200px;
     margin: 0 auto;
@@ -103,15 +114,18 @@ export function MainHeader() {
   };
   return (
     <>
-      <BoxStyle>
-        <Icon $url="lmenu" onClick={() => setSidemenu(true)}></Icon>
-
-        <LogoImg
-          src="/images/logo2.png"
-          alt="Blo9"
-          onClick={() => navigate('/')}
+      <BoxStyle className="headerBg">
+        <IcoMenuLeft
+          stroke={defaultColor}
+          fill="none"
+          onClick={() => setSidemenu(true)}
         />
-        <Icon $url="search" onClick={() => navigate('/search')}></Icon>
+        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <IcoSearch
+          stroke={defaultColor}
+          fill="none"
+          onClick={() => navigate('/search')}
+        />
       </BoxStyle>
       {sidemenu && <DefaultSidemenu func={closeFunc} />}
     </>
@@ -126,10 +140,18 @@ export function SubHeader({ children }: { children: string }) {
   };
   return (
     <>
-      <BoxStyle>
-        <Icon $url="lmenu" onClick={() => setSidemenu(true)}></Icon>
+      <BoxStyle className="headerBg">
+        <IcoMenuLeft
+          stroke={defaultColor}
+          fill="none"
+          onClick={() => setSidemenu(true)}
+        />
         <Text>{children}</Text>
-        <Icon $url="search" onClick={() => navigate('/search')}></Icon>
+        <IcoSearch
+          stroke={defaultColor}
+          fill="none"
+          onClick={() => navigate('/search')}
+        />
       </BoxStyle>
       {sidemenu && <DefaultSidemenu func={closeFunc} />}
     </>
@@ -140,15 +162,11 @@ export function SearchHeader() {
   const navigate = useNavigate();
   return (
     <BoxStyle>
-      <LogoImg
-        src="/images/logo2.png"
-        alt="Blo9"
-        onClick={() => navigate('/')}
-      />
+      <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
       <SearchBox>
         <InputBox />
         <BtnBox>
-          <Icon $url="search-white"></Icon>
+          <IcoSearch stroke="#fff" />
         </BtnBox>
       </SearchBox>
     </BoxStyle>
@@ -206,8 +224,11 @@ export function BlogHeader({ id }: { id: number }) {
           {title}
         </Text>
         <BtnsWrap>
-          <Icon $url="search"></Icon>
-          <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
+          <IcoSearch stroke={theme.background} />
+          <IcoMenuRight
+            stroke={theme.background}
+            onClick={() => setSidemenu(true)}
+          />
         </BtnsWrap>
       </BoxStyle>
       {sidemenu && <BlogSidemenu func={closeFunc} />}
@@ -234,14 +255,10 @@ export function SettingHeader({ children }: any) {
 
   return (
     <BoxStyle>
-      <LogoImg
-        src="/images/logo2.png"
-        alt="Blo9"
-        onClick={() => navigate('/')}
-      />
+      <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
       <TextCenter>{children}</TextCenter>
       {!isLargeScreen && (
-        <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
+        <IcoMenuRight stroke={defaultColor} onClick={() => setSidemenu(true)} />
       )}
       {sidemenu && <SetSidemenu func={closeFunc} />}
     </BoxStyle>
@@ -252,11 +269,7 @@ export function ChattingHeader() {
   const navigate = useNavigate();
   return (
     <BoxStyle>
-      <LogoImg
-        src="/images/logo2.png"
-        alt="Blo9"
-        onClick={() => navigate('/')}
-      />
+      <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
       <TextCenter>채팅</TextCenter>
       <Icon $url="search"></Icon>
     </BoxStyle>
@@ -285,11 +298,7 @@ export function SignHeader() {
   const navigate = useNavigate();
   return (
     <BoxStyle>
-      <LogoImg
-        src="/images/logo2.png"
-        alt="Blo9"
-        onClick={() => navigate('/')}
-      />
+      <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
     </BoxStyle>
   );
 }

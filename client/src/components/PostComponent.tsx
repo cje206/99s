@@ -5,9 +5,19 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ProfileImage from './ProfileImage';
 import { ReactComponent as IcoLike } from '../images/ico-like.svg';
+import { ReactComponent as IcoSet } from '../images/ico-set.svg';
+import { ReactComponent as IcoArrLeft } from '../images/ico-arr-left.svg';
+import { ReactComponent as IcoShare } from '../images/ico-share.svg';
 import '../styles/Content.scss';
 import { PostSetBtn, SubscribeBtn } from './Btns';
 import { getTimeText, handleCopyClipBoard } from './Functions';
+
+let defaultColor = '#333';
+let defaultBg = '#fff';
+if (localStorage.getItem('darkmode') === 'on') {
+  defaultBg = '#333';
+  defaultColor = '#fff';
+}
 
 const ContentInfo = styled.div`
   position: sticky;
@@ -21,7 +31,7 @@ const ContentInfo = styled.div`
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  background: #fff;
+  background: ${defaultBg};
   z-index: 150;
   .ico {
     width: 24px;
@@ -88,7 +98,7 @@ const FlexBox = styled.div`
         display: flex;
         margin-right: 20px;
         .imgBox {
-          border: 6px solid #fff;
+          border: 6px solid ${defaultBg};
           margin-right: -15px;
         }
       }
@@ -108,6 +118,7 @@ const WriterInfo = styled.div`
       font-size: 18px;
       font-weight: bold;
       margin-bottom: 5px;
+      color: #333;
     }
     .subscribe {
       color: #777777;
@@ -136,13 +147,17 @@ export function PostTop({ children }: { children: string }) {
   const navigate = useNavigate();
   return (
     <ContentInfo>
-      <button className="ico goBack" onClick={() => navigate(-1)}>
-        뒤로가기
-      </button>
+      <IcoArrLeft
+        stroke={defaultColor}
+        className="ico goBack"
+        onClick={() => navigate(-1)}
+      />
       <div>{children}</div>
-      <button className="ico setting" onClick={() => setSetActive(!setActive)}>
-        게시글 설정
-      </button>
+      <IcoSet
+        stroke={defaultColor}
+        className="ico setting"
+        onClick={() => setSetActive(!setActive)}
+      />
       {setActive && <PostSetBtn />}
     </ContentInfo>
   );
@@ -185,16 +200,11 @@ export function PostTitle({
             <div className="view">조회 조회수</div>
           </div>
         </div>
-        <button
+        <IcoShare
           className="shareBtn"
+          stroke={defaultColor}
           onClick={() => handleCopyClipBoard(pathname)}
-        >
-          <img
-            className="shareImg"
-            src={`${process.env.PUBLIC_URL}/images/ico-share.png`}
-            alt="공유하기버튼"
-          />
-        </button>
+        />
       </div>
     </ContentTopContainer>
   );
@@ -324,16 +334,11 @@ export function PostLike({
           {/* </div> */}
         </div>
       </div>
-      <button
+      <IcoShare
         className="shareBtn"
+        stroke={defaultColor}
         onClick={() => handleCopyClipBoard(pathname)}
-      >
-        <img
-          className="shareImg"
-          src={`${process.env.PUBLIC_URL}/images/ico-share.png`}
-          alt="공유하기버튼"
-        />
-      </button>
+      />
     </FlexBox>
   );
 }

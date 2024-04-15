@@ -20,6 +20,7 @@ const ThStyle = styled.th`
   width: 33.3%;
   line-height: 50px;
   background: #f5f7f9;
+  color: #333;
   border-right: 1px solid #e3e5e7;
 `;
 const TdStyle = styled.td`
