@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as IcoWrite } from '../images/ico-write.svg';
-import { ThemeStyle } from '../types';
+import { BlogObject, ColorObject, ThemeStyle } from '../types';
 import useAuth from '../hooks/useAuth';
+import axios from 'axios';
+import { getColor } from './Functions';
 
 const BoxStyle = styled.button<{ btncolor: string }>`
   border: 2px solid #d9dbdf;
@@ -142,9 +144,6 @@ export function PostSetBtn() {
     }
   }, []);
   useEffect(() => {
-    console.log(user.id, id, '일치여부');
-  }, [user]);
-  useEffect(() => {
     applyDark();
   }, [darkmode]);
   return (
@@ -160,5 +159,82 @@ export function PostSetBtn() {
         <ToggleBtn active={Boolean(darkmode)} />
       </div>
     </PostSetBox>
+  );
+}
+
+export function SubscribeBtn({
+  sub,
+  func,
+}: {
+  sub: Boolean;
+  func: (a: boolean) => void;
+}) {
+  const { id } = useParams<{ id?: string }>();
+  const [user, setUser] = useAuth();
+  const [blog, setBlog] = useState<BlogObject>();
+  const [theme, setTheme] = useState<ColorObject>({
+    background: '#333',
+    color: '#fff',
+  });
+  const toggleSubscribe = async () => {
+    if (user.id) {
+      const res = await axios({
+        method: 'POST',
+        url: `${process.env.REACT_APP_HOST}/api/blog/clickSub`,
+        data: { memberId: user.id, blogId: blog?.id },
+      });
+      func(!sub);
+    }
+  };
+  const getBlog = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+      params: { memberId: id },
+    });
+    const { bgColor, fontColor } = res.data.result;
+    getColor(setTheme, res.data.result.theme, fontColor, bgColor);
+    setBlog(res.data.result);
+  };
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    }
+    getBlog();
+  }, []);
+  return (
+    <>
+      {sub ? (
+        <button
+          onClick={toggleSubscribe}
+          className="subscribeBtn"
+          style={{
+            color: theme.background,
+            background: theme.color,
+            border: `1px solid ${theme.background}`,
+            width: '100px',
+            lineHeight: '30px',
+            borderRadius: '20px',
+          }}
+        >
+          구독 중
+        </button>
+      ) : (
+        <button
+          onClick={toggleSubscribe}
+          className="subscribeBtn"
+          style={{
+            color: theme.color,
+            background: theme.background,
+            border: `1px solid ${theme.color}`,
+            width: '100px',
+            lineHeight: '30px',
+            borderRadius: '20px',
+          }}
+        >
+          구독하기
+        </button>
+      )}
+    </>
   );
 }

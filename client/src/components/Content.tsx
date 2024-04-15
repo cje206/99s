@@ -50,6 +50,7 @@ export default function Content({
   };
   useEffect(() => {
     getOtherPost();
+    console.log(blog);
   }, [blog]);
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -86,7 +87,7 @@ export default function Content({
               다음글
             </OtherPost>
           )}
-          <WriterProfile userid={user.id} blog={blog} theme={theme} />
+          <WriterProfile userid={user.id} theme={theme} />
         </div>
       )}
     </>

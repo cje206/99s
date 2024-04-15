@@ -5,6 +5,9 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/comment.scss';
 import styled from 'styled-components';
+import useAuth from '../hooks/useAuth';
+import { CommentObj, ThemeStyle } from '../types';
+import ProfileImage from './ProfileImage';
 
 interface Comment {
   id: number;
@@ -18,36 +21,22 @@ interface Params {
 }
 const BlogComment = styled.div`
   margin: 20px;
-  img {
-    margin-bottom: 10px;
-  }
 `;
 
-export default function CommentComponent() {
+export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
   const { id, postId } = useParams<{ postId: string; id: string }>();
+  const [user, setUser] = useAuth();
+  const [comment, setComment] = useState<CommentObj[]>();
+  const [isSecret, setIsSecret] = useState<number>(0);
 
-  const [showComments, setShowComments] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState('');
+  const [showComments, setShowComments] = useState<boolean>(false);
+  const [newComment, setNewComment] = useState<string>('');
+  const [newReply, setNewReply] = useState<string>('');
   const [replyTo, setReplyTo] = useState<number | null>(null); // 대댓글을 위한 상태
 
   const toggleComments = () => {
     setShowComments(!showComments);
   };
-
-  useEffect(() => {
-    const fetchComments = async () => {
-      if (postId) {
-        const response = await axios({
-          method: 'GET',
-          url: `${process.env.REACT_APP_HOST}/api/blog/${id}/${postId}/comments`,
-        });
-        const sortedComments = sortComments(response.data);
-        setComments(sortedComments);
-      }
-    };
-    // fetchComments();
-  }, [id, postId]);
 
   const sortComments = (comments: any[]) => {
     const parentComments = comments.filter(
@@ -68,128 +57,295 @@ export default function CommentComponent() {
 
   const addComment = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user.id) {
+      if (window.confirm('로그인 후 댓글을 작성할 수 있습니다.')) {
+        document.location.href = '/signup';
+        return;
+      }
+      return;
+    }
     if (newComment.trim() !== '') {
       try {
-        const response = await axios({
+        const res = await axios({
           method: 'POST', // 수정: POST 메서드 사용
-          url: `${process.env.REACT_APP_HOST}/api/blog/${id}/${postId}/comments`,
+          url: `${process.env.REACT_APP_HOST}/api/comment/addComment`,
           data: {
-            author: 'author',
+            memberId: user.id,
             content: newComment,
-            isSecret: false,
-            parentId: replyTo,
+            isSecret,
+            parentIndex: null,
             postId: postId,
           },
         });
-        const updatedComments = [...comments, response.data];
-        setComments(sortComments(updatedComments)); // 수정: 새 댓글 추가 후 정렬
         setNewComment('');
-        setReplyTo(null);
+        getComment();
       } catch (error) {
-        console.error('댓글 추가 에러', error);
+        // console.error('댓글 추가 에러', error);
       }
     }
   };
 
-  const addReply = async (parentId: number, newComment: string) => {
-    if (newComment.trim() !== '') {
+  const addReply = async (parentIndex: number) => {
+    if (!user.id) {
+      return;
+    }
+    if (newReply.trim() !== '') {
       try {
-        const response = await axios({
+        const res = await axios({
           method: 'POST',
-          url: `${process.env.REACT_APP_HOST}/api/blog/${id}/${postId}/comments`,
+          url: `${process.env.REACT_APP_HOST}/api/comment/addComment`,
           data: {
-            author: 'author',
-            content: newComment,
-            isSecret: false,
-            parentId: parentId,
+            memberId: user.id,
+            content: newReply,
+            isSecret,
+            parentIndex,
             postId: postId,
           },
         });
 
-        const updatedComments = [...comments, response.data];
-        setComments(sortComments(updatedComments));
-        setNewComment('');
+        setNewReply('');
         setReplyTo(null);
+        getComment();
       } catch (error) {
-        console.error('답글 추가 에러', error);
+        // console.error('답글 추가 에러', error);
       }
     }
   };
 
-  const renderComments = (
-    comments: Comment[],
-    depth: number = 0
-  ): JSX.Element[] => {
-    return comments.map((comment: Comment) => (
-      <div
-        className="replyArea"
-        key={comment.id}
-        style={{ marginLeft: `${depth * 20}px`, marginTop: '10px' }}
-      >
-        <p>{comment.content}</p>
-        <button onClick={() => setReplyTo(comment.id)}>답글 달기</button>
-
-        {replyTo === comment.id && (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              addReply(comment.id, newComment); // 대댓글을 추가하는 함수, 구현 필요
-              setNewComment('');
-              setReplyTo(null); // 대댓글 추가 후 textarea 숨기기
-            }}
+  const renderComments = (parentIndex: number) => {
+    return (
+      <form>
+        <p className="addCommentTitle">답댓글 작성</p>
+        <textarea
+          className="commentArea"
+          style={{ width: '100%', height: '50px', marginTop: '10px' }}
+          value={newReply}
+          placeholder="답글을 입력하세요."
+          onChange={(e) => setNewReply(e.target.value)}
+        ></textarea>
+        <div className="commentBtns">
+          <button
+            type="button"
+            className="secretBtn"
+            style={
+              isSecret
+                ? theme
+                : { color: theme.background, background: theme.color }
+            }
+            onClick={() => setIsSecret(isSecret === 1 ? 0 : 1)}
           >
-            <textarea
-              className="commentArea"
-              style={{ width: '100%', height: '50px', marginTop: '10px' }}
-              value={newComment}
-              placeholder="답글을 입력하세요."
-              onChange={(e) => setNewComment(e.target.value)}
-            ></textarea>
-            <button type="submit">답글 추가</button>
-          </form>
-        )}
-
-        {comment.children && renderComments(comment.children, depth + 1)}
-      </div>
-    ));
+            <img
+              src={`${process.env.PUBLIC_URL}/images/ico-secret.png`}
+              alt=""
+            />
+            <p>{isSecret ? '비밀댓글 해제' : '비밀댓글'}</p>
+          </button>
+          <button
+            type="button"
+            className="addComment"
+            style={theme}
+            onClick={() => addReply(parentIndex)}
+          >
+            답댓글 추가
+          </button>
+        </div>
+      </form>
+    );
   };
+
+  const getComment = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/comment/find`,
+      params: { postId },
+    });
+    setComment(res.data.result);
+  };
+
+  const editComment = async (id: number) => {
+    const res = await axios({
+      method: 'PATCH',
+      url: `${process.env.REACT_APP_HOST}/api/comment/edit`,
+      data: { id },
+    });
+    getComment();
+  };
+
+  const deleteComment = async (id: number) => {
+    if (!window.confirm('댓글을 삭제하시겠습니까?')) {
+      return;
+    }
+    const res = await axios({
+      method: 'DELETE',
+      url: `${process.env.REACT_APP_HOST}/api/comment/delete`,
+      data: { id },
+    });
+    if (res.data.success) {
+      alert('댓글 삭제가 완료되었습니다.');
+      getComment();
+    }
+  };
+
+  useEffect(() => {
+    setUser();
+    getComment();
+  }, []);
 
   return (
     <BlogComment>
-      <div className="commentTop">
-        <div className="commentCount">{`${comments.length}개의 댓글`}</div>
-        <button onClick={toggleComments}>
-          <img
-            style={{ width: '20px', height: 'auto' }}
-            src={`${process.env.PUBLIC_URL}/images/${
-              showComments ? 'ico-arrowDown' : 'ico-arrowUp'
-            }.png`}
-            alt="Toggle comments"
-          />
-        </button>
+      <div className="commentTop" onClick={toggleComments}>
+        <div className="commentCount">{`${
+          comment?.length || '0'
+        }개의 댓글`}</div>
+        <img
+          src={`${process.env.PUBLIC_URL}/images/${
+            showComments ? 'ico-arrowDown' : 'ico-arrowUp'
+          }.png`}
+          alt="Toggle comments"
+          className="arrow"
+        />
       </div>
-      <hr
-        style={{
-          border: '1px solid #E1E1E1',
-        }}
-      />
       {showComments && (
-        <>
-          <form onSubmit={addComment}>
-            {/* {replyTo && <p>대댓글 작성 중...</p>} */}
-            <textarea
-              className="commentArea"
-              style={{ width: '100%', height: '50px' }}
-              value={newComment}
-              placeholder="블로그가 훈훈해지는 댓글 부탁드립니다."
-              onChange={(e) => setNewComment(e.target.value)}
-            ></textarea>
-            <button type="submit">댓글 추가</button>
-          </form>
+        <div className="commentWrap">
+          {comment?.map((val) => {
+            if (!val.parentIndex) {
+              return (
+                <div className="commentBox">
+                  <div className="comment" key={val.id}>
+                    <div className="commentWriter">
+                      <div className="commentInfo">
+                        <ProfileImage id={val.memberId} imgwidth="30px" />
+                        <div>{val.nickname}</div>
+                      </div>
+                      {user.id === val.memberId && (
+                        <div className="commentBtns">
+                          <button
+                            type="button"
+                            onClick={() => editComment(val.id)}
+                          >
+                            수정
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => deleteComment(val.id)}
+                          >
+                            삭제
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    {val.isSecret &&
+                    user.id !== val.memberId &&
+                    user.id !== Number(id) ? (
+                      <div className="commentContent secret">
+                        비밀 댓글입니다.
+                      </div>
+                    ) : (
+                      <div className="commentContent">{val.content}</div>
+                    )}
+                    <div className="commentBottom">
+                      <div className="commentTime">{val.createdAt}</div>
 
-          <div>{renderComments(comments)}</div>
-        </>
+                      {(val.isSecret &&
+                        user.id !== val.memberId &&
+                        user.id !== Number(id)) || (
+                        <button
+                          className="replyBtn"
+                          onClick={() => setReplyTo(val.id)}
+                        >
+                          답댓글 달기
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  {replyTo === val.id && renderComments(val.id)}
+                  {comment?.map((data) => {
+                    if (val.id === data.parentIndex) {
+                      return (
+                        <div className="comment replyComment" key={data.id}>
+                          <div className="commentWriter">
+                            <div className="commentInfo">
+                              <ProfileImage
+                                id={data.memberId}
+                                imgwidth="30px"
+                              />
+                              <div>{data.nickname}</div>
+                            </div>
+                            {user.id === data.memberId && (
+                              <div className="commentBtns">
+                                <button
+                                  type="button"
+                                  onClick={() => editComment(data.id)}
+                                >
+                                  수정
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => deleteComment(data.id)}
+                                >
+                                  삭제
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          {data.isSecret &&
+                          user.id !== data.memberId &&
+                          user.id !== Number(id) ? (
+                            <div className="commentContent secret">
+                              비밀 댓글입니다.
+                            </div>
+                          ) : (
+                            <div className="commentContent">{data.content}</div>
+                          )}
+                          <div className="commentBottom">
+                            <div className="commentTime">{data.createdAt}</div>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              );
+            }
+          })}
+        </div>
       )}
+      <form style={{ margin: 0 }}>
+        <p className="addCommentTitle">댓글 작성</p>
+        {/* {replyTo && <p>대댓글 작성 중...</p>} */}
+        <textarea
+          className="commentArea"
+          value={newComment}
+          placeholder="블로그가 훈훈해지는 댓글 부탁드립니다."
+          onChange={(e) => setNewComment(e.target.value)}
+        ></textarea>
+        <div className="commentBtns">
+          <button
+            type="button"
+            className="secretBtn"
+            style={
+              isSecret
+                ? theme
+                : { color: theme.background, background: theme.color }
+            }
+            onClick={() => setIsSecret(isSecret === 1 ? 0 : 1)}
+          >
+            <img
+              src={`${process.env.PUBLIC_URL}/images/ico-secret.png`}
+              alt=""
+            />
+            <p>{isSecret ? '비밀댓글 해제' : '비밀댓글'}</p>
+          </button>
+          <button
+            type="button"
+            className="addComment"
+            style={theme}
+            onClick={addComment}
+          >
+            댓글 추가
+          </button>
+        </div>
+      </form>
     </BlogComment>
   );
 }

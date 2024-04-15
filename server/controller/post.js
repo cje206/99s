@@ -100,7 +100,6 @@ exports.clickLike = async (req, res) => {
 // 이전글, 다음글 검색
 exports.otherPost = async (req, res) => {
   const { postId, blogId } = req.query;
-  console.log(blogId);
   const next = await Post.findOne({
     where: { id: { [Op.gt]: postId }, blogId },
     order: [['id', 'asc']],
@@ -109,7 +108,6 @@ exports.otherPost = async (req, res) => {
     where: { id: { [Op.lt]: postId }, blogId },
     order: [['id', 'desc']],
   });
-  console.log(next);
   res.json({
     success: true,
     result: [prev, next],

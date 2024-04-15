@@ -36,6 +36,7 @@ exports.find = async (req, res) => {
 
   for (let i = 0; i < find1.length; i++) {
     const [findId, _] = find1[i].roomId.split('to');
+    console.log(findId);
     const searchBlog = await Blog.findOne({ where: { memberId: findId } });
     if (searchBlog.nickname) {
       result.push({
@@ -58,6 +59,7 @@ exports.find = async (req, res) => {
   }
   for (let i = 0; i < find2.length; i++) {
     const [_, findId] = find2[i].roomId.split('to');
+    console.log(findId);
     const searchBlog = await Blog.findOne({ where: { memberId: findId } });
     if (searchBlog.nickname) {
       result.push({
@@ -106,11 +108,13 @@ exports.write = async (req, res) => {
   } else {
     const add = await Room.create({ roomId, recentMsg: chatMsg });
   }
+  console.log('완료');
   res.json({ success: true, result, msg: '채팅 추가 완료' });
 };
 
 // 닉네임 조회
 exports.nickname = async (req, res) => {
+  console.log('닉네임 조회');
   const { memberId } = req.query;
   const searchBlog = await Blog.findOne({ where: { memberId } });
   if (searchBlog.nickname) {

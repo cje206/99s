@@ -1,21 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { Info, items } from '../data/SearchData';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { ReactComponent as IcoLike } from '../images/ico-like.svg';
-import { ReactComponent as IcoComment } from '../images/ico-comment.svg';
 import { ReactComponent as IcoHorizon } from '../images/ico-horizon.svg';
 import { ReactComponent as IcoVertical } from '../images/ico-vertical.svg';
 import { PostObject, ThemeStyle } from '../types';
-import MainCategory from '../components/MainCategory';
-import MainPopularHorizontal from '../components/MainPopularHorizontal';
-import { data } from '../data/PopularHorizontalPost';
 import axios from 'axios';
-import { getThumbnail, getTimeText, htmlToText } from './Functions';
-import { VerticalPost } from './Lists';
+import { HorizonPost, VerticalPost } from './Lists';
 
 const PopularPost = styled.div`
-  margin: 20px 20px 70px 20px;
+  margin-bottom: 70px;
 `;
 export function BlogProfile() {
   return <div></div>;
@@ -31,7 +24,7 @@ export function BlogPopular() {
   const getPost = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/post/popular',
+      url: `${process.env.REACT_APP_HOST}/api/post/popular`,
       params: { id: Number(id) },
     });
     setPost(res.data.result[0]);
@@ -45,7 +38,7 @@ export function BlogPopular() {
       {/* DB에서 조회수 가장 높은 걸로 가져오게(연결만 다시) , 지금 현재는 만든 db에서 view 높은걸로 가져오게 설정함*/}
       <PopularPost>
         {post ? (
-          <VerticalPost id={Number(id)} post={post} />
+          <HorizonPost id={Number(id)} post={post} />
         ) : (
           <p>게시물이 없습니다.</p>
         )}
@@ -73,10 +66,9 @@ export default function BlogPosts({
     if (id) {
       const res = await axios({
         method: 'GET',
-        url: 'http://localhost:8000/api/post/category',
+        url: `${process.env.REACT_APP_HOST}/api/post/category`,
         params: { id },
       });
-      console.log(res);
       setPostList(res.data.result);
     }
   };
@@ -114,18 +106,13 @@ export default function BlogPosts({
           </button>
         </div>
       </div>
-      {layoutMode === 'vertical' ? (
-        <MainPopularHorizontal
-          data={data.filter((d) => d.id === parseInt(id || '0'))} // ID에 맞는 데이터만 필터링
-          showPagination={true}
-        />
-      ) : (
-        <MainCategory
-          items={items.filter((item) => item.id === parseInt(id || '0'))} // ID에 맞는 데이터만 필터링
-          ShowContent={false}
-          showPagination={true}
-        />
-      )}
+      {layoutMode === 'vertical'
+        ? postList?.map((val) => (
+            <VerticalPost id={Number(id)} post={val} vertical={true} />
+          ))
+        : postList?.map((val) => (
+            <VerticalPost id={Number(id)} post={val} vertical={false} />
+          ))}
     </>
   );
 }

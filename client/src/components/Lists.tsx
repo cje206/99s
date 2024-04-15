@@ -4,9 +4,10 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getThumbnail, getTimeText, htmlToText } from './Functions';
-import { PostObject } from '../types';
+import { PostInfoObj, PostObject, WriterInfoObj } from '../types';
 import { ReactComponent as IcoLike } from '../images/ico-like.svg';
 import { ReactComponent as IcoComment } from '../images/ico-comment.svg';
+import '../styles/lists.scss';
 
 const ArrBox = styled.div`
   display: flex;
@@ -69,20 +70,6 @@ const PostContainter = styled.div`
     }
   }
 `;
-interface WriterInfoObj {
-  memberId: number;
-  nickname: string;
-  subscribeCount: number;
-  postCount: number;
-}
-interface PostInfoObj {
-  memberId: number;
-  blogId: number;
-  nickname: string;
-  title: string;
-  content: string;
-  createdAt: string;
-}
 export function ArrList({ children }: { children: string }) {
   return (
     <ArrBox>
@@ -97,6 +84,7 @@ export function WriterList({ id }: { id: number }) {
     nickname: '',
     subscribeCount: 0,
     postCount: 0,
+    blogInfo: '',
   });
   const getInfo = async () => {
     const res = await axios({
@@ -104,13 +92,7 @@ export function WriterList({ id }: { id: number }) {
       url: `${process.env.REACT_APP_HOST}/api/sub/getInfo`,
       params: { blogId: id },
     });
-    const { memberId, nickname, subscribeCount, postCount } = res.data.result;
-    setInfo({
-      memberId,
-      nickname,
-      subscribeCount,
-      postCount,
-    });
+    setInfo(res.data.result);
   };
   useEffect(() => {
     console.log(info);
@@ -176,19 +158,29 @@ export function PostList({ id }: { id: number }) {
     </Link>
   );
 }
-export function VerticalPost({ post, id }: { post: PostObject; id: number }) {
+export function HorizonPost({ post, id }: { post: PostObject; id: number }) {
+  const [commentCount, setCommentCount] = useState<number>(0);
+  const getComment = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/comment/find`,
+      params: { postId: post.id },
+    });
+    setCommentCount(res.data.result.length);
+  };
+  useEffect(() => {
+    getComment();
+  }, [post]);
   return (
-    <Link to={`/blog/${id}/${post.id}`}>
+    <Link
+      to={`/blog/${id}/${post.id}`}
+      style={{ display: 'block', marginBottom: '20px' }}
+    >
       <div className="postImg">
         <img src={getThumbnail(post.content)} alt="Popular Post" />
       </div>
       <div className="blogPostTitle">{post?.postTitle}</div>
-      <div
-        className="blogPostContent"
-        // dangerouslySetInnerHTML={{ __html: post?.content }}
-      >
-        {htmlToText(post?.content)}
-      </div>
+      <div className="blogPostContent">{htmlToText(post?.content)}</div>
       <div className="postInfo">
         <div className="Date">
           {post?.createdAt && getTimeText(post?.createdAt)}
@@ -196,11 +188,88 @@ export function VerticalPost({ post, id }: { post: PostObject; id: number }) {
         <div className="postInfoDetail">
           <div className="blogIcons likeCount">
             <IcoLike stroke="#333" fill="none" />
-            <span>3</span>
+            <span>{post.likeCount || '0'}</span>
           </div>
           <div className="blogIcons comment">
             <IcoComment stroke="#333" fill="none" />
-            <span>30</span>
+            <span>{commentCount}</span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+export function VerticalPost({
+  post,
+  id,
+  vertical,
+}: {
+  post: PostObject;
+  id: number;
+  vertical: boolean;
+}) {
+  const [commentCount, setCommentCount] = useState<number>(0);
+  const [nickname, setNickname] = useState<string>('');
+  const boxStyle = () => {
+    if (vertical) {
+      return { display: 'flex', marginBottom: '20px' };
+    } else {
+      return { display: 'block', marginBottom: '20px' };
+    }
+  };
+  const getComment = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/comment/find`,
+      params: { postId: post.id },
+    });
+    setCommentCount(res.data.result.length);
+  };
+  const getBlog = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+      params: { memberId: Number(id) },
+    });
+    setNickname(res.data.result.nickname);
+  };
+  useEffect(() => {
+    getBlog();
+  }, [id]);
+  useEffect(() => {
+    getComment();
+  }, [post]);
+  return (
+    <Link
+      to={`/blog/${id}/${post.id}`}
+      style={boxStyle()}
+      className={vertical ? 'vertical' : ''}
+    >
+      <div className="postImg">
+        <img src={getThumbnail(post.content)} alt="Popular Post" />
+      </div>
+      <div className="postText">
+        <div className="blogPostTitle">{post?.postTitle}</div>
+        <div className="blogPostContent">{htmlToText(post?.content)}</div>
+        <div className="postInfo">
+          <div className="postProfile">
+            <div className="profile">
+              <ProfileImage id={Number(id)} imgwidth="24px" />
+              <p className="nickname">{nickname}</p>
+            </div>
+            <div className="Date">
+              {post?.createdAt && getTimeText(post?.createdAt)}
+            </div>
+          </div>
+          <div className="postInfoDetail">
+            <div className="blogIcons likeCount">
+              <IcoLike stroke="#333" fill="none" />
+              <span>{post.likeCount || '0'}</span>
+            </div>
+            <div className="blogIcons comment">
+              <IcoComment stroke="#333" fill="none" />
+              <span>{commentCount}</span>
+            </div>
           </div>
         </div>
       </div>
