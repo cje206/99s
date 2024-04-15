@@ -4,22 +4,31 @@
   .mainPostContainer {
     margin-bottom: 70px;
     display: flex;
-    margin: 20px 200px;
+    margin: 0 auto;
+    width: 1200px;
+    justify-content: space-between;
+
     .popularPost {
+
       flex: 6;
       padding: 20px;
       box-sizing: border-box;
+
     }
     .popularInfo {
-      flex: 4;
+      flex: 4.5;
+      margin-left: 10px;
     }
   }
   .category {
-    font-size: 22px;
-    margin: 20px 200px;
+    margin-bottom: 20px;
+    // width: 1200px;
+    margin-left: 110px;
   }
   .categoryContainer {
-    margin: 20px 200px;
+    // margin: 20px 200px;
+    width: 1200px;
+    margin: 0 auto;
   }
 }
 .main-slide {

@@ -62,6 +62,10 @@ const SideBox = styled.div`
     padding: 15px 20px;
     border-bottom: 1px solid #eaf1ea;
     box-sizing: border-box;
+    @media (min-width: 1160px) {
+      display: flex;
+      align-items: center;
+    }
     svg {
       margin-right: 10px;
     }
@@ -88,11 +92,25 @@ const SideBox = styled.div`
     }
   }
 `;
+// interface ModalProps {
+//   children: React.ReactNode;
+//   onClose: () => void;
+// }
+// const Modal: React.FC<ModalProps> = ({ children, onClose }) => (
+//   <div className="modalBackground">
+//     <div className="modalContent">
+//       {children}
+//       <button onClick={onClose}>닫기</button>
+//     </div>
+//   </div>
+// );
 export function DefaultSidemenu({ func }: { func?: () => void }) {
   const location = useLocation();
   const [user, setUser] = useAuth();
   const [blog, setBlog] = useState<Boolean>(false);
   const [darkmode, setDarkmode] = useState<Boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isScreenLarge, setIsScreenLarge] = useState(window.innerWidth > 1160);
   const logoutFun = () => {
     if (!window.confirm('로그아웃 하시겠습니까?')) {
       return;
@@ -117,6 +135,7 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
       setBlog(res.data.success);
     }
   };
+
   useEffect(() => {
     setUser();
     if (localStorage.getItem('darkmode') === 'on') {
@@ -129,6 +148,25 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
   useEffect(() => {
     getBlog();
   }, [user]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsScreenLarge(window.innerWidth > 1160);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isScreenLarge) {
+      // 화면 크기가 1160px를 넘으면 모달 열기
+      setIsModalOpen(true);
+    } else {
+      setIsModalOpen(false);
+    }
+  }, [isScreenLarge]);
 
   return (
     <SideBox

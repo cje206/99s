@@ -60,14 +60,14 @@
 
     .imgBorder {
       @include circle;
-      width: 400px;
+      width: 500px;
       height: 400px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .mainText {
-      width: 600px;
+      width: 700px;
       p {
         font-size: 27px;
       }

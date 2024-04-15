@@ -1,5 +1,5 @@
 import '../styles/MainPopularPost.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swipe from 'react-easy-swipe';
 import {
   Container,
@@ -7,6 +7,7 @@ import {
   Img,
   ImageCounterWrapper,
   ImageCounter,
+  SlideContainer,
 } from '../components/MainPopularStyle';
 import { PostObject } from '../types';
 import { PostLists } from './Lists';
@@ -27,6 +28,8 @@ export default function MainPopularPost({
   const [positionx, setPositionx] = useState<number>(0);
   const [imgCount, setImgCount] = useState<number>(1);
   const [endSwipe, setEndSwipe] = useState<boolean>(false);
+  const [isWide, setIsWide] = useState(window.innerWidth > 1160);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const onSwipeMove = (position: { x: number }) => {
     setEndSwipe(false);
@@ -61,6 +64,23 @@ export default function MainPopularPost({
     setPositionx(0);
     setEndSwipe(true);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsWide(window.innerWidth > 1160);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((preIndex) => (preIndex + 1) % postlist.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [postlist.length]);
 
   return (
     <>

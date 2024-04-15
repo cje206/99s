@@ -1,15 +1,17 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { UserProps } from '../types';
+import { ThemeStyle, UserProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 import { ErrorMsgGrey, ErrorMsgRed } from './ErrorMsg';
-import { ToggleBtn } from './Btns';
+import { NewPostBtn, ToggleBtn } from './Btns';
 import { ArrList } from './Lists';
 import { storage } from '../config/Firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import ProfileImage from './ProfileImage';
+import Pagination from './Pagination';
+import { is } from 'immutable';
 const TableStyle = styled.table`
   width: 100%;
   margin: 10px 0 30px;
@@ -251,6 +253,34 @@ interface Props {
   user: UserProps;
 }
 
+interface NavButton {
+  selectedBar: boolean;
+}
+const StyledButton = styled.button<NavButton>`
+  border: none;
+  flex-grow: 1;
+  border-bottom: ${(props) =>
+    props.selectedBar ? '2px solid #fbc02d' : '2px solid transparent'};
+  font-weight: ${(props) => (props.selectedBar ? 'bold' : 'lighter')};
+  transition: border-bottom 0.3s;
+  font-size: 15px;
+  padding: 10px 0;
+  color: ${(props) => (props.selectedBar ? '#333333' : '#7E7F81')};
+  margin-bottom: 5px;
+`;
+const SetBar = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+`;
+
+const WriteBtn = styled.button`
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid #000;
+`;
+
 export function SetMenu() {
   return (
     <>
@@ -269,8 +299,57 @@ export function SetMenu() {
     </>
   );
 }
+export function PcSetMenu() {
+  const [selectedBar, setSelectedBar] = useState('홈');
+  return (
+    <>
+      <SetBar>
+        <span style={{ fontWeight: '700', marginBottom: '20px' }}>설정</span>
+        <StyledButton
+          selectedBar={selectedBar === '홈'}
+          onClick={() => setSelectedBar('홈')}
+        >
+          <Link to="/setting">홈</Link>
+        </StyledButton>
+        <StyledButton
+          selectedBar={selectedBar === '글 관리'}
+          onClick={() => setSelectedBar('글 관리')}
+        >
+          <Link to="/setting/post">글 관리</Link>
+        </StyledButton>
+        <StyledButton
+          selectedBar={selectedBar === '카테고리 관리'}
+          onClick={() => setSelectedBar('카테고리 관리')}
+        >
+          <Link to="/setting/category">카테고리 관리</Link>
+        </StyledButton>
+        <StyledButton
+          selectedBar={selectedBar === '개인 정보 수정'}
+          onClick={() => setSelectedBar('개인 정보 수정')}
+        >
+          <Link to="/setting/info">개인 정보 수정</Link>
+        </StyledButton>
+        <StyledButton
+          selectedBar={selectedBar === '블로그 편집'}
+          onClick={() => setSelectedBar('블로그 편집')}
+        >
+          <Link to="/setting/blog">블로그 편집</Link>
+        </StyledButton>
+      </SetBar>
+    </>
+  );
+}
 
 export function SetHome() {
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 1160);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth > 1160);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
     <>
       <TableStyle className="settingTable">
@@ -294,11 +373,13 @@ export function SetHome() {
           </tr>
         </tbody>
       </TableStyle>
-      <SetMenu />
+      {!isLargeScreen && <SetMenu />}
     </>
   );
 }
+
 export function SetPost() {
+  const navigate = useNavigate();
   return (
     <>
       <CheckBox>
@@ -315,10 +396,11 @@ export function SetPost() {
           <div className="btn disabled">삭제</div>
         </BtnBox>
       </CheckBox>
+      <RectBtn onClick={() => navigate('/post/write')}>글쓰기</RectBtn>
     </>
   );
 }
-export function SetCategory() {
+export function SetCategory({ itemsPerPage = 3 }) {
   const [user, setUser] = useAuth();
   const [list, setList] = useState<any[]>([]);
   const [isBlogExist, setIsbBlogExist] = useState<boolean>(false);
@@ -326,6 +408,13 @@ export function SetCategory() {
   const [newGroup, setNewGroup] = useState<string>('일상');
   const [create, setCreate] = useState<boolean>(false);
   const [editId, setEditId] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = list.slice(indexOfFirstItem, indexOfLastItem);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   const categoryStyle = {
     display: 'flex',
     alignItems: 'center',
@@ -479,7 +568,8 @@ export function SetCategory() {
       )}
       {isBlogExist && list.length === 0 && <p>카테고리를 생성해주세요!</p>}
       {isBlogExist &&
-        list.map(({ id, categoryName, group }) => {
+        // list.map (1)
+        currentItems.map(({ id, categoryName, group }) => {
           if (editId == id) {
             return changeCate(id);
           } else {
@@ -497,6 +587,14 @@ export function SetCategory() {
         >
           카테고리 추가
         </RectBtn>
+      )}
+      {list.length >= 1 && (
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          totalItems={list.length}
+          paginate={paginate}
+          currentPage={currentPage}
+        />
       )}
     </>
   );
@@ -684,7 +782,7 @@ export function SetBlog() {
       if (uploadUrl) {
         imageUrl = uploadUrl;
         setUploadedImageUrl(uploadUrl);
-        setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
+        // setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
       }
     }
     const res = await axios({
@@ -736,11 +834,9 @@ export function SetBlog() {
     console.log(fileInputRef.current);
     fileInputRef.current?.click();
   };
-
-  const setToDefaultImage = () => {
-    setUseDefaultImg(true); // 기본 이미지 사용 상태를 true로 설정
-    setPreviewImageUrl(null); // 미리보기 이미지 URL을 초기화
-    setUploadedImageUrl(null); // 업로드된 이미지 URL을 초기화
+  const handleDefaultImageClick = () => {
+    setPreviewImageUrl(null);
+    console.log('기본 이미지로 전환됨');
   };
 
   useEffect(() => {
@@ -761,7 +857,8 @@ export function SetBlog() {
       <BlogBox>
         <ProfileImage
           id={user.id || 0}
-          profileimg={previewImageUrl || ''}
+          profileimg={previewImageUrl}
+          setPreview={setPreviewImageUrl}
           imgwidth={'80px'}
         />
         <input
@@ -774,7 +871,9 @@ export function SetBlog() {
           프로필 사진 변경
         </button>
 
-        <button className="editImg">기본이미지</button>
+        <button className="editImg" onClick={handleDefaultImageClick}>
+          기본이미지
+        </button>
       </BlogBox>
       <BoxStyle>
         <label>닉네임 *</label>

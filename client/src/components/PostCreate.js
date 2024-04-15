@@ -261,7 +261,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
     }
   }, [postId]);
   return (
-    <div className="wrap">
+    <div className="wrap createPost">
       <div className="postHeader">
         <button onClick={() => navigate(-1)}>취소</button>
         <select onChange={(e) => setCategory(e.target.value)} value={category}>
