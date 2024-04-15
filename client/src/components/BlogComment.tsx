@@ -20,7 +20,7 @@ interface Params {
   postId: string; // 포스트 ID
 }
 const BlogComment = styled.div`
-  margin: 20px;
+  padding: 20px;
 `;
 
 export default function CommentComponent({ theme }: { theme: ThemeStyle }) {

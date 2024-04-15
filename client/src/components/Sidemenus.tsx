@@ -10,10 +10,17 @@ import { ReactComponent as IcoDarkmode } from '../images/ico-darkmode.svg';
 import { ReactComponent as IcoSet } from '../images/ico-set.svg';
 import { ReactComponent as IcoWrite } from '../images/ico-write.svg';
 import { ReactComponent as IcoLogout } from '../images/ico-logout.svg';
+import { ReactComponent as IcoClose } from '../images/ico-close.svg';
 import { ToggleBtn } from './Btns';
-import { SetMenu } from './Settings';
 import { ArrList } from './Lists';
 import axios from 'axios';
+
+let defaultColor = '#333';
+let defaultBg = '#fff';
+if (localStorage.getItem('darkmode') === 'on') {
+  defaultBg = '#333';
+  defaultColor = '#fff';
+}
 
 const SideBox = styled.div`
   position: fixed;
@@ -22,7 +29,7 @@ const SideBox = styled.div`
   min-width: 320px;
   width: 100%;
   height: 100%;
-  background: #fff;
+  background: ${defaultBg};
   z-index: 200;
   box-sizing: border-box;
   .btnClose {
@@ -73,6 +80,13 @@ const SideBox = styled.div`
       border-top: 1px solid #eaf1ea;
     }
   }
+  &.darkmode {
+    background: #333;
+    .profileBox {
+      background: #333;
+      border-bottom: 1px solid #eaf1ea;
+    }
+  }
 `;
 export function DefaultSidemenu({ func }: { func?: () => void }) {
   const location = useLocation();
@@ -117,10 +131,20 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
   }, [user]);
 
   return (
-    <SideBox>
+    <SideBox
+      className={
+        localStorage.getItem('darkmode') === 'on' ? 'darkmode' : 'default'
+      }
+    >
       <div className="profileBox">
         <img
           src="/images/ico-close.png"
+          className="btnClose"
+          onClick={func}
+          style={{ cursor: 'pointer' }}
+        />
+        <IcoClose
+          stroke={defaultColor}
           className="btnClose"
           onClick={func}
           style={{ cursor: 'pointer' }}
@@ -199,7 +223,12 @@ export function SetSidemenu({ func }: { func?: () => void }) {
   }, [location.pathname]);
   return (
     <SideBox>
-      <img src="/images/ico-close.png" className="btnClose" onClick={func} />
+      <IcoClose
+        stroke={defaultColor}
+        className="btnClose"
+        onClick={func}
+        style={{ cursor: 'pointer' }}
+      />
       <div className="body" style={{ paddingTop: '50px' }}>
         {/* <SetMenu /> */}
         <Link to="/setting">
@@ -246,7 +275,12 @@ export function BlogSidemenu({ func }: { func?: () => void }) {
   }, [location.pathname]);
   return (
     <SideBox>
-      <img src="/images/ico-close.png" className="btnClose" onClick={func} />
+      <IcoClose
+        stroke={defaultColor}
+        className="btnClose"
+        onClick={func}
+        style={{ cursor: 'pointer' }}
+      />
       <div className="body" style={{ paddingTop: '50px' }}>
         <Link to={`/blog/${id}/category`}>
           <ArrList>전체 글</ArrList>

@@ -3,14 +3,12 @@ import { useState } from 'react';
 import Swipe from 'react-easy-swipe';
 import {
   Container,
-  PostImage,
   StyledImgDiv,
   Img,
   ImageCounterWrapper,
   ImageCounter,
 } from '../components/MainPopularStyle';
 import { PostObject } from '../types';
-import { getThumbnail } from './Functions';
 import { PostLists } from './Lists';
 
 export interface SwipeImg {

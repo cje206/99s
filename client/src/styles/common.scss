@@ -25,3 +25,14 @@
     color: #fff;
   }
 }
+
+.darkmode {
+  .wrap {
+    background: #333;
+    color: #fff;
+    min-height: 100vh;
+  }
+  .headerBg {
+    background: #333;
+  }
+}
