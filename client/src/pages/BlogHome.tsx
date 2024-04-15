@@ -1,23 +1,3 @@
-// import { useParams } from 'react-router-dom';
-// import BlogMain from '../components/BlogMain';
-// import { BlogHeader } from '../components/Headers';
-// import { items } from '../data/SearchData';
-
-// export default function BlogHome() {
-//   const { id } = useParams<{ id?: string }>();
-//   const itemId = parseInt(id ?? '0');
-
-//   const item = items.find((item) => item.id === itemId);
-
-//   return (
-//     <>
-//       <BlogHeader blogTitle={item?.blogTitle ?? ''} />
-//       <BlogMain />
-//     </>
-//   );
-// }
-//현재 글을 써서 db에 저장하는것이 안되므로 data를 만들어서 임의로 지정
-
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { items } from '../data/SearchData';
 import '../styles/BlogMain.scss';

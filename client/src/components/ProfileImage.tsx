@@ -30,10 +30,12 @@ export default function ProfileImage({
   id,
   imgwidth,
   profileimg,
+  setPreview,
 }: {
   id: number;
   imgwidth?: string;
-  profileimg?: string;
+  profileimg?: string | null;
+  setPreview?: (writerImg: string) => void;
 }) {
   const [profile, setProfile] = useState<{ img: string | null }>({ img: null });
   const [theme, setTheme] = useState<ColorObject>({
@@ -54,6 +56,7 @@ export default function ProfileImage({
         setProfile({
           img: writerImg,
         });
+        if (setPreview) setPreview(writerImg);
         getColor(setTheme, res.data.result.theme, fontColor, bgColor);
       } else {
         // res.data.result가 null이거나 undefined일 경우 처리
@@ -68,7 +71,12 @@ export default function ProfileImage({
     }
   };
   useEffect(() => {
-    if (profileimg) setProfile({ img: profileimg });
+    console.log('profile', profileimg);
+    if (profileimg) {
+      setProfile({ img: profileimg });
+    } else {
+      setProfile({ img: null });
+    }
   }, [profileimg]);
 
   useEffect(() => {

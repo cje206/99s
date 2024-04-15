@@ -22,6 +22,10 @@ const BoxStyle = styled.div`
   z-index: 100;
   border-bottom: 1px solid #f1f1f1;
   background: #fff;
+  @media (min-width: 1160px) {
+    width: 1200px;
+    margin: 0 auto;
+  }
 `;
 const LogoImg = styled.img`
   width: 80px;
@@ -92,7 +96,9 @@ const Title = styled.p`
 
 export function MainHeader() {
   const [sidemenu, setSidemenu] = useState<boolean>(false);
+  // const [modalIsOpen, setModalIsOpen] = useState(false);
   const navigate = useNavigate();
+
   const closeFunc = () => {
     setSidemenu(false);
   };
@@ -100,6 +106,7 @@ export function MainHeader() {
     <>
       <BoxStyle>
         <Icon $url="lmenu" onClick={() => setSidemenu(true)}></Icon>
+
         <LogoImg
           src="/images/logo2.png"
           alt="Blo9"

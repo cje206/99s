@@ -6,6 +6,7 @@ import {
   SetInfo,
   SetPost,
 } from '../components/Settings';
+import '../styles/_utils.scss';
 
 export default function Setting({ position }: { position: string }) {
   return (

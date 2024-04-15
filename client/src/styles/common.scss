@@ -1,6 +1,10 @@
 .wrap {
   min-width: 320px;
   box-sizing: border-box;
+  @media (min-width: 1160px) {
+    width: 1200px;
+    margin: 0 auto;
+  }
 
   .body {
     padding: 20px;

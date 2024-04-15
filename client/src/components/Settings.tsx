@@ -683,7 +683,7 @@ export function SetBlog() {
       if (uploadUrl) {
         imageUrl = uploadUrl;
         setUploadedImageUrl(uploadUrl);
-        setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
+        // setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
       }
     }
     const res = await axios({
@@ -735,11 +735,9 @@ export function SetBlog() {
     console.log(fileInputRef.current);
     fileInputRef.current?.click();
   };
-
-  const setToDefaultImage = () => {
-    setUseDefaultImg(true); // 기본 이미지 사용 상태를 true로 설정
-    setPreviewImageUrl(null); // 미리보기 이미지 URL을 초기화
-    setUploadedImageUrl(null); // 업로드된 이미지 URL을 초기화
+  const handleDefaultImageClick = () => {
+    setPreviewImageUrl(null);
+    console.log('기본 이미지로 전환됨');
   };
 
   useEffect(() => {
@@ -760,7 +758,8 @@ export function SetBlog() {
       <BlogBox>
         <ProfileImage
           id={user.id || 0}
-          profileimg={previewImageUrl || ''}
+          profileimg={previewImageUrl}
+          setPreview={setPreviewImageUrl}
           imgwidth={'80px'}
         />
         <input
@@ -773,7 +772,9 @@ export function SetBlog() {
           프로필 사진 변경
         </button>
 
-        <button className="editImg">기본이미지</button>
+        <button className="editImg" onClick={handleDefaultImageClick}>
+          기본이미지
+        </button>
       </BlogBox>
       <BoxStyle>
         <label>닉네임 *</label>

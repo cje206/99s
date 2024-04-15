@@ -53,10 +53,23 @@
     // align-items: center;
     margin-top: 40px;
   }
-  .popularPost {
-    height: 770px;
+  .slidePost {
+    height: 400px;
   }
   .postTitle {
     font-size: 20px;
+    flex: 6;
+    &.block {
+      text-align: center;
+      margin-top: 20px;
+    }
+  }
+  .postWriterInfo {
+    flex: 4;
+    justify-content: center;
+    width: 100%;
+  }
+  .postInfo {
+    display: flex;
   }
 }

@@ -21,6 +21,16 @@ interface Params {
 }
 const BlogComment = styled.div`
   margin: 20px;
+
+  img {
+    margin-bottom: 10px;
+  }
+  @media (min-width: 1160px) {
+    width: 1200px;
+    padding: 20px;
+    margin: 0 auto;
+  }
+
 `;
 
 export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
