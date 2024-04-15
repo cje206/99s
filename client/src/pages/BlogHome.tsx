@@ -80,15 +80,19 @@ export default function BlogHome({ position }: { position?: string }) {
       <BlogHeader id={Number(id)} />
       {blogInfo.memberId === user.id && <NewPostBtn theme={theme} />}
       {blogInfo.id !== 0 ? (
-        <BlogMain bloginfo={blogInfo} theme={theme} />
+        <>
+          <BlogMain blogid={blogInfo.id} theme={theme} />
+          <div className="body">
+            <BlogPopular />
+            <BlogPosts theme={theme}>전체게시글</BlogPosts>
+          </div>
+        </>
       ) : (
         <div className="body">
           <h1 className="title">페이지를 찾을 수 없습니다</h1>
           <Link to="/">Blo9 홈으로 이동</Link>
         </div>
       )}
-      <BlogPopular />
-      <BlogPosts theme={theme}>전체게시글</BlogPosts>
     </div>
   );
 }

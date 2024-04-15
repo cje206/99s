@@ -20,7 +20,7 @@ export default function ContentPage() {
     color: '#fff',
   });
   const [blog, setBlog] = useState<BlogObject>({
-    id: Number(postId),
+    id: Number(id),
     blogTitle: 'NOT FOUND',
     nickname: '',
   });
@@ -41,7 +41,10 @@ export default function ContentPage() {
       url: `${process.env.REACT_APP_HOST}/api/post/find`,
       params: { id: postId },
     });
-    setPost(res.data.result);
+    if (res.data.result.blogId === Number(id)) {
+      setPost(res.data.result);
+    }
+    console.log('블로그 다름');
   };
 
   useEffect(() => {
@@ -50,10 +53,16 @@ export default function ContentPage() {
   }, []);
 
   return (
-    <>
+    <div className="wrap">
       <BlogHeader id={Number(id)} />
-      <Content post={post} theme={theme} blog={blog} />
-      <CommentComponent />
-    </>
+      {post.id ? (
+        <>
+          <Content post={post} theme={theme} blog={blog} />
+          <CommentComponent theme={theme} />
+        </>
+      ) : (
+        <div className="body">존재하지 않는 포스트입니다.</div>
+      )}
+    </div>
   );
 }

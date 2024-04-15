@@ -123,7 +123,6 @@ exports.findCategory = async (req, res) => {
 exports.getCategory = async (req, res) => {
   const { memberId } = req.query;
   const find = await Blog.findOne({ where: { memberId } });
-  console.log(find);
   if (find) {
     const result = await Category.findAll({ where: { blogId: find.id } });
     res.json({ success: true, result, msg: '블로그 조회 완료' });

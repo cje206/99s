@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { BlogObject, PostObject, ThemeStyle } from '../types';
 import axios from 'axios';
@@ -6,7 +6,8 @@ import { useEffect, useState } from 'react';
 import ProfileImage from './ProfileImage';
 import { ReactComponent as IcoLike } from '../images/ico-like.svg';
 import '../styles/Content.scss';
-import { PostSetBtn } from './Btns';
+import { PostSetBtn, SubscribeBtn } from './Btns';
+import { getTimeText } from './Functions';
 
 const ContentInfo = styled.div`
   position: sticky;
@@ -155,15 +156,6 @@ export function PostTitle({
   blog: BlogObject;
 }) {
   const [categoryName, setCategoryName] = useState<string>('카테고리 없음');
-  const getTime = (): string => {
-    if (post.createdAt) {
-      const writtenTime = new Date(post.createdAt);
-      return `${writtenTime.getFullYear()}-${
-        writtenTime.getMonth() + 1
-      }-${writtenTime.getDay()}`;
-    }
-    return '';
-  };
   const getCategory = async () => {
     if (post.categoryId) {
       const res = await axios({
@@ -184,9 +176,9 @@ export function PostTitle({
       <div className="contentDetail">
         <ProfileImage id={blog?.memberId || 1} imgwidth="50px" />
         <div className="block">
-          <div className="writer">작성자</div>
+          <div className="writer">{blog.nickname}</div>
           <div className="block1">
-            <div className="date">{getTime()} · </div>
+            <div className="date">{getTimeText(post?.createdAt || '')} · </div>
             <div className="view">조회 조회수</div>
           </div>
         </div>
@@ -358,68 +350,54 @@ export function OtherPost({
 
 export function WriterProfile({
   userid,
-  blog,
   theme,
 }: {
   userid?: number;
-  blog: BlogObject;
   theme: ThemeStyle;
 }) {
+  const { id } = useParams<{ id?: string }>();
+  const [blog, setBlog] = useState<BlogObject>();
   const [subscribe, setSubscribe] = useState<Boolean>(false);
   const checkSub = async () => {
     const res = await axios({
       method: 'GET',
       url: `${process.env.REACT_APP_HOST}/api/blog/checkSub`,
-      params: { memberId: userid, blogId: blog.id },
+      params: { memberId: userid, blogId: blog?.id },
     });
     setSubscribe(res.data.success);
   };
-
-  const toggleSubscribe = async () => {
-    if (userid) {
-      const res = await axios({
-        method: 'POST',
-        url: `${process.env.REACT_APP_HOST}/api/blog/clickSub`,
-        data: { memberId: userid, blogId: blog.id },
-      });
-      setSubscribe(!subscribe);
-    }
+  const getBlog = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+      params: { memberId: Number(id) },
+    });
+    setBlog(res.data.result);
   };
   useEffect(() => {
-    if (userid) {
-      checkSub();
+    getBlog();
+  }, [subscribe]);
+  useEffect(() => {
+    if (blog?.id) {
+      if (userid) {
+        checkSub();
+      }
     }
-  }, [userid]);
+  }, [blog, subscribe]);
+  useEffect(() => {
+    if (id) {
+      getBlog();
+    }
+  }, [id]);
   return (
     <WriterInfo style={{ background: theme.color }}>
-      <ProfileImage id={blog.id} imgwidth="60px" />
+      <ProfileImage id={Number(id)} imgwidth="60px" />
       <div className="block2">
-        <div className="writer">{blog.nickname} </div>
-        <div className="subscribe">구독자 {blog.subscribeCount || 0}명</div>
+        <div className="writer">{blog?.nickname} </div>
+        <div className="subscribe">구독자 {blog?.subscribeCount || 0}명</div>
       </div>
-      {blog.memberId !== userid && (
-        <>
-          {subscribe ? (
-            <button
-              onClick={toggleSubscribe}
-              className="subscribeBtn"
-              style={{
-                color: theme.background,
-                border: `1px solid ${theme.background}`,
-              }}
-            >
-              구독 중
-            </button>
-          ) : (
-            <button
-              onClick={toggleSubscribe}
-              className="subscribeBtn"
-              style={theme}
-            >
-              구독하기
-            </button>
-          )}
-        </>
+      {blog?.memberId !== userid && Boolean(userid) && (
+        <SubscribeBtn sub={subscribe} func={setSubscribe} />
       )}
     </WriterInfo>
   );

@@ -11,6 +11,7 @@ exports.getInfo = async (req, res) => {
       nickname: find.nickname,
       subscribeCount: find.subscribeCount,
       postCount: postList.length,
+      blogInfo: find.blogInfo,
     },
     msg: '구독 정보 검색 완료',
   });

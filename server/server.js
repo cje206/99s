@@ -10,7 +10,7 @@ const PORT = 8000;
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: '*',
     methods: ['GET', 'POST'],
   },
 });
@@ -26,7 +26,7 @@ app.use('/api/chat', chatRouter);
 const blogRouter = require('./routes/blog');
 app.use('/api/blog', blogRouter);
 const commentRoutes = require('./routes/comment');
-app.use('/api', commentRoutes);
+app.use('/api/comment', commentRoutes);
 const postRoutes = require('./routes/post');
 app.use('/api/post', postRoutes);
 const subscribeRoutes = require('./routes/subscribe');
@@ -40,7 +40,8 @@ io.on('connection', (socket) => [
   socket.on('enter', (res) => {
     const { roomId } = res;
     socket.join(roomId);
-    console.log(socket.roomId, '접속 완료');
+    socket.roomId = roomId;
+    console.log(roomId, '접속 완료');
   }),
   // 채팅 입력
   socket.on('msg', (res) => {
