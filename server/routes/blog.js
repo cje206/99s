@@ -12,10 +12,12 @@ const {
   findSub,
   clickSub,
   subList,
+  blog,
 } = require('../controller/blog');
 
 const router = express.Router();
 
+router.get('/blog', blog);
 router.get('/find', find);
 router.patch('/update', update);
 router.get('/subList', subList);

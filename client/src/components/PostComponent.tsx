@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { BlogObject, PostObject, ThemeStyle } from '../types';
 import axios from 'axios';
@@ -7,7 +7,7 @@ import ProfileImage from './ProfileImage';
 import { ReactComponent as IcoLike } from '../images/ico-like.svg';
 import '../styles/Content.scss';
 import { PostSetBtn, SubscribeBtn } from './Btns';
-import { getTimeText } from './Functions';
+import { getTimeText, handleCopyClipBoard } from './Functions';
 
 const ContentInfo = styled.div`
   position: sticky;
@@ -155,6 +155,7 @@ export function PostTitle({
   post: PostObject;
   blog: BlogObject;
 }) {
+  const { pathname } = useLocation();
   const [categoryName, setCategoryName] = useState<string>('카테고리 없음');
   const getCategory = async () => {
     if (post.categoryId) {
@@ -178,11 +179,16 @@ export function PostTitle({
         <div className="block">
           <div className="writer">{blog.nickname}</div>
           <div className="block1">
-            <div className="date">{getTimeText(post?.createdAt || '')} · </div>
+            <div className="date">
+              {getTimeText(post?.createdAt || '')} &#183;{' '}
+            </div>
             <div className="view">조회 조회수</div>
           </div>
         </div>
-        <button className="shareBtn">
+        <button
+          className="shareBtn"
+          onClick={() => handleCopyClipBoard(pathname)}
+        >
           <img
             className="shareImg"
             src={`${process.env.PUBLIC_URL}/images/ico-share.png`}
@@ -228,6 +234,7 @@ export function PostLike({
   postid: number;
   theme: ThemeStyle;
 }) {
+  const { pathname } = useLocation();
   const [like, setLike] = useState<Boolean>(false);
   const [likeList, setLikeList] = useState({
     count: 0,
@@ -317,7 +324,10 @@ export function PostLike({
           {/* </div> */}
         </div>
       </div>
-      <button className="shareBtn">
+      <button
+        className="shareBtn"
+        onClick={() => handleCopyClipBoard(pathname)}
+      >
         <img
           className="shareImg"
           src={`${process.env.PUBLIC_URL}/images/ico-share.png`}

@@ -15,7 +15,7 @@ export default function Like() {
   const getSub = async () => {
     const res = await axios({
       method: 'GET',
-      url: `${process.env.REACT_APP_HOST}/api/post/likeList`,
+      url: `${process.env.REACT_APP_HOST}/api/like/likeList`,
       params: { memberId: user.id },
     });
     console.log(res);
@@ -41,7 +41,7 @@ export default function Like() {
         {Boolean(like?.length) ? (
           like?.map((val) => <PostList id={val.postId}></PostList>)
         ) : (
-          <div className="text">구독 리스트가 없습니다.</div>
+          <div className="text">좋아요 리스트가 없습니다.</div>
         )}
       </div>
     </div>

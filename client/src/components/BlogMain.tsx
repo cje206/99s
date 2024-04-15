@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import '../styles/BlogMain.scss';
 import { useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ import { ThemeStyle, WriterInfoObj } from '../types';
 import ProfileImage from '../components/ProfileImage';
 import { SubscribeBtn } from './Btns';
 import axios from 'axios';
+import { handleCopyClipBoard } from './Functions';
 
 const BlogMainContainer = styled.div<{ link?: string }>`
   display: flex;
@@ -68,6 +69,7 @@ export default function BlogMain({
   blogid: number;
   theme: ThemeStyle;
 }) {
+  const { pathname } = useLocation();
   const { id } = useParams<{ id?: string }>();
   const [user, setUser] = useAuth();
   const [subscribe, setSubscribe] = useState<Boolean>(false);
@@ -124,7 +126,9 @@ export default function BlogMain({
         <BlogDetail>
           <div className="nickName">
             <p>{blogInfo?.nickname}</p>
-            <SubscribeBtn sub={subscribe} func={setSubscribe} />
+            {id == user.id || (
+              <SubscribeBtn sub={subscribe} func={setSubscribe} />
+            )}
           </div>
           <div className="blogInfo">{blogInfo?.blogInfo}</div>
         </BlogDetail>
@@ -160,7 +164,10 @@ export default function BlogMain({
             <IcoPost stroke={theme.color}></IcoPost>
             <span>{postCount}</span>
           </div>
-          <div className="blogIcons share">
+          <div
+            className="blogIcons share"
+            onClick={() => handleCopyClipBoard(pathname)}
+          >
             <IcoShare stroke={theme.color}></IcoShare>
           </div>
         </div>

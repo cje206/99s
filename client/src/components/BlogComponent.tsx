@@ -5,7 +5,7 @@ import { ReactComponent as IcoHorizon } from '../images/ico-horizon.svg';
 import { ReactComponent as IcoVertical } from '../images/ico-vertical.svg';
 import { PostObject, ThemeStyle } from '../types';
 import axios from 'axios';
-import { HorizonPost, VerticalPost } from './Lists';
+import { PostLists } from './Lists';
 
 const PopularPost = styled.div`
   margin-bottom: 70px;
@@ -38,7 +38,7 @@ export function BlogPopular() {
       {/* DB에서 조회수 가장 높은 걸로 가져오게(연결만 다시) , 지금 현재는 만든 db에서 view 높은걸로 가져오게 설정함*/}
       <PopularPost>
         {post ? (
-          <HorizonPost id={Number(id)} post={post} />
+          <PostLists post={post} vertical={false} />
         ) : (
           <p>게시물이 없습니다.</p>
         )}
@@ -107,12 +107,8 @@ export default function BlogPosts({
         </div>
       </div>
       {layoutMode === 'vertical'
-        ? postList?.map((val) => (
-            <VerticalPost id={Number(id)} post={val} vertical={true} />
-          ))
-        : postList?.map((val) => (
-            <VerticalPost id={Number(id)} post={val} vertical={false} />
-          ))}
+        ? postList?.map((val) => <PostLists post={val} vertical={true} />)
+        : postList?.map((val) => <PostLists post={val} vertical={false} />)}
     </>
   );
 }

@@ -1,3 +1,5 @@
+import { useLocation } from 'react-router-dom';
+
 export const getColor = (
   setfunc: (colors: any) => void,
   type: number,
@@ -73,4 +75,15 @@ export const getThumbnail = (html: string): string => {
     return imgUrl;
   }
   return '/images/no-image.jpg';
+};
+
+export const handleCopyClipBoard = async (text: string) => {
+  try {
+    await navigator.clipboard.writeText(
+      `${process.env.REACT_APP_BASEURL}` + text
+    );
+    alert('클립보드에 링크가 복사되었어요.');
+  } catch (err) {
+    console.log(err);
+  }
 };

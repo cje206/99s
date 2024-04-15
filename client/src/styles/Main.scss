@@ -9,8 +9,11 @@
     justify-content: space-between;
 
     .popularPost {
-      flex: 5.5;
-      margin-right: 10px;
+
+      flex: 6;
+      padding: 20px;
+      box-sizing: border-box;
+
     }
     .popularInfo {
       flex: 4.5;
