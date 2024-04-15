@@ -1,23 +1,3 @@
-// import { useParams } from 'react-router-dom';
-// import BlogMain from '../components/BlogMain';
-// import { BlogHeader } from '../components/Headers';
-// import { items } from '../data/SearchData';
-
-// export default function BlogHome() {
-//   const { id } = useParams<{ id?: string }>();
-//   const itemId = parseInt(id ?? '0');
-
-//   const item = items.find((item) => item.id === itemId);
-
-//   return (
-//     <>
-//       <BlogHeader blogTitle={item?.blogTitle ?? ''} />
-//       <BlogMain />
-//     </>
-//   );
-// }
-//현재 글을 써서 db에 저장하는것이 안되므로 data를 만들어서 임의로 지정
-
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { items } from '../data/SearchData';
 import '../styles/BlogMain.scss';
@@ -30,6 +10,7 @@ import { getColor } from '../components/Functions';
 import BlogPosts, { BlogPopular } from '../components/BlogComponent';
 import BlogMain from '../components/BlogMain';
 import { NewPostBtn } from '../components/Btns';
+import Footer from '../components/Footer';
 
 interface Blog {
   id: number;
@@ -96,23 +77,26 @@ export default function BlogHome({ position }: { position?: string }) {
   useEffect(() => {}, [blogInfo]);
 
   return (
-    <div className="wrap">
-      <BlogHeader id={Number(id)} />
-      {blogInfo.memberId === user.id && <NewPostBtn theme={theme} />}
-      {blogInfo.id !== 0 ? (
-        <>
-          <BlogMain blogid={blogInfo.id} theme={theme} />
+    <>
+      <div className="wrap blogHome">
+        <BlogHeader id={Number(id)} />
+        {blogInfo.memberId === user.id && <NewPostBtn theme={theme} />}
+        {blogInfo.id !== 0 ? (
+          <>
+            <BlogMain blogid={blogInfo.id} theme={theme} />
+            <div className="body">
+              <BlogPopular />
+              <BlogPosts theme={theme}>전체게시글</BlogPosts>
+            </div>
+          </>
+        ) : (
           <div className="body">
-            <BlogPopular />
-            <BlogPosts theme={theme}>전체게시글</BlogPosts>
+            <h1 className="title">페이지를 찾을 수 없습니다</h1>
+            <Link to="/">Blo9 홈으로 이동</Link>
           </div>
-        </>
-      ) : (
-        <div className="body">
-          <h1 className="title">페이지를 찾을 수 없습니다</h1>
-          <Link to="/">Blo9 홈으로 이동</Link>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+      <Footer />
+    </>
   );
 }

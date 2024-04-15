@@ -21,7 +21,7 @@ const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <nav>
+    <nav style={{ textAlign: 'center' }}>
       <ul
         style={{
           listStyleType: 'none',

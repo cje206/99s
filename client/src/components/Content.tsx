@@ -1,5 +1,4 @@
 import '../styles/Content.scss';
-import { items } from '../data/SearchData';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
@@ -61,7 +60,7 @@ export default function Content({
   return (
     <>
       {Boolean(post) && (
-        <div>
+        <div className="contentContainer">
           <PostTop>{post.postTitle}</PostTop>
           <PostTitle post={post} blog={blog} />
           <PostContent content={post.content} hashtag={post.hashtag} />

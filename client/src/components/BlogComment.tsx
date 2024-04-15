@@ -21,6 +21,15 @@ interface Params {
 }
 const BlogComment = styled.div`
   margin: 20px;
+
+  img {
+    margin-bottom: 10px;
+  }
+  @media (min-width: 1160px) {
+    width: 1200px;
+    padding: 20px;
+    margin: 0 auto;
+  }
 `;
 
 export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
@@ -95,7 +104,7 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
   const renderComments = (parentIndex: number) => {
     return (
       <form>
-        <p className="addCommentTitle">답댓글 작성</p>
+        <p className="addCommentTitle">대댓글 작성</p>
         <textarea
           className="commentArea"
           style={{ width: '100%', height: '50px', marginTop: '10px' }}
@@ -126,7 +135,7 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
             style={theme}
             onClick={() => addReply(parentIndex)}
           >
-            답댓글 추가
+            대댓글 추가
           </button>
         </div>
       </form>
@@ -262,18 +271,19 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                       <div className="commentBottom">
                         <div className="commentTime">{val.createdAt}</div>
 
-                        {(val.isSecret &&
-                          user.id !== val.memberId &&
-                          user.id !== Number(id)) || (
-                          <button
-                            className="replyBtn"
-                            onClick={() => setReplyTo(val.id)}
-                          >
-                            답댓글 달기
-                          </button>
-                        )}
-                      </div>
-                    )}
+
+                      {(val.isSecret &&
+                        user.id !== val.memberId &&
+                        user.id !== Number(id)) || (
+                        <button
+                          className="replyBtn"
+                          onClick={() => setReplyTo(val.id)}
+                        >
+                          대댓글 달기
+                        </button>
+                      )}
+                    </div>
+
                   </div>
                   {replyTo === val.id && renderComments(val.id)}
                   {comment?.map((data) => {

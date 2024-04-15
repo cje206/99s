@@ -102,7 +102,7 @@ export default function MainCategory({
             key={index}
             style={{ margin: '20px 20px 0 20px' }}
           >
-            <div className="imageWrapper">
+            <div className="categoryImg">
               <ImgCategory src={item.imageUrl} alt={item.title}></ImgCategory>
             </div>
             <TextDetail>
@@ -122,7 +122,7 @@ export default function MainCategory({
         ))}
       </div>
       {ShowContent && showMoreButton && (
-        <ButtonExtra onClick={handleShowMore}>
+        <ButtonExtra onClick={handleShowMore} style={{ marginBottom: '40px' }}>
           <ButtonExtraStyled smallbtn={false} subscribebtn={false}>
             더보기
           </ButtonExtraStyled>

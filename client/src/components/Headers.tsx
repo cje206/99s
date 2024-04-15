@@ -22,6 +22,10 @@ const BoxStyle = styled.div`
   z-index: 100;
   border-bottom: 1px solid #f1f1f1;
   background: #fff;
+  @media (min-width: 1160px) {
+    width: 1200px;
+    margin: 0 auto;
+  }
 `;
 const LogoImg = styled.img`
   width: 80px;
@@ -93,6 +97,7 @@ const Title = styled.p`
 export function MainHeader() {
   const [sidemenu, setSidemenu] = useState<boolean>(false);
   const navigate = useNavigate();
+
   const closeFunc = () => {
     setSidemenu(false);
   };
@@ -100,6 +105,7 @@ export function MainHeader() {
     <>
       <BoxStyle>
         <Icon $url="lmenu" onClick={() => setSidemenu(true)}></Icon>
+
         <LogoImg
           src="/images/logo2.png"
           alt="Blo9"
@@ -187,6 +193,12 @@ export function BlogHeader({ id }: { id: number }) {
           color: theme.background,
         }}
       >
+        {' '}
+        <LogoImg
+          src="/images/logo2.png"
+          alt="Blo9"
+          onClick={() => navigator('/')}
+        />
         <Text
           onClick={() => navigator(`/blog/${id}`)}
           style={{ cursor: 'pointer' }}
@@ -204,11 +216,22 @@ export function BlogHeader({ id }: { id: number }) {
 }
 
 export function SettingHeader({ children }: any) {
-  const [sidemenu, setSidemenu] = useState<boolean>(false);
+  const [sidemenu, setSidemenu] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 1160);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth > 1160);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const closeFunc = () => {
     setSidemenu(false);
   };
+
   return (
     <BoxStyle>
       <LogoImg
@@ -217,7 +240,9 @@ export function SettingHeader({ children }: any) {
         onClick={() => navigate('/')}
       />
       <TextCenter>{children}</TextCenter>
-      <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
+      {!isLargeScreen && (
+        <Icon $url="rmenu" onClick={() => setSidemenu(true)}></Icon>
+      )}
       {sidemenu && <SetSidemenu func={closeFunc} />}
     </BoxStyle>
   );

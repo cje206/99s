@@ -1,7 +1,6 @@
 .wrap {
   min-width: 320px;
   box-sizing: border-box;
-
   .body {
     padding: 20px;
     h1.title {
@@ -23,5 +22,11 @@
   &.darkmode {
     background: #000;
     color: #fff;
+  }
+  &.blogHome {
+    @media (min-width: 1160px) {
+      width: 1200px;
+      margin: 0 auto;
+    }
   }
 }

@@ -6,6 +6,7 @@ import { ChatDataProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import socketIOClient from 'socket.io-client';
 import axios from 'axios';
+import Footer from '../components/Footer';
 
 export default function Chat() {
   const socket = socketIOClient(':8000');
@@ -76,52 +77,54 @@ export default function Chat() {
   }, [chatData]);
 
   return (
-    <div className="wrap">
-      {chatData.open || <ChattingHeader />}
-      {chatData.open && (
-        <ChatDetailHeader id={chatData.opId}>
-          {chatData.nickname}
-        </ChatDetailHeader>
-      )}
-      <div className="body" style={{ marginBottom: '100px' }}>
-        {chatData.open ||
-          roomList?.map((value, idx) => {
-            return (
-              <Chatlist
-                key={value.id}
-                id={value.id}
-                nickname={value.nickname}
-                recentMsg={value.recentMsg}
-                sendTime={value.updatedAt}
-                roomId={value.roomId}
-                data={setChatData}
-              />
-            );
-          })}
-
-        {chatData.data?.map((value) => {
-          if (value.userId == user.id) {
-            return (
-              <MyChatMsg
-                key={value.id}
-                text={value.chatMsg}
-                sendTime={value.createdAt}
-              />
-            );
-          } else {
-            return (
-              <OpChatMsg
-                key={value.id}
-                text={value.chatMsg}
-                sendTime={value.createdAt}
-              />
-            );
-          }
-        })}
+    <>
+      <div className="wrap">
+        {chatData.open || <ChattingHeader />}
         {chatData.open && (
-          <InputChat userId={user.id} chatlist={[chatData, setChatData]} />
+          <ChatDetailHeader id={chatData.opId}>
+            {chatData.nickname}
+          </ChatDetailHeader>
         )}
+        <div className="body" style={{ marginBottom: '100px' }}>
+          {chatData.open ||
+            roomList?.map((value, idx) => {
+              return (
+                <Chatlist
+                  key={value.id}
+                  id={value.id}
+                  nickname={value.nickname}
+                  recentMsg={value.recentMsg}
+                  sendTime={value.updatedAt}
+                  roomId={value.roomId}
+                  data={setChatData}
+                />
+              );
+            })}
+
+          {chatData.data?.map((value) => {
+            if (value.userId == user.id) {
+              return (
+                <MyChatMsg
+                  key={value.id}
+                  text={value.chatMsg}
+                  sendTime={value.createdAt}
+                />
+              );
+            } else {
+              return (
+                <OpChatMsg
+                  key={value.id}
+                  text={value.chatMsg}
+                  sendTime={value.createdAt}
+                />
+              );
+            }
+          })}
+          {chatData.open && (
+            <InputChat userId={user.id} chatlist={[chatData, setChatData]} />
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
