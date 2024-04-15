@@ -199,57 +199,54 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
                 블로그 생성하기
               </Link>
             )}
-              <p className="profileName">{user.username}</p>
-            </div>
-          ) : (
-            <Link to="/signup" className="profileText">
-              로그인/회원가입
-            </Link>
-          )}
-        </div>
-        {Boolean(localStorage.getItem('token')) && (
-          <div className="menuBox">
-            <Link to="/post/write" className="blogIcons">
-              <IcoWrite stroke="#fbc02d" />
-              <span>글 작성하기</span>
-            </Link>
-            <Link to="/subscribe" className="blogIcons">
-              <IcoSubscribe stroke="#fbc02d" />
-              <span>구독</span>
-            </Link>
-            <Link to="/like" className="blogIcons">
-              <IcoLike stroke="#fbc02d" fill="none" />
-              <span>좋아요</span>
-            </Link>
-            <Link to="/setting" className="blogIcons">
-              <IcoSet stroke="#fbc02d" />
-              <span>설정</span>
-            </Link>
-            <Link to="/chat" className="blogIcons">
-              <IcoChat stroke="#fbc02d" />
-              <span>메세지</span>
-            </Link>
-            <div className="blogIcons" onClick={logoutFun}>
-              <IcoLogout stroke="#fbc02d" />
-              <span>로그아웃</span>
-            </div>
-            <div
-              className="blogIcons darkmode"
-              onClick={() => setDarkmode(!darkmode)}
-              style={{ cursor: 'pointer' }}
-            >
-              <IcoDarkmode stroke="#fbc02d" />
-              <div className="iconBox">
-                <p>다크모드</p>
-                <ToggleBtn active={Boolean(darkmode)} />
-              </div>
+            <p className="profileName">{user.username}</p>
+          </div>
+        ) : (
+          <Link to="/signup" className="profileText">
+            로그인/회원가입
+          </Link>
+        )}
+      </div>
+      {Boolean(localStorage.getItem('token')) && (
+        <div className="menuBox">
+          <Link to="/post/write" className="blogIcons">
+            <IcoWrite stroke="#fbc02d" />
+            <span>글 작성하기</span>
+          </Link>
+          <Link to="/subscribe" className="blogIcons">
+            <IcoSubscribe stroke="#fbc02d" />
+            <span>구독</span>
+          </Link>
+          <Link to="/like" className="blogIcons">
+            <IcoLike stroke="#fbc02d" fill="none" />
+            <span>좋아요</span>
+          </Link>
+          <Link to="/setting" className="blogIcons">
+            <IcoSet stroke="#fbc02d" />
+            <span>설정</span>
+          </Link>
+          <Link to="/chat" className="blogIcons">
+            <IcoChat stroke="#fbc02d" />
+            <span>메세지</span>
+          </Link>
+          <div className="blogIcons" onClick={logoutFun}>
+            <IcoLogout stroke="#fbc02d" />
+            <span>로그아웃</span>
+          </div>
+          <div
+            className="blogIcons darkmode"
+            onClick={() => setDarkmode(!darkmode)}
+            style={{ cursor: 'pointer' }}
+          >
+            <IcoDarkmode stroke="#fbc02d" />
+            <div className="iconBox">
+              <p>다크모드</p>
+              <ToggleBtn active={Boolean(darkmode)} />
             </div>
           </div>
-        )}
-      </SideBox>
-      {/* </Modal> */}
-      {/* )} */}
-    </>
+        </div>
+      )}
+    </SideBox>
   );
 }
 
