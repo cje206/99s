@@ -257,7 +257,9 @@ export function SettingHeader({ children }: any) {
     <BoxStyle>
       <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
       <TextCenter>{children}</TextCenter>
-      <IcoMenuRight stroke={defaultColor} onClick={() => setSidemenu(true)} />
+      {!isLargeScreen && (
+        <IcoMenuRight stroke={defaultColor} onClick={() => setSidemenu(true)} />
+      )}
       {sidemenu && <SetSidemenu func={closeFunc} />}
     </BoxStyle>
   );

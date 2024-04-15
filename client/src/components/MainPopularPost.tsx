@@ -81,10 +81,10 @@ export default function MainPopularPost({
     }, 3000);
     return () => clearInterval(timer);
   }, [postlist.length]);
-
   return (
     <>
       <Container>
+
         <Swipe onSwipeEnd={onSwipeEnd} onSwipeMove={onSwipeMove}>
           <StyledImgDiv
             imgCount={imgCount}
@@ -114,6 +114,7 @@ export default function MainPopularPost({
               );
             })}
           </ImageCounterWrapper>
+
         )}
       </Container>
     </>
