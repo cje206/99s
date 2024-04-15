@@ -1,5 +1,4 @@
 import '../styles/Content.scss';
-import { items } from '../data/SearchData';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {

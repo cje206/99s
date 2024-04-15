@@ -59,7 +59,7 @@ const PostNum = styled.div`
 export default function SearchWriter({
   items,
   showPagination,
-  itemsPerPage = 10, //나중에 10으로 바꾸면된다
+  itemsPerPage = 3, //나중에 10으로 바꾸면된다
 }: InfoProps) {
   const [currentPage, setCurrentPage] = useState(1);
 

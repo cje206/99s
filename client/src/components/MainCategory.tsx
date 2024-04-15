@@ -122,7 +122,7 @@ export default function MainCategory({
         ))}
       </div>
       {ShowContent && showMoreButton && (
-        <ButtonExtra onClick={handleShowMore}>
+        <ButtonExtra onClick={handleShowMore} style={{ marginBottom: '40px' }}>
           <ButtonExtraStyled smallbtn={false} subscribebtn={false}>
             더보기
           </ButtonExtraStyled>
