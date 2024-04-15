@@ -5,8 +5,9 @@ import styled from 'styled-components';
 const FooterContainer = styled.div`
   background-color: #e6e6e6;
   align-items: center;
-
   padding: 30px;
+  bottom: 0;
+  left: 0;
 `;
 const FooterWidth = styled.div`
   margin: 0 auto;

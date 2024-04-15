@@ -96,7 +96,6 @@ const Title = styled.p`
 
 export function MainHeader() {
   const [sidemenu, setSidemenu] = useState<boolean>(false);
-  // const [modalIsOpen, setModalIsOpen] = useState(false);
   const navigate = useNavigate();
 
   const closeFunc = () => {
@@ -194,6 +193,12 @@ export function BlogHeader({ id }: { id: number }) {
           color: theme.background,
         }}
       >
+        {' '}
+        <LogoImg
+          src="/images/logo2.png"
+          alt="Blo9"
+          onClick={() => navigator('/')}
+        />
         <Text
           onClick={() => navigator(`/blog/${id}`)}
           style={{ cursor: 'pointer' }}

@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { PostObject } from '../types';
 import DOMPurify from 'isomorphic-dompurify';
 import { htmlToText } from '../components/Functions';
+import Footer from '../components/Footer';
 
 const ContentBox = styled.div`
   border-bottom: 1px solid #e2e7e2;
@@ -47,19 +48,21 @@ export default function Category() {
     getPost();
   }, [categoryId]);
   return (
-    <div className="wrap">
-      <BlogHeader id={Number(id)} />
-      <div className="body">
-        {post?.map((val) => (
-          <ContentBox
-            key={val.id}
-            onClick={() => (document.location.href = `/blog/${id}/${val.id}`)}
-          >
-            <div className="title">{val.postTitle}</div>
-            <div className="content">{htmlToText(val.content)}</div>
-          </ContentBox>
-        ))}
+    <>
+      <div className="wrap">
+        <BlogHeader id={Number(id)} />
+        <div className="body">
+          {post?.map((val) => (
+            <ContentBox
+              key={val.id}
+              onClick={() => (document.location.href = `/blog/${id}/${val.id}`)}
+            >
+              <div className="title">{val.postTitle}</div>
+              <div className="content">{htmlToText(val.content)}</div>
+            </ContentBox>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
