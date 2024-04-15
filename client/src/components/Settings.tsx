@@ -1,11 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { UserProps } from '../types';
+import { ThemeStyle, UserProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 import { ErrorMsgGrey, ErrorMsgRed } from './ErrorMsg';
-import { ToggleBtn } from './Btns';
+import { NewPostBtn, ToggleBtn } from './Btns';
 import { ArrList } from './Lists';
 import { storage } from '../config/Firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -370,7 +370,12 @@ export function SetHome() {
     </>
   );
 }
+
 export function SetPost() {
+  const [theme, setTheme] = useState<ThemeStyle>({
+    background: '#333',
+    color: '#fff',
+  });
   return (
     <>
       <CheckBox>
@@ -387,6 +392,7 @@ export function SetPost() {
           <div className="btn disabled">삭제</div>
         </BtnBox>
       </CheckBox>
+      <NewPostBtn theme={theme} />
     </>
   );
 }

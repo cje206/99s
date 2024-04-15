@@ -10,6 +10,7 @@ import { getColor } from '../components/Functions';
 import BlogPosts, { BlogPopular } from '../components/BlogComponent';
 import BlogMain from '../components/BlogMain';
 import { NewPostBtn } from '../components/Btns';
+import Footer from '../components/Footer';
 
 interface Blog {
   id: number;
@@ -76,23 +77,26 @@ export default function BlogHome({ position }: { position?: string }) {
   useEffect(() => {}, [blogInfo]);
 
   return (
-    <div className="wrap blogHome">
-      <BlogHeader id={Number(id)} />
-      {blogInfo.memberId === user.id && <NewPostBtn theme={theme} />}
-      {blogInfo.id !== 0 ? (
-        <>
-          <BlogMain blogid={blogInfo.id} theme={theme} />
+    <>
+      <div className="wrap blogHome">
+        <BlogHeader id={Number(id)} />
+        {blogInfo.memberId === user.id && <NewPostBtn theme={theme} />}
+        {blogInfo.id !== 0 ? (
+          <>
+            <BlogMain blogid={blogInfo.id} theme={theme} />
+            <div className="body">
+              <BlogPopular />
+              <BlogPosts theme={theme}>전체게시글</BlogPosts>
+            </div>
+          </>
+        ) : (
           <div className="body">
-            <BlogPopular />
-            <BlogPosts theme={theme}>전체게시글</BlogPosts>
+            <h1 className="title">페이지를 찾을 수 없습니다</h1>
+            <Link to="/">Blo9 홈으로 이동</Link>
           </div>
-        </>
-      ) : (
-        <div className="body">
-          <h1 className="title">페이지를 찾을 수 없습니다</h1>
-          <Link to="/">Blo9 홈으로 이동</Link>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+      <Footer />
+    </>
   );
 }
