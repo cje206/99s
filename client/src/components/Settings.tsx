@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { ThemeStyle, UserProps } from '../types';
@@ -274,6 +274,12 @@ const SetBar = styled.div`
   width: 100%;
 `;
 
+const WriteBtn = styled.button`
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid #000;
+`;
+
 export function SetMenu() {
   return (
     <>
@@ -372,10 +378,7 @@ export function SetHome() {
 }
 
 export function SetPost() {
-  const [theme, setTheme] = useState<ThemeStyle>({
-    background: '#333',
-    color: '#fff',
-  });
+  const navigate = useNavigate();
   return (
     <>
       <CheckBox>
@@ -392,7 +395,7 @@ export function SetPost() {
           <div className="btn disabled">삭제</div>
         </BtnBox>
       </CheckBox>
-      <NewPostBtn theme={theme} />
+      <RectBtn onClick={() => navigate('/post/write')}>글쓰기</RectBtn>
     </>
   );
 }
