@@ -99,10 +99,7 @@ export function DateChatMsg({ children }: any) {
 }
 
 export function InputChat({ userId, chatlist }: SendMsgProps) {
-  const socket = socketIOClient('localhost:8000');
-  // socket.on('connect_error', (err) => {
-  //   console.log(`connect_error due to ${err.message}`);
-  // });
+  const socket = socketIOClient(`${process.env.REACT_APP_HOST}`);
   const [chatMsg, setChatMsg] = useState<string>('');
   const [chatData, setChatData] = chatlist;
   const sendMsg = async () => {
