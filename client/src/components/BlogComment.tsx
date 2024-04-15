@@ -20,7 +20,6 @@ interface Params {
   postId: string; // 포스트 ID
 }
 const BlogComment = styled.div`
-
   padding: 20px;
   img {
     margin-bottom: 10px;
@@ -271,19 +270,18 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                       <div className="commentBottom">
                         <div className="commentTime">{val.createdAt}</div>
 
-
-                      {(val.isSecret &&
-                        user.id !== val.memberId &&
-                        user.id !== Number(id)) || (
-                        <button
-                          className="replyBtn"
-                          onClick={() => setReplyTo(val.id)}
-                        >
-                          대댓글 달기
-                        </button>
-                      )}
-                    </div>
-
+                        {(val.isSecret &&
+                          user.id !== val.memberId &&
+                          user.id !== Number(id)) || (
+                          <button
+                            className="replyBtn"
+                            onClick={() => setReplyTo(val.id)}
+                          >
+                            답댓글 달기
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                   {replyTo === val.id && renderComments(val.id)}
                   {comment?.map((data) => {
