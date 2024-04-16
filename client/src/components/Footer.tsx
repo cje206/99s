@@ -14,6 +14,7 @@ const FooterContainer = styled.div`
   bottom: 0;
   width: 100%;
   height: 220px;
+  display: flex;
 `;
 const FooterWidth = styled.div`
   margin: 0 auto;

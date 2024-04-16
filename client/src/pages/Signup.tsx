@@ -9,7 +9,7 @@ export default function Signup() {
   return (
     <div className="wrap">
       <SignHeader />
-      <div className="body">
+      <div className="body signup">
         <h1 className="title">Blo9 회원가입</h1>
         <p className="subText">
           이미 계정이 있으신가요? <Link to="/login">로그인</Link>

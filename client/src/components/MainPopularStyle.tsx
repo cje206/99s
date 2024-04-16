@@ -114,9 +114,15 @@ export const ImgPost = styled.img`
 
 //category 게시글
 export const PostCategoryContainer = styled.div`
-  @media (min-width: 1160px) {
-    width: calc(33.333% - 40px);
-    margin: 20px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  @media (max-width: 1160px) {
+    display: flex;
+    flex-direction: column;
   }
 `;
 

@@ -15,11 +15,10 @@ const PopularPost = styled.div`
 
 const DesktopBlogMain = styled.div`
   display: flex;
-  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  width: 100%;
+  /* width: 100%; */
 `;
 export function BlogProfile() {
   return <div></div>;
@@ -79,9 +78,12 @@ export default function BlogPosts({
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   //layout
-  const currentIndex = postList.slice(0, 6);
-  const groupedItems = [...Array(Math.ceil(currentIndex.length / 3))].map(
-    (_, i) => currentIndex.slice(i * 3, i * 3 + 3)
+  // const currentIndex = postList.slice(0, 6);
+  const groupedItems = [...Array(Math.ceil(currentItems.length / 3))].map(
+    (_, i) => currentItems.slice(i * 3, i * 3 + 3)
+  );
+  const groupedItems2 = [...Array(Math.ceil(currentItems.length / 2))].map(
+    (_, i) => currentItems.slice(i * 2, i * 2 + 2)
   );
 
   const handleLayoutChange = (mode: string) => {
@@ -137,10 +139,11 @@ export default function BlogPosts({
         <>
           {layoutMode === 'vertical' ? (
             <>
-              {groupedItems.map((currentItems, index) => (
-                <DesktopBlogMain key={index}>
+              {groupedItems2.map((currentItems, index) => (
+                <DesktopBlogMain key={index} style={{ flexWrap: 'wrap' }}>
                   {currentItems.map((val) => (
-                    <div key={val.id} style={{ flex: '1 0 50%' }}>
+                    // 3행2열
+                    <div key={val.id} style={{ width: 'calc(50% - 10px)' }}>
                       <PostLists post={val} vertical={true} />
                     </div>
                   ))}
@@ -150,7 +153,7 @@ export default function BlogPosts({
           ) : (
             <>
               {groupedItems.map((currentItems, index) => (
-                <DesktopBlogMain key={index}>
+                <DesktopBlogMain key={index} style={{ flexWrap: 'nowrap' }}>
                   {currentItems.map((val) => (
                     <div
                       key={val.id}

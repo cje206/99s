@@ -10,7 +10,7 @@
 
     .popularPost {
       flex: 6;
-      padding: 20px;
+
       box-sizing: border-box;
       &.popPost {
         padding: 0;
@@ -22,9 +22,13 @@
     }
   }
   .category {
+    width: 1200px;
+    display: flex;
+    justify-content: flex-start;
+    margin: 0 auto;
     &.main {
       margin-bottom: 20px;
-      margin-left: 100px;
+      // margin-left: 150px;
       font-size: 22px;
     }
   }
@@ -44,5 +48,8 @@
 @include mobile {
   .category {
     margin: 0 20px;
+  }
+  .popularPost {
+    padding: 20px;
   }
 }
