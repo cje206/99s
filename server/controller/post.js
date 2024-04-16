@@ -163,3 +163,12 @@ exports.mainPop = async (req, res) => {
   });
   res.json({ success: true, result, msg: '인기 게시글 조회 완료' });
 };
+
+// 메인 최신 포스트
+exports.mainNew = async (req, res) => {
+  const result = await Post.findAll({
+    order: [['createdAt', 'desc']],
+    limit: 12,
+  });
+  res.json({ success: true, result, msg: '최신 게시글 조회 완료' });
+};

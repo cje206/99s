@@ -116,7 +116,7 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
     });
     const res = await axios({
       method: 'POST',
-      url: `http://localhost:8000/api/chat/write`,
+      url: `${process.env.REACT_APP_HOST}/api/chat/write`,
       data: { userId, roomId: chatData.roomId, chatMsg },
     });
     setChatData({

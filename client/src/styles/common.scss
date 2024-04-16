@@ -22,6 +22,9 @@
         margin-bottom: 20px;
       }
     }
+    @media (min-width: 1160px) {
+      padding: 20px 0;
+    }
   }
   &.darkmode {
     background: #000;

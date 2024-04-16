@@ -13,7 +13,7 @@ const PopularPost = styled.div`
   margin-bottom: 70px;
 `;
 
-const DesktopBlogMain = styled.div`
+export const DesktopBlogMain = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -64,11 +64,11 @@ export default function BlogPosts({
   theme: ThemeStyle;
   children: string;
 }) {
+  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const { id } = useParams<{ id?: string }>();
   const [layoutMode, setLayoutMode] = useState('horizontal');
   const [postList, setPostList] = useState<PostObject[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isWide, setIsWide] = useState(window.innerWidth > 1160);
   const itemsPerPage = 6;
 
   // 페이지네이션 로직
@@ -102,6 +102,7 @@ export default function BlogPosts({
   };
 
   useEffect(() => {
+    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
     getPostList();
   }, []);
 
@@ -135,7 +136,7 @@ export default function BlogPosts({
         </div>
       </div>
 
-      {isWide ? (
+      {innerWidth >= 1160 ? (
         <>
           {layoutMode === 'vertical' ? (
             <>
