@@ -142,30 +142,35 @@ function QuillEditor({ placeholder, value, ...rest }) {
       url: `${process.env.REACT_APP_HOST}/api/blog/find`,
       params: { memberId: user.id },
     });
-    const categoryId = () => {
-      if (category === 'none') {
-        return null;
+    if (findBlog.data.result) {
+      const categoryId = () => {
+        if (category === 'none') {
+          return null;
+        }
+        return Number(category);
+      };
+      const data = {
+        postTitle: title,
+        content: content,
+        blogId: findBlog.data.result.id,
+        hashtag: hashtag.split(', ').filter((val) => val !== ''),
+        categoryId: categoryId(),
+      };
+      if (postId) {
+        data.id = postId;
       }
-      return Number(category);
-    };
-    const data = {
-      postTitle: title,
-      content: content,
-      blogId: findBlog.data.result.id,
-      hashtag: hashtag.split(', ').filter((val) => val !== ''),
-      categoryId: categoryId(),
-    };
-    if (postId) {
-      data.id = postId;
-    }
-    const res = await axios({
-      method: 'POST',
-      url: `${process.env.REACT_APP_HOST}/api/post/write`,
-      data,
-    });
-    if (res.data.success) {
-      alert('게시글 작성이 완료되었습니다.');
-      navigate(`/blog/${user.id}/${res.data.result.id}`);
+      const res = await axios({
+        method: 'POST',
+        url: `${process.env.REACT_APP_HOST}/api/post/write`,
+        data,
+      });
+      if (res.data.success) {
+        alert('게시글 작성이 완료되었습니다.');
+        navigate(`/blog/${user.id}/${res.data.result.id}`);
+      }
+    } else {
+      alert('블로그 생성 후 게시글 작성이 가능합니다.');
+      navigate('/setting/blog');
     }
   };
   const getPost = async () => {
@@ -237,18 +242,18 @@ function QuillEditor({ placeholder, value, ...rest }) {
       toolbar.addHandler('image', () => imageHandler(quillRef, storage));
     }
   }, []);
+  const getBlog = async () => {
+    if (user.id) {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+        params: { memberId: user.id },
+      });
+      setBlog(res.data.success);
+    }
+  };
   useEffect(() => {
     if (user.id) {
-      const getBlog = async () => {
-        if (user.id) {
-          const res = await axios({
-            method: 'GET',
-            url: `${process.env.REACT_APP_HOST}/api/blog/find`,
-            params: { memberId: user.id },
-          });
-          setBlog(res.data.success);
-        }
-      };
       getBlog();
       getCategory();
     }
