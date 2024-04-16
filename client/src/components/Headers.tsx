@@ -172,46 +172,48 @@ export function MainPcHeader({ activepage }: { activepage?: string }) {
     <BoxStyle className="headerBg">
       <header>
         <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
-        <MenuList>
-          <div
-            className={
-              pathname === '/post/write' ? 'headerMenu on' : 'headerMenu'
-            }
-            onClick={() => navigate('/post/write')}
-          >
-            글 작성하기
-          </div>
-          <div
-            className={
-              pathname === '/subscribe' ? 'headerMenu on' : 'headerMenu'
-            }
-            onClick={() => navigate('/subscribe')}
-          >
-            구독
-          </div>
-          <div
-            className={pathname === '/like' ? 'headerMenu on' : 'headerMenu'}
-            onClick={() => navigate('/like')}
-          >
-            좋아요
-          </div>
-          <div
-            className={
-              pathname.includes('setting') ? 'headerMenu on' : 'headerMenu'
-            }
-            onClick={() => navigate('/setting')}
-          >
-            설정
-          </div>
-          <div
-            className={
-              pathname.includes('chat') ? 'headerMenu on' : 'headerMenu'
-            }
-            onClick={() => navigate('/chat')}
-          >
-            메세지
-          </div>
-        </MenuList>
+        {Boolean(user.id) && (
+          <MenuList>
+            <div
+              className={
+                pathname === '/post/write' ? 'headerMenu on' : 'headerMenu'
+              }
+              onClick={() => navigate('/post/write')}
+            >
+              글 작성하기
+            </div>
+            <div
+              className={
+                pathname === '/subscribe' ? 'headerMenu on' : 'headerMenu'
+              }
+              onClick={() => navigate('/subscribe')}
+            >
+              구독
+            </div>
+            <div
+              className={pathname === '/like' ? 'headerMenu on' : 'headerMenu'}
+              onClick={() => navigate('/like')}
+            >
+              좋아요
+            </div>
+            <div
+              className={
+                pathname.includes('setting') ? 'headerMenu on' : 'headerMenu'
+              }
+              onClick={() => navigate('/setting')}
+            >
+              설정
+            </div>
+            <div
+              className={
+                pathname.includes('chat') ? 'headerMenu on' : 'headerMenu'
+              }
+              onClick={() => navigate('/chat')}
+            >
+              메세지
+            </div>
+          </MenuList>
+        )}
         <MenuList
           className="pofileBox"
           onClick={() => (user.id ? setShowSet(!showSet) : navigate('/signup'))}

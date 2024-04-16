@@ -50,6 +50,9 @@ export default function Main() {
         </div>
       </div>
 
+      <p className="category main" style={{ marginTop: '50px' }}>
+        최신 게시글
+      </p>
       <div className="categoryContainer">
         <MainCategory items={items} ShowContent={true} showPagination={false} />
       </div>

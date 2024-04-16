@@ -11,6 +11,7 @@ const {
   popular,
   deletePost,
   mainPop,
+  mainNew,
 } = require('../controller/post');
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.get('/otherPost', otherPost);
 router.get('/category', category);
 router.get('/popular', popular);
 router.get('/mainPop', mainPop);
+router.get('/mainNew', mainNew);
 
 module.exports = router;

@@ -63,6 +63,8 @@ export default function SignupEmail() {
     if (res.data.success) {
       alert(`${username}님 회원가입이 완료되었습니다.`);
       navigator('/login');
+    } else {
+      alert('이미 존재하는 메일주소입니다. 다른 메일로 가입해주세요.');
     }
   };
   return (

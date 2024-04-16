@@ -83,7 +83,7 @@ export default function BlogHome({ position }: { position?: string }) {
       {blogInfo.id !== 0 ? (
         <>
           <BlogMain blogid={blogInfo.id} theme={theme} />
-          <div className="body blog">
+          <div className="body">
             <BlogPopular />
             <BlogPosts theme={theme}>전체게시글</BlogPosts>
           </div>
