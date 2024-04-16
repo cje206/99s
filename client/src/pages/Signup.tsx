@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SingupBtn from '../components/SingupBtn';
 import '../styles/signup.scss';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,10 @@ import { SignHeader } from '../components/Headers';
 import Footer from '../components/Footer';
 
 export default function Signup() {
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `회원가입`;
+  }, []);
   return (
     <div className="wrap">
       <SignHeader />

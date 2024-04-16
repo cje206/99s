@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InputText from '../components/InputText';
 import BtnLarge from '../components/BtnLarge';
 import { SignHeader } from '../components/Headers';
@@ -31,6 +31,10 @@ export default function Login() {
       pwRef.current?.focus();
     }
   };
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `로그인`;
+  }, []);
   return (
     <div className="wrap">
       <SignHeader />

@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+// import { HelmetProvider } from 'react-helmet-async';
 // import { configureStore } from '@reduxjs/toolkit';
 // import { Provider } from 'react-redux';
 // import rootReducer from './store';
@@ -16,9 +18,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    {/* <Provider store={store}> */}
+    {/* <HelmetProvider> */}
     <App />
-    {/* </Provider> */}
+    {/* </HelmetProvider> */}
   </React.StrictMode>
 );
 
