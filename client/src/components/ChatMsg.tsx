@@ -19,6 +19,7 @@ const ChatStyle = styled.p`
   border-radius: 20px;
   max-width: 60vw;
   background: #f1f1f1;
+  color: #333;
 `;
 const InputBox = styled.div`
   position: fixed;

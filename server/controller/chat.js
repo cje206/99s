@@ -41,7 +41,7 @@ exports.find = async (req, res) => {
       if (findId) {
       }
       const searchBlog = await Blog.findOne({ where: { memberId: findId } });
-      if (searchBlog.nickname) {
+      if (searchBlog) {
         result.push({
           id: find1[i].id,
           roomId: find1[i].roomId,
@@ -66,7 +66,7 @@ exports.find = async (req, res) => {
       const [_, findId] = find2[i].roomId.split('to');
       console.log(findId);
       const searchBlog = await Blog.findOne({ where: { memberId: findId } });
-      if (searchBlog.nickname) {
+      if (searchBlog) {
         result.push({
           id: find2[i].id,
           roomId: find2[i].roomId,
@@ -123,7 +123,7 @@ exports.nickname = async (req, res) => {
   console.log('닉네임 조회');
   const { memberId } = req.query;
   const searchBlog = await Blog.findOne({ where: { memberId } });
-  if (searchBlog.nickname) {
+  if (searchBlog) {
     res.json({
       success: true,
       result: { nickname: searchBlog.nickname },
