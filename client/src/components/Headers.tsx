@@ -337,7 +337,7 @@ export function SettingHeader({ children }: any) {
   };
 
   return (
-    <BoxStyle>
+    <BoxStyle className="headerBg">
       <header>
         <Blo9Logo onClick={() => navigate('/')} className="changeFill" />
         <TextCenter>{children}</TextCenter>
@@ -356,7 +356,7 @@ export function SettingHeader({ children }: any) {
 export function ChattingHeader() {
   const navigate = useNavigate();
   return (
-    <BoxStyle>
+    <BoxStyle className="headerBg">
       <header>
         <Blo9Logo onClick={() => navigate('/')} className="changeFill" />
         <TextCenter>채팅</TextCenter>
@@ -374,7 +374,7 @@ export function ChatDetailHeader({
   children: string;
 }) {
   return (
-    <BoxStyle>
+    <BoxStyle className="headerBg">
       <header>
         <BtnsWrap>
           <ProfileImage id={id} imgwidth="40px" />
@@ -389,7 +389,7 @@ export function ChatDetailHeader({
 export function SignHeader() {
   const navigate = useNavigate();
   return (
-    <BoxStyle>
+    <BoxStyle className="headerBg">
       <header>
         <Blo9Logo onClick={() => navigate('/')} className="changeFill" />
       </header>
