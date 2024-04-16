@@ -5,13 +5,6 @@ import axios from 'axios';
 import ProfileImage from './ProfileImage';
 import { useEffect, useRef } from 'react';
 
-let defaultColor = '#333';
-let defaultBg = '#fff';
-if (localStorage.getItem('darkmode') === 'on') {
-  defaultBg = '#333';
-  defaultColor = '#fff';
-}
-
 const BoxStyle = styled.div`
   width: 100%;
   padding: 20px 0;
@@ -52,7 +45,6 @@ export default function Chatlist({
       url: `${process.env.REACT_APP_HOST}/api/chat/check`,
       params: { roomId },
     });
-    console.log(res.data.result);
     data({
       open: true,
       data: res.data.result,
@@ -64,12 +56,8 @@ export default function Chatlist({
   useEffect(() => {}, [data]);
   return (
     <BoxStyle
+      className={active === 'true' ? 'chatListBox on' : 'chatListBox'}
       onClick={() => goChat(roomId)}
-      style={
-        active === 'true'
-          ? { color: defaultBg, background: defaultColor }
-          : { color: defaultColor, background: defaultBg }
-      }
     >
       <ProfileImage id={id} imgwidth="50px" />
       <div style={{ marginLeft: '10px' }}>

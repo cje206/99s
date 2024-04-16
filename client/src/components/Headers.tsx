@@ -13,20 +13,12 @@ import { ReactComponent as Blo9Logo } from '../images/blo9_logo.svg';
 import useAuth from '../hooks/useAuth';
 import { MainSetBtn } from './Btns';
 
-let defaultColor = '#333';
-let defaultBg = '#fff';
-if (localStorage.getItem('darkmode') === 'on') {
-  defaultBg = '#333';
-  defaultColor = '#fff';
-}
-
 const BoxStyle = styled.div`
   width: 100%;
   height: 70px;
   position: sticky;
   top: 0;
   left: 0;
-  background: ${defaultBg};
   border-bottom: 1px solid #f1f1f1;
   z-index: 100;
   header {
@@ -50,7 +42,6 @@ const MenuList = styled.div`
   align-items: center;
   justify-content: center;
   gap: 20px;
-  color: ${defaultColor};
   div {
     cursor: pointer;
     line-height: 66px;
@@ -140,15 +131,13 @@ export function MainHeader() {
       <BoxStyle className="headerBg">
         <header>
           <IcoMenuLeft
-            stroke={defaultColor}
-            fill="none"
             onClick={() => setSidemenu(true)}
+            className="changeStroke"
           />
-          <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+          <Blo9Logo onClick={() => navigate('/')} className="changeFill" />
           <IcoSearch
-            stroke={defaultColor}
-            fill="none"
             onClick={() => navigate('/search')}
+            className="changeStroke"
           />
         </header>
       </BoxStyle>
@@ -172,9 +161,9 @@ export function MainPcHeader() {
   return (
     <BoxStyle className="headerBg">
       <header>
-        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <Blo9Logo onClick={() => navigate('/')} className="changeFill" />
         {Boolean(user.id) && (
-          <MenuList>
+          <MenuList className="menuList">
             <div
               className={
                 pathname === '/post/write' ? 'headerMenu on' : 'headerMenu'
@@ -216,7 +205,7 @@ export function MainPcHeader() {
           </MenuList>
         )}
         <MenuList
-          className="pofileBox"
+          className="menuList pofileBox"
           onClick={() => (user.id ? setShowSet(!showSet) : navigate('/signup'))}
         >
           <div>{user.username || '로그인/회원가입'}</div>
@@ -239,15 +228,13 @@ export function SubHeader({ children }: { children: string }) {
       <BoxStyle className="headerBg">
         <header>
           <IcoMenuLeft
-            stroke={defaultColor}
-            fill="none"
             onClick={() => setSidemenu(true)}
+            className="changeStroke"
           />
           <Text>{children}</Text>
           <IcoSearch
-            stroke={defaultColor}
-            fill="none"
             onClick={() => navigate('/search')}
+            className="changeStroke"
           />
         </header>
       </BoxStyle>
@@ -261,7 +248,7 @@ export function SearchHeader() {
   return (
     <BoxStyle>
       <header>
-        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <Blo9Logo onClick={() => navigate('/')} className="changeFill" />
         <SearchBox>
           <InputBox />
           <BtnBox>
@@ -352,12 +339,12 @@ export function SettingHeader({ children }: any) {
   return (
     <BoxStyle>
       <header>
-        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <Blo9Logo onClick={() => navigate('/')} className="changeFill" />
         <TextCenter>{children}</TextCenter>
         {!isLargeScreen && (
           <IcoMenuRight
-            stroke={defaultColor}
             onClick={() => setSidemenu(true)}
+            className="changeStroke"
           />
         )}
         {sidemenu && <SetSidemenu func={closeFunc} />}
@@ -371,7 +358,7 @@ export function ChattingHeader() {
   return (
     <BoxStyle>
       <header>
-        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <Blo9Logo onClick={() => navigate('/')} className="changeFill" />
         <TextCenter>채팅</TextCenter>
         <Icon $url="search"></Icon>
       </header>
@@ -404,7 +391,7 @@ export function SignHeader() {
   return (
     <BoxStyle>
       <header>
-        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <Blo9Logo onClick={() => navigate('/')} className="changeFill" />
       </header>
     </BoxStyle>
   );

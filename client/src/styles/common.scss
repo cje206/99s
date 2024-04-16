@@ -1,3 +1,5 @@
+$colorWh: #fff;
+$colorBk: #333;
 .wrap {
   position: relative;
   min-width: 320px;
@@ -9,6 +11,36 @@
   }
   svg {
     cursor: pointer;
+  }
+  .headerBg {
+    background: $colorWh;
+    color: $colorBk;
+  }
+  .postHeader {
+    background: $colorWh;
+    color: $colorBk;
+    z-index: 90;
+  }
+  .sideMenu {
+    background: $colorWh;
+  }
+  .changeFill {
+    fill: $colorBk;
+  }
+  .changeStroke {
+    stroke: $colorBk;
+  }
+  .chatListBox.on {
+    color: $colorWh;
+    background: $colorBk;
+  }
+  .likesContainer {
+    .imgBox {
+      border: 6px solid $colorWh;
+    }
+  }
+  .postTopBox {
+    background: $colorWh;
   }
   .body {
     padding: 20px;
@@ -54,10 +86,6 @@
       }
     }
   }
-  &.darkmode {
-    background: #000;
-    color: #fff;
-  }
   .blogHome {
     @media (min-width: 1160px) {
       width: 1200px;
@@ -68,17 +96,55 @@
     padding-bottom: 180px;
   }
 }
-
-.darkmode {
-  .wrap {
-    background: #333;
-    color: #fff;
-    min-height: 100vh;
-  }
-  .headerBg {
-    background: #333;
-  }
-  textarea {
-    color: #fff;
+#root {
+  .darkmode {
+    .wrap {
+      background: $colorBk;
+      color: $colorWh;
+      .changeFill {
+        fill: $colorWh;
+      }
+      .changeStroke {
+        stroke: $colorWh;
+      }
+    }
+    .headerBg {
+      background: $colorBk;
+      .menuList {
+        color: $colorWh;
+      }
+    }
+    .sideMenu {
+      background: $colorBk;
+    }
+    textarea {
+      color: $colorBk;
+    }
+    .chatListBox {
+      &.on {
+        color: $colorBk;
+        background: $colorWh;
+      }
+    }
+    .likesContainer {
+      .imgBox {
+        border: 6px solid $colorBk;
+      }
+    }
+    .postTopBox {
+      background: $colorBk;
+    }
+    .postHeader {
+      background: $colorBk;
+      button,
+      select {
+        color: $colorWh;
+      }
+    }
+    .ql-snow.ql-toolbar.ql-title,
+    .hashtag {
+      color: $colorWh;
+      background: $colorBk;
+    }
   }
 }

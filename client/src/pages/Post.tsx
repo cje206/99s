@@ -8,12 +8,12 @@ export default function Post({ position }: { position: string }) {
     window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
   }, []);
   return (
-    <>
+    <div className="wrap">
       {innerWidth >= 1160 && <MainPcHeader />}
       {position === '글 작성' && (
         <QuillEditor placeholder={'내용을 입력해주세요'} value={undefined} />
       )}
       {/* {position === '글 확인' && (<)} */}
-    </>
+    </div>
   );
 }

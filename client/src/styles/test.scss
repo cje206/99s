@@ -65,6 +65,9 @@
       font-weight: 700;
     }
   }
+  @media (min-width: 1160px) {
+    top: 70px;
+  }
 }
 .hashtag {
   width: 100%;
