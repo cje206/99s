@@ -1,6 +1,6 @@
 //게시글 더보기 누르면, 그 밑으로 게시글 12개까지만 나오게 하는거는 추가 구현해야함
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   PostCategoryContainer,
   ImgCategory,
@@ -13,6 +13,10 @@ import {
 } from '../components/MainPopularStyle';
 import '../styles/MainCategory.scss';
 import Pagination from './Pagination';
+import axios from 'axios';
+import { PostObject } from '../types';
+import { DesktopBlogMain } from './BlogComponent';
+import { PostLists } from './Lists';
 export interface CategoryInfo {
   imageUrl?: string;
   title?: string;
@@ -42,16 +46,20 @@ export default function MainCategory({
   ShowContent,
   showPagination,
 }: MainCategoryProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('일상');
+  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [shownItems, setShownItems] = useState(6); // 초기에 보여줄 아이템 수
   const [showMoreButton, setShowMoreButton] = useState(true); // 더보기 버튼의 표시 여부
   const [currentPage, setCurrentPage] = useState(1);
-  const [isWide, setIsWide] = useState(window.innerWidth > 1160);
+  const [newPost, setNewPost] = useState<PostObject[]>([
+    {
+      id: 0,
+      postTitle: '',
+      content: '',
+      hashtag: [],
+    },
+  ]);
 
   const currentItems = items.slice(0, shownItems);
-  const groupedItems = [...Array(Math.ceil(currentItems.length / 3))].map(
-    (_, i) => currentItems.slice(i * 3, i * 3 + 3)
-  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -64,130 +72,26 @@ export default function MainCategory({
       setShowMoreButton(false);
     }
   };
+  const getNewPost = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/post/mainNew`,
+    });
+    console.log(res.data.result);
+    setNewPost(res.data.result);
+  };
+  useEffect(() => {
+    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
+    getNewPost();
+  }, []);
   return (
     <>
-      {ShowContent && (
-        <ButtonWrapper>
-          <StyledButton
-            onClick={() => setSelectedCategory('일상')}
-            style={
-              selectedCategory === '일상'
-                ? { background: '#fbc02d' }
-                : { background: '#fff' }
-            }
-          >
-            일상
-          </StyledButton>
-          <StyledButton
-            onClick={() => setSelectedCategory('스포츠')}
-            style={
-              selectedCategory === '스포츠'
-                ? { background: '#fbc02d' }
-                : { background: '#fff' }
-            }
-          >
-            스포츠
-          </StyledButton>
-          <StyledButton
-            onClick={() => setSelectedCategory('IT&#183;과학')}
-            style={
-              selectedCategory === 'IT&#183;과학'
-                ? { background: '#fbc02d' }
-                : { background: '#fff' }
-            }
-          >
-            IT&#183;과학
-          </StyledButton>
-          <StyledButton
-            onClick={() => setSelectedCategory('시사&#183;경제')}
-            style={
-              selectedCategory === '시사&#183;경제'
-                ? { background: '#fbc02d' }
-                : { background: '#fff' }
-            }
-          >
-            시사&#183;경제
-          </StyledButton>
-          <StyledButton
-            onClick={() => setSelectedCategory('글로벌')}
-            style={
-              selectedCategory === '글로벌'
-                ? { background: '#fbc02d' }
-                : { background: '#fff' }
-            }
-          >
-            글로벌
-          </StyledButton>
-        </ButtonWrapper>
-      )}
-
-      <div className="postsContainer">
-        {isWide ? (
-          <>
-            {currentItems.map((item, index) => (
-              <PostCategoryContainer
-                key={index}
-                style={{
-                  width: 'calc(50% - 10px)',
-                  flexWrap: 'wrap',
-                }}
-              >
-                <div className="categoryImg">
-                  <ImgCategory
-                    src={item.imageUrl}
-                    alt={item.title}
-                  ></ImgCategory>
-                </div>
-                <TextDetail>
-                  <div className="postWriter">{item.writer}</div>
-                  <div
-                    className="postDate"
-                    style={{ color: '#7e7f81', fontSize: '13px' }}
-                  >
-                    {item.date}
-                  </div>
-                </TextDetail>
-                <PostDetail>
-                  <div className="postTitle">{item.title}</div>
-                  <div className="postContent">{item.content}</div>
-                </PostDetail>
-              </PostCategoryContainer>
-            ))}
-          </>
-        ) : (
-          <>
-            {currentItems.map((item, index) => (
-              <PostCategoryContainer
-                key={index}
-                style={{
-                  minWidth: '100%',
-                  boxSizing: 'border-box',
-                  padding: '20px',
-                }}
-              >
-                <div className="categoryImg">
-                  <ImgCategory
-                    src={item.imageUrl}
-                    alt={item.title}
-                  ></ImgCategory>
-                </div>
-                <TextDetail>
-                  <div className="postWriter">{item.writer}</div>
-                  <div
-                    className="postDate"
-                    style={{ color: '#7e7f81', fontSize: '13px' }}
-                  >
-                    {item.date}
-                  </div>
-                </TextDetail>
-                <PostDetail>
-                  <div className="postTitle">{item.title}</div>
-                  <div className="postContent">{item.content}</div>
-                </PostDetail>
-              </PostCategoryContainer>
-            ))}
-          </>
-        )}
+      <div className="body postsContainer">
+        {newPost.map((data, idx) => {
+          if (idx < shownItems) {
+            return <PostLists key={data.id} post={data} vertical={true} />;
+          }
+        })}
       </div>
       {ShowContent && showMoreButton && (
         <ButtonExtra onClick={handleShowMore} style={{ marginBottom: '40px' }}>

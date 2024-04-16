@@ -61,16 +61,22 @@
     margin-left: 4px;
   }
 }
-.vertical {
-  align-items: center;
-  .postImg {
-    // width: 35%;
-    // height: 35vw;
-    width: 250px;
-    height: 200px;
-    margin: 0 10px 0 0;
-  }
-  .postText {
-    width: 65%;
+.postBox {
+  &.vertical {
+    align-items: center;
+    width: 100%;
+    .postImg {
+      // width: 35%;
+      // height: 35vw;
+      width: 250px;
+      height: 200px;
+      margin: 0 10px 0 0;
+    }
+    .postText {
+      width: 65%;
+    }
+    @media (min-width: 1160px) {
+      width: 570px;
+    }
   }
 }

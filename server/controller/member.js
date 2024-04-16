@@ -1,13 +1,19 @@
 const { Member } = require('../models');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { where } = require('sequelize');
 
 // 회원가입
 exports.signup = async (req, res) => {
   const { username, birth, email, pw } = req.body;
-  const password = await bcrypt.hash(pw, 11);
-  const result = await Member.create({ username, birth, email, password });
-  res.json({ success: true, msg: '회원가입 완료' });
+  const find = await Member.findOne({ where: { email } });
+  if (find) {
+    res.json({ success: false, msg: '아이디 중복' });
+  } else {
+    const password = await bcrypt.hash(pw, 11);
+    const result = await Member.create({ username, birth, email, password });
+    res.json({ success: true, msg: '회원가입 완료' });
+  }
 };
 
 // 로그인

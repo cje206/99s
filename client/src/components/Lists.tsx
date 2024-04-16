@@ -166,6 +166,7 @@ export function PostLists({
   post: PostObject;
   vertical: boolean;
 }) {
+  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [commentCount, setCommentCount] = useState<number>(0);
   const [memberId, setMemberId] = useState<number>(0);
   const [nickname, setNickname] = useState<string>('');
@@ -200,11 +201,14 @@ export function PostLists({
       getBlog();
     }
   }, [post]);
+  useEffect(() => {
+    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
+  }, []);
   return (
     <Link
       to={`/blog/${memberId}/${post.id}`}
       style={boxStyle()}
-      className={vertical ? 'vertical' : ''}
+      className={vertical ? 'postBox vertical' : 'postBox default'}
     >
       <div className="postImg main">
         <img src={getThumbnail(post.content)} alt="Popular Post" />
