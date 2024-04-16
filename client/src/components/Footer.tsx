@@ -13,7 +13,7 @@ const FooterContainer = styled.div`
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 220px;
+  height: 180px;
   display: flex;
   @media (min-width: 1160px) {
     height: 130px;
