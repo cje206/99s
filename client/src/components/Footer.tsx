@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as IcoArrLeft } from '../images/ico-arr-left.svg';
 
@@ -68,6 +68,7 @@ const SpanWrapper = styled.div`
   flex-direction: column;
 `;
 export default function Footer() {
+  const navigate = useNavigate();
   const [showContent, setShowContent] = useState(false);
   const [isWide, setIsWide] = useState(window.innerWidth > 1160);
   const toggleComments = () => {
@@ -91,11 +92,19 @@ export default function Footer() {
               style={{ width: '22px', height: 'auto' }}
               src="/images/logo1.png"
               alt="로고1"
+              onClick={() => {
+                navigate('/');
+                window.scrollTo(0, 0);
+              }}
             />
             <img
               style={{ width: '76px', height: '24px', padding: '7px' }}
               src="/images/logo2.png"
               alt="로고2"
+              onClick={() => {
+                navigate('/');
+                window.scrollTo(0, 0);
+              }}
             />
             {!isWide && (
               <IcoArrLeft
