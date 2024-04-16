@@ -15,13 +15,6 @@ import { ToggleBtn } from './Btns';
 import { ArrList } from './Lists';
 import axios from 'axios';
 
-let defaultColor = '#333';
-let defaultBg = '#fff';
-if (localStorage.getItem('darkmode') === 'on') {
-  defaultBg = '#333';
-  defaultColor = '#fff';
-}
-
 const SideBox = styled.div`
   position: fixed;
   top: 0;
@@ -29,7 +22,6 @@ const SideBox = styled.div`
   min-width: 320px;
   width: 100%;
   height: 100%;
-  background: ${defaultBg};
   z-index: 200;
   box-sizing: border-box;
   .btnClose {
@@ -137,15 +129,10 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
   }, [user]);
 
   return (
-    <SideBox
-      className={
-        localStorage.getItem('darkmode') === 'on' ? 'darkmode' : 'default'
-      }
-    >
+    <SideBox className="sideMenu">
       <div className="profileBox">
         <IcoClose
-          stroke={defaultColor}
-          className="btnClose"
+          className="btnClose changeStroke"
           onClick={func}
           style={{ cursor: 'pointer' }}
         />
@@ -224,10 +211,9 @@ export function SetSidemenu({ func }: { func?: () => void }) {
     setUrl(location.pathname);
   }, [location]);
   return (
-    <SideBox>
+    <SideBox className="sideMenu">
       <IcoClose
-        stroke={defaultColor}
-        className="btnClose"
+        className="btnClose changeStroke"
         onClick={func}
         style={{ cursor: 'pointer' }}
       />
@@ -278,10 +264,9 @@ export function BlogSidemenu({ func }: { func?: () => void }) {
     }
   }, [location.pathname, url]);
   return (
-    <SideBox>
+    <SideBox className="sideMenu">
       <IcoClose
-        stroke={defaultColor}
-        className="btnClose"
+        className="btnClose changeStroke"
         onClick={func}
         style={{ cursor: 'pointer' }}
       />

@@ -4,23 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-// import { HelmetProvider } from 'react-helmet-async';
-// import { configureStore } from '@reduxjs/toolkit';
-// import { Provider } from 'react-redux';
-// import rootReducer from './store';
-// import { composeWithDevTools } from '@redux-devtools/extension';
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-// const store = configureStore({ reducer: rootReducer });
-
 root.render(
   <React.StrictMode>
-    {/* <HelmetProvider> */}
     <App />
-    {/* </HelmetProvider> */}
   </React.StrictMode>
 );
 

@@ -75,7 +75,7 @@ const PostSetBox = styled.div`
   border-radius: 10px;
   background: #fff;
   color: #333;
-  z-index: 170;
+  z-index: 200;
   padding: 10px;
   .btn {
     line-height: 40px;
@@ -149,8 +149,12 @@ export function PostSetBtn() {
   const applyDark = () => {
     if (darkmode) {
       localStorage.setItem('darkmode', 'on');
+      document.querySelector('.mainBox')?.classList.add('darkmode');
+      document.querySelector('.mainBox')?.classList.remove('default');
     } else {
       localStorage.removeItem('darkmode');
+      document.querySelector('.mainBox')?.classList.add('default');
+      document.querySelector('.mainBox')?.classList.remove('darkmode');
     }
   };
   const editBtn = () => {
@@ -210,8 +214,12 @@ export function MainSetBtn() {
   const applyDark = () => {
     if (darkmode) {
       localStorage.setItem('darkmode', 'on');
+      document.querySelector('.mainBox')?.classList.add('darkmode');
+      document.querySelector('.mainBox')?.classList.remove('default');
     } else {
       localStorage.removeItem('darkmode');
+      document.querySelector('.mainBox')?.classList.add('default');
+      document.querySelector('.mainBox')?.classList.remove('darkmode');
     }
   };
   useEffect(() => {

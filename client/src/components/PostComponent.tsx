@@ -13,13 +13,6 @@ import { PostSetBtn, SubscribeBtn } from './Btns';
 import { getTimeText } from './Functions';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-let defaultColor = '#333';
-let defaultBg = '#fff';
-if (localStorage.getItem('darkmode') === 'on') {
-  defaultBg = '#333';
-  defaultColor = '#fff';
-}
-
 const ContentInfo = styled.div`
   position: sticky;
   top: 70px;
@@ -32,7 +25,6 @@ const ContentInfo = styled.div`
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  background: ${defaultBg};
   z-index: 150;
 `;
 
@@ -88,7 +80,6 @@ const FlexBox = styled.div`
         display: flex;
         margin-right: 20px;
         .imgBox {
-          border: 6px solid ${defaultBg};
           margin-right: -15px;
         }
       }
@@ -137,10 +128,13 @@ export function PostTop({ children }: { children: string }) {
   const [setActive, setSetActive] = useState<Boolean>(false);
   const navigate = useNavigate();
   return (
-    <ContentInfo>
-      <IcoArrLeft stroke={defaultColor} onClick={() => navigate(-1)} />
+    <ContentInfo className="postTopBox">
+      <IcoArrLeft onClick={() => navigate(-1)} className="changeStroke" />
       <div>{children}</div>
-      <IcoSet stroke={defaultColor} onClick={() => setSetActive(!setActive)} />
+      <IcoSet
+        onClick={() => setSetActive(!setActive)}
+        className="changeStroke"
+      />
       {setActive && <PostSetBtn />}
     </ContentInfo>
   );
@@ -187,7 +181,7 @@ export function PostTitle({
           text={`${process.env.REACT_APP_BASEURL}${pathname}`}
           onCopy={() => alert('클립보드에 링크가 복사되었어요.')}
         >
-          <IcoShare className="shareBtn" stroke={defaultColor} />
+          <IcoShare className="shareBtn changeStroke" />
         </CopyToClipboard>
       </div>
     </ContentTopContainer>
@@ -294,9 +288,8 @@ export function PostLike({
           ></IcoLike>
         ) : (
           <IcoLike
-            className="likeIcon"
+            className="likeIcon changeStroke"
             fill="none"
-            stroke={defaultColor}
             onClick={toggleLike}
           ></IcoLike>
         )}
@@ -322,7 +315,7 @@ export function PostLike({
         text={`${process.env.REACT_APP_BASEURL}${pathname}`}
         onCopy={() => alert('클립보드에 링크가 복사되었어요.')}
       >
-        <IcoShare className="shareBtn" stroke={defaultColor} />
+        <IcoShare className="shareBtn changeStroke" />
       </CopyToClipboard>
     </FlexBox>
   );

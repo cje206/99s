@@ -10,11 +10,6 @@ import { CommentObj, ThemeStyle } from '../types';
 import ProfileImage from './ProfileImage';
 import { ReactComponent as IcoArrLeft } from '../images/ico-arr-left.svg';
 
-let defaultColor = '#333';
-if (localStorage.getItem('darkmode') === 'on') {
-  defaultColor = '#fff';
-}
-
 const BlogComment = styled.div`
   padding: 20px;
   img {
@@ -190,13 +185,12 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
           comment?.length || '0'
         }개의 댓글`}</div>
         <IcoArrLeft
-          stroke={defaultColor}
           style={{
             cursor: 'pointer',
             transform: showComments ? 'rotate(90deg)' : 'rotate(-90deg)',
           }}
           onClick={toggleComments}
-          className="arrow"
+          className="arrow changeStroke"
         />
       </div>
       {showComments && (
