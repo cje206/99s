@@ -112,6 +112,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
   const navigate = useNavigate();
   const quillRef = useRef();
   const [user, setUser] = useAuth();
+  const [blog, setBlog] = useState(false);
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [hashtag, setHashtag] = useState('');
@@ -222,6 +223,10 @@ function QuillEditor({ placeholder, value, ...rest }) {
   useEffect(() => {
     if (localStorage.getItem('token')) {
       setUser();
+    } else {
+      alert('로그인 후 이용해주세요.');
+      navigate('/signup');
+      return;
     }
     if (localStorage.getItem('postId')) {
       setPostId(Number(localStorage.getItem('postId')));
@@ -234,9 +239,29 @@ function QuillEditor({ placeholder, value, ...rest }) {
   }, []);
   useEffect(() => {
     if (user.id) {
+      const getBlog = async () => {
+        if (user.id) {
+          const res = await axios({
+            method: 'GET',
+            url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+            params: { memberId: user.id },
+          });
+          setBlog(res.data.success);
+        }
+      };
+      getBlog();
       getCategory();
     }
   }, [user]);
+  useEffect(() => {
+    console.log(blog, user.id);
+    if (user.id) {
+      if (!blog) {
+        alert('블로그 생성 후 게시글 작성이 가능합니다.');
+        navigate('/setting/blog');
+      }
+    }
+  }, [blog]);
   useEffect(() => {
     if (postId) {
       getPost();

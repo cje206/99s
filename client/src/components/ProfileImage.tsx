@@ -39,8 +39,8 @@ export default function ProfileImage({
 }) {
   const [profile, setProfile] = useState<{ img: string | null }>({ img: null });
   const [theme, setTheme] = useState<ColorObject>({
-    color: '#fbc02d',
-    background: '#fff',
+    background: '#fbc02d',
+    color: '#f6f7f9',
   });
   useEffect(() => {
     if (profileimg) {
@@ -71,14 +71,14 @@ export default function ProfileImage({
           // 필요한 경우 기본값 설정
           setProfile({ img: null });
           setTheme({
-            color: '#fbc02d',
-            background: '#fff',
+            background: '#fbc02d',
+            color: '#f6f7f9',
           });
         }
       }
     };
     if (id !== 0) getProfile();
-  }, [id, setPreview]);
+  }, [id]);
 
   return (
     <>

@@ -8,6 +8,12 @@ import styled from 'styled-components';
 import useAuth from '../hooks/useAuth';
 import { CommentObj, ThemeStyle } from '../types';
 import ProfileImage from './ProfileImage';
+import { ReactComponent as IcoArrLeft } from '../images/ico-arr-left.svg';
+
+let defaultColor = '#333';
+if (localStorage.getItem('darkmode') === 'on') {
+  defaultColor = '#fff';
+}
 
 const BlogComment = styled.div`
   padding: 20px;
@@ -183,11 +189,13 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
         <div className="commentCount">{`${
           comment?.length || '0'
         }개의 댓글`}</div>
-        <img
-          src={`${process.env.PUBLIC_URL}/images/${
-            showComments ? 'ico-arrowDown' : 'ico-arrowUp'
-          }.png`}
-          alt="Toggle comments"
+        <IcoArrLeft
+          stroke={defaultColor}
+          style={{
+            cursor: 'pointer',
+            transform: showComments ? 'rotate(90deg)' : 'rotate(-90deg)',
+          }}
+          onClick={toggleComments}
           className="arrow"
         />
       </div>
@@ -266,6 +274,7 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                           <button
                             className="replyBtn"
                             onClick={() => setReplyTo(val.id)}
+                            style={{ color: '#777' }}
                           >
                             답댓글 달기
                           </button>

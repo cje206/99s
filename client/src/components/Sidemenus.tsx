@@ -92,18 +92,7 @@ const SideBox = styled.div`
     }
   }
 `;
-// interface ModalProps {
-//   children: React.ReactNode;
-//   onClose: () => void;
-// }
-// const Modal: React.FC<ModalProps> = ({ children, onClose }) => (
-//   <div className="modalBackground">
-//     <div className="modalContent">
-//       {children}
-//       <button onClick={onClose}>닫기</button>
-//     </div>
-//   </div>
-// );
+
 export function DefaultSidemenu({ func }: { func?: () => void }) {
   const [user, setUser] = useAuth();
   const [blog, setBlog] = useState<Boolean>(false);

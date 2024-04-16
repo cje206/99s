@@ -4,6 +4,12 @@
   min-height: 100vh;
   box-sizing: border-box;
   padding-bottom: 270px;
+  button {
+    cursor: pointer;
+  }
+  svg {
+    cursor: pointer;
+  }
   .body {
     padding: 20px;
     box-sizing: border-box;
