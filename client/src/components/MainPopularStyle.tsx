@@ -1,5 +1,5 @@
 // import styled from '@emotion/styled';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 //스와이프 인기게시글
 export const Container = styled.div`
@@ -176,11 +176,6 @@ export const ButtonExtra = styled.div`
   display: flex;
   justify-content: center;
 `;
-
-interface ButtonProps {
-  smallbtn: boolean;
-  subscribebtn: boolean;
-}
 
 export const ButtonExtraStyled = styled.button`
   border-radius: 20px;

@@ -1,5 +1,3 @@
-import { useLocation } from 'react-router-dom';
-
 export const getColor = (
   setfunc: (colors: any) => void,
   type: number,

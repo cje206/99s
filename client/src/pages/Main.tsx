@@ -1,9 +1,6 @@
 import { slides } from '../data/ImgData';
-import { images } from '../data/PopularPostData';
 import MainPageImgSlide from '../components/MainPageImgSlide';
 import MainPopularPost from '../components/MainPopularPost';
-import MainPopularHorizontal from '../components/MainPopularHorizontal';
-import { data } from '../data/PopularHorizontalPost';
 import MainCategory from '../components/MainCategory';
 import { items } from '../data/MainCategory';
 import { MainHeader, MainPcHeader } from '../components/Headers';
@@ -13,7 +10,6 @@ import '../styles/Main.scss';
 import { useEffect, useState } from 'react';
 import { PostObject } from '../types';
 import axios from 'axios';
-import { PostLists } from '../components/Lists';
 
 export default function Main() {
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);

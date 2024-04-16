@@ -9,16 +9,6 @@ import useAuth from '../hooks/useAuth';
 import { CommentObj, ThemeStyle } from '../types';
 import ProfileImage from './ProfileImage';
 
-interface Comment {
-  id: number;
-  content: string;
-  children?: Comment[]; // 대댓글을 위한 속성 추가
-}
-
-interface Params {
-  id: string; // 블로그 ID
-  postId: string; // 포스트 ID
-}
 const BlogComment = styled.div`
   padding: 20px;
   img {

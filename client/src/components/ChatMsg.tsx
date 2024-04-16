@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { ChatMsgProps, SendMsgProps } from '../types';
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import socketIOClient, { io } from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 const BoxStyle = styled.div`
   display: flex;
@@ -41,16 +41,24 @@ const TextInput = styled.input`
   line-height: 40px;
   border-radius: 20px;
   font-size: 16px;
+  @media (min-width: 1160px) {
+    display: block;
+    width: 1200px;
+    margin: 0 auto;
+  }
 `;
 const SendBtn = styled.button`
   position: absolute;
   top: 20px;
-  right: 20px;
   line-height: 30px;
   border-radius: 15px;
   background: #fbc02d;
   padding: 0 10px;
   color: #fff;
+  @media (min-width: 1160px) {
+    right: 50%;
+    transform: translateX(590px);
+  }
 `;
 
 export function MyChatMsg({ text, sendTime }: ChatMsgProps) {
@@ -108,7 +116,7 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
   const [chatMsg, setChatMsg] = useState<string>('');
   const [chatData, setChatData] = chatlist;
   const sendMsg = async () => {
-    if (chatMsg.trim().length == 0) {
+    if (chatMsg.trim().length === 0) {
       return;
     }
     socket.emit('msg', {

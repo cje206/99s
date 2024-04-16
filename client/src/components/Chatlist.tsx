@@ -5,12 +5,21 @@ import axios from 'axios';
 import ProfileImage from './ProfileImage';
 import { useEffect, useRef } from 'react';
 
+let defaultColor = '#333';
+let defaultBg = '#fff';
+if (localStorage.getItem('darkmode') === 'on') {
+  defaultBg = '#333';
+  defaultColor = '#fff';
+}
+
 const BoxStyle = styled.div`
   width: 100%;
   padding: 20px 0;
   display: flex;
   align-items: center;
+  border-bottom: 1px solid #e2e7e2;
   cursor: pointer;
+  box-sizing: border-box;
   .title {
     font-size: 16px;
     margin-bottom: 6px;
@@ -18,6 +27,9 @@ const BoxStyle = styled.div`
   .msg {
     font-size: 14px;
     color: #808080;
+  }
+  @media (min-width: 1160px) {
+    padding: 20px;
   }
 `;
 
@@ -28,6 +40,7 @@ export default function Chatlist({
   sendTime,
   roomId,
   data,
+  active,
 }: ChatListProps) {
   const socketRef = useRef(io('/'));
   const socket = socketRef.current;
@@ -39,6 +52,7 @@ export default function Chatlist({
       url: `${process.env.REACT_APP_HOST}/api/chat/check`,
       params: { roomId },
     });
+    console.log(res.data.result);
     data({
       open: true,
       data: res.data.result,
@@ -47,10 +61,17 @@ export default function Chatlist({
       nickname,
     });
   };
-  useEffect(() => {}, []);
+  useEffect(() => {}, [data]);
   return (
-    <BoxStyle onClick={() => goChat(roomId)}>
-      <ProfileImage id={id} />
+    <BoxStyle
+      onClick={() => goChat(roomId)}
+      style={
+        active === 'true'
+          ? { color: defaultBg, background: defaultColor }
+          : { color: defaultColor, background: defaultBg }
+      }
+    >
+      <ProfileImage id={id} imgwidth="50px" />
       <div style={{ marginLeft: '10px' }}>
         <div className="title">{nickname}</div>
         <div className="msg">
