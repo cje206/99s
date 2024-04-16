@@ -51,7 +51,7 @@ exports.find = async (req, res) => {
     const { memberId, content, isSecret, parentIndex, createdAt, id } =
       comment[i];
     const searchBlog = await Blog.findOne({ where: { memberId } });
-    if (searchBlog.nickname) {
+    if (searchBlog) {
       result.push({
         id,
         memberId,
