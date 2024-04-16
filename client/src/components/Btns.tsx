@@ -59,6 +59,10 @@ const MyBlogBox = styled.div`
     border-radius: 50%;
     margin-bottom: 10px;
   }
+  @media (min-width: 1370px) {
+    right: 50%;
+    transform: translateX(670px);
+  }
 `;
 
 const PostSetBox = styled.div`

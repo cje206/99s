@@ -11,6 +11,7 @@ import { ReactComponent as IcoShare } from '../images/ico-share.svg';
 import '../styles/Content.scss';
 import { PostSetBtn, SubscribeBtn } from './Btns';
 import { getTimeText, handleCopyClipBoard } from './Functions';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 let defaultColor = '#333';
 let defaultBg = '#fff';
@@ -200,11 +201,12 @@ export function PostTitle({
             <div className="view">조회수 {post?.view || '0'}</div>
           </div>
         </div>
-        <IcoShare
-          className="shareBtn"
-          stroke={defaultColor}
-          onClick={() => handleCopyClipBoard(pathname)}
-        />
+        <CopyToClipboard
+          text={`${process.env.REACT_APP_BASEURL}${pathname}`}
+          onCopy={() => alert('클립보드에 링크가 복사되었어요.')}
+        >
+          <IcoShare className="shareBtn" stroke={defaultColor} />
+        </CopyToClipboard>
       </div>
     </ContentTopContainer>
   );
@@ -334,11 +336,12 @@ export function PostLike({
           {/* </div> */}
         </div>
       </div>
-      <IcoShare
-        className="shareBtn"
-        stroke={defaultColor}
-        onClick={() => handleCopyClipBoard(pathname)}
-      />
+      <CopyToClipboard
+        text={`${process.env.REACT_APP_BASEURL}${pathname}`}
+        onCopy={() => alert('클립보드에 링크가 복사되었어요.')}
+      >
+        <IcoShare className="shareBtn" stroke={defaultColor} />
+      </CopyToClipboard>
     </FlexBox>
   );
 }

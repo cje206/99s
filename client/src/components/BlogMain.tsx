@@ -12,6 +12,7 @@ import ProfileImage from '../components/ProfileImage';
 import { SubscribeBtn } from './Btns';
 import axios from 'axios';
 import { handleCopyClipBoard } from './Functions';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const BlogMainContainer = styled.div<{ link?: string }>`
   display: flex;
@@ -166,12 +167,12 @@ export default function BlogMain({
             <IcoPost stroke={theme.color}></IcoPost>
             <span>{postCount}</span>
           </div>
-          <div
-            className="blogIcons share"
-            onClick={() => handleCopyClipBoard(pathname)}
+          <CopyToClipboard
+            text={`${process.env.REACT_APP_BASEURL}${pathname}`}
+            onCopy={() => alert('클립보드에 링크가 복사되었어요.')}
           >
             <IcoShare stroke={theme.color}></IcoShare>
-          </div>
+          </CopyToClipboard>
         </div>
       </div>
     </div>
