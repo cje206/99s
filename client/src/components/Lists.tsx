@@ -9,6 +9,13 @@ import { ReactComponent as IcoLike } from '../images/ico-like.svg';
 import { ReactComponent as IcoComment } from '../images/ico-comment.svg';
 import '../styles/lists.scss';
 
+let defaultColor = '#333';
+let defaultBg = '#fff';
+if (localStorage.getItem('darkmode') === 'on') {
+  defaultBg = '#333';
+  defaultColor = '#fff';
+}
+
 const ArrBox = styled.div`
   display: flex;
   justify-content: space-between;
@@ -223,11 +230,11 @@ export function PostLists({
           </div>
           <div className="postInfoDetail">
             <div className="blogIcons likeCount">
-              <IcoLike stroke="#333" fill="none" />
+              <IcoLike stroke={defaultColor} fill="none" />
               <span>{post.likeCount || '0'}</span>
             </div>
             <div className="blogIcons comment">
-              <IcoComment stroke="#333" fill="none" />
+              <IcoComment stroke={defaultColor} fill="none" />
               <span>{commentCount}</span>
             </div>
           </div>

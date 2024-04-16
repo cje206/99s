@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import Swipe from 'react-easy-swipe';
 import {
   Container,
-  PostImage,
   StyledImgDiv,
   Img,
   ImageCounterWrapper,
@@ -12,7 +11,6 @@ import {
   MainPopularContainer,
 } from '../components/MainPopularStyle';
 import { PostObject } from '../types';
-import { getThumbnail } from './Functions';
 import { PostLists } from './Lists';
 
 export interface SwipeImg {
@@ -72,6 +70,24 @@ export default function MainPopularPost({
     setPositionx(0);
     setEndSwipe(true);
   };
+
+
+<!--   useEffect(() => {
+    const handleResize = () => {
+      setIsWide(window.innerWidth > 1160);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((preIndex) => (preIndex + 1) % postlist.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [postlist.length]); -->
 
   return (
     <>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as IcoWrite } from '../images/ico-write.svg';
+import { ReactComponent as IcoSet } from '../images/ico-set.svg';
 import { BlogObject, ColorObject, ThemeStyle } from '../types';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
@@ -45,16 +46,19 @@ const BoxStyle = styled.button<{ btncolor: string }>`
   }
 `;
 
-const NewPostBox = styled.button`
+const MyBlogBox = styled.div`
   position: fixed;
-  bottom: 10px;
+  width: 50px;
+  bottom: 0;
   right: 10px;
   display: block;
-  width: 50px;
-  height: 50px;
-  background: #333;
   z-index: 170;
-  border-radius: 50%;
+  button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
 `;
 
 const PostSetBox = styled.div`
@@ -113,9 +117,14 @@ export function ToggleBtn({
 export function NewPostBtn({ theme }: { theme: ThemeStyle }) {
   const navigate = useNavigate();
   return (
-    <NewPostBox onClick={() => navigate('/post/write')} style={theme}>
-      <IcoWrite stroke={theme.color} />
-    </NewPostBox>
+    <MyBlogBox>
+      <button onClick={() => navigate('/setting')} style={theme}>
+        <IcoSet stroke={theme.color} />
+      </button>
+      <button onClick={() => navigate('/post/write')} style={theme}>
+        <IcoWrite stroke={theme.color} />
+      </button>
+    </MyBlogBox>
   );
 }
 

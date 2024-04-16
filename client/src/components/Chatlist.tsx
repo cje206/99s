@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { ChatListProps } from '../types';
-import socketIOClient from 'socket.io-client';
+import { io } from 'socket.io-client';
 import axios from 'axios';
 import ProfileImage from './ProfileImage';
+import { useEffect, useRef } from 'react';
 
 const BoxStyle = styled.div`
   width: 100%;
@@ -28,15 +29,17 @@ export default function Chatlist({
   roomId,
   data,
 }: ChatListProps) {
-  const socket = socketIOClient(`${process.env.REACT_APP_HOST}`);
+  const socketRef = useRef(io('/'));
+  const socket = socketRef.current;
+  // const socket = socketIOClient(`${process.env.REACT_APP_HOST}`);
   const goChat = async (roomId: string) => {
+    console.log('goChat');
     socket.emit('enter', { roomId });
     const res = await axios({
       method: 'GET',
       url: `http://localhost:8000/api/chat/check`,
       params: { roomId },
     });
-    console.log(res.data.result);
     data({
       open: true,
       data: res.data.result,
@@ -45,6 +48,9 @@ export default function Chatlist({
       nickname,
     });
   };
+  useEffect(() => {
+    console.log('Chatlist useEffect');
+  }, []);
   return (
     <BoxStyle onClick={() => goChat(roomId)}>
       <ProfileImage id={id} />
