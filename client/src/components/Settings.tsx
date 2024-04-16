@@ -1,15 +1,18 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { UserProps } from '../types';
+import { CategoryObj, PostObject, ThemeStyle, UserProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 import { ErrorMsgGrey, ErrorMsgRed } from './ErrorMsg';
-import { ToggleBtn } from './Btns';
+import { NewPostBtn, ToggleBtn } from './Btns';
 import { ArrList } from './Lists';
 import { storage } from '../config/Firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import ProfileImage from './ProfileImage';
+import Pagination from './Pagination';
+import { is } from 'immutable';
+import { getTimeText } from './Functions';
 const TableStyle = styled.table`
   width: 100%;
   margin: 10px 0 30px;
@@ -18,6 +21,7 @@ const ThStyle = styled.th`
   width: 33.3%;
   line-height: 50px;
   background: #f5f7f9;
+  color: #333;
   border-right: 1px solid #e3e5e7;
 `;
 const TdStyle = styled.td`
@@ -250,6 +254,35 @@ interface Props {
   user: UserProps;
 }
 
+interface NavButton {
+  selectedBar: boolean;
+}
+const StyledButton = styled.button<NavButton>`
+  border: none;
+  flex-grow: 1;
+  border-bottom: ${(props) =>
+    props.selectedBar ? '2px solid #fbc02d' : '2px solid transparent'};
+  font-weight: ${(props) => (props.selectedBar ? 'bold' : 'lighter')};
+  transition: border-bottom 0.3s;
+  font-size: 15px;
+  padding: 10px 0;
+  color: ${(props) => (props.selectedBar ? '#333333' : '#7E7F81')};
+  margin-bottom: 5px;
+`;
+const SetBar = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 0 0 20px;
+  width: 100%;
+`;
+
+const WriteBtn = styled.button`
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid #000;
+`;
+
 export function SetMenu() {
   return (
     <>
@@ -268,8 +301,57 @@ export function SetMenu() {
     </>
   );
 }
+export function PcSetMenu() {
+  const [selectedBar, setSelectedBar] = useState('홈');
+  return (
+    <>
+      <SetBar>
+        <span style={{ fontWeight: '700', marginBottom: '20px' }}>설정</span>
+        <StyledButton
+          selectedBar={selectedBar === '홈'}
+          onClick={() => setSelectedBar('홈')}
+        >
+          <Link to="/setting">홈</Link>
+        </StyledButton>
+        <StyledButton
+          selectedBar={selectedBar === '글 관리'}
+          onClick={() => setSelectedBar('글 관리')}
+        >
+          <Link to="/setting/post">글 관리</Link>
+        </StyledButton>
+        <StyledButton
+          selectedBar={selectedBar === '카테고리 관리'}
+          onClick={() => setSelectedBar('카테고리 관리')}
+        >
+          <Link to="/setting/category">카테고리 관리</Link>
+        </StyledButton>
+        <StyledButton
+          selectedBar={selectedBar === '개인 정보 수정'}
+          onClick={() => setSelectedBar('개인 정보 수정')}
+        >
+          <Link to="/setting/info">개인 정보 수정</Link>
+        </StyledButton>
+        <StyledButton
+          selectedBar={selectedBar === '블로그 편집'}
+          onClick={() => setSelectedBar('블로그 편집')}
+        >
+          <Link to="/setting/blog">블로그 편집</Link>
+        </StyledButton>
+      </SetBar>
+    </>
+  );
+}
 
 export function SetHome() {
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 1160);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth > 1160);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   return (
     <>
       <TableStyle className="settingTable">
@@ -293,38 +375,116 @@ export function SetHome() {
           </tr>
         </tbody>
       </TableStyle>
-      <SetMenu />
+      {!isLargeScreen && <SetMenu />}
     </>
   );
 }
+
 export function SetPost() {
+  const navigate = useNavigate();
+  const [user, setUser] = useAuth();
+  const [postList, setPostList] = useState<PostObject[]>();
+  const [category, setCategory] = useState<CategoryObj[]>();
+  const getPost = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/post/category`,
+      params: { id: user.id },
+    });
+    setPostList(res.data.result);
+  };
+
+  const getCategory = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
+      params: { memberId: user.id },
+    });
+    setCategory(res.data.result);
+  };
+  const editFunc = (id: number) => {
+    localStorage.setItem('postId', `${id}`);
+    navigate('/post/write');
+  };
+  const deleteFunc = async (id: number) => {
+    if (!window.confirm('게시글을 삭제하시겠습니까?')) {
+      return;
+    }
+    const res = await axios({
+      method: 'DELETE',
+      url: `${process.env.REACT_APP_HOST}/api/post/delete`,
+      data: { id },
+    });
+    if (res.data.success) {
+      alert('게시글 삭제가 완료되었습니다.');
+      getPost();
+    }
+  };
+  useEffect(() => {
+    if (user.id) {
+      getPost();
+      getCategory();
+    }
+  }, [user]);
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    } else {
+      alert('로그인 후 이용 가능합니다.');
+      document.location.href = '/signup';
+    }
+  }, []);
   return (
     <>
-      <CheckBox>
-        <div className="flexBox" style={{ marginBottom: '10px' }}>
-          <input type="checkbox" id="check1" />
-          <label htmlFor="check01">
-            글 제목
-            <br />
-            <span>카테고리 &#183; 2024-04-01 12:37</span>
-          </label>
-        </div>
-        <BtnBox>
-          <div className="btn active">수정</div>
-          <div className="btn disabled">삭제</div>
-        </BtnBox>
-      </CheckBox>
+      {postList?.map((data) => (
+        <CheckBox key={data.id}>
+          <div className="flexBox" style={{ marginBottom: '10px' }}>
+            <input type="checkbox" id="check1" />
+            <label htmlFor="check01">
+              {data.postTitle}
+              <br />
+              <span>
+                {data.categoryId
+                  ? category?.map((val) => {
+                      if (val.id == data.categoryId) {
+                        return val.categoryName;
+                      }
+                    })
+                  : '카테고리 없음'}{' '}
+                &#183; {getTimeText(data.createdAt || '')}
+              </span>
+            </label>
+          </div>
+          <BtnBox>
+            <div className="btn active" onClick={() => editFunc(data.id)}>
+              수정
+            </div>
+            <div className="btn disabled" onClick={() => deleteFunc(data.id)}>
+              삭제
+            </div>
+          </BtnBox>
+        </CheckBox>
+      ))}
+
+      <RectBtn onClick={() => navigate('/post/write')}>글쓰기</RectBtn>
     </>
   );
 }
-export function SetCategory() {
+export function SetCategory({ itemsPerPage = 3 }) {
   const [user, setUser] = useAuth();
-  const [list, setList] = useState<any[]>([]);
+  const [list, setList] = useState<CategoryObj[]>([]);
   const [isBlogExist, setIsbBlogExist] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>('');
   const [newGroup, setNewGroup] = useState<string>('일상');
   const [create, setCreate] = useState<boolean>(false);
   const [editId, setEditId] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = list.slice(indexOfFirstItem, indexOfLastItem);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   const categoryStyle = {
     display: 'flex',
     alignItems: 'center',
@@ -414,10 +574,9 @@ export function SetCategory() {
     if (user.id) {
       const res = await axios({
         method: 'GET',
-        url: 'http://localhost:8000/api/blog/getCategory',
+        url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
         params: { memberId: user.id },
       });
-      console.log(res);
       setIsbBlogExist(res.data.success);
       if (res.data.result) {
         setList(res.data.result);
@@ -432,7 +591,7 @@ export function SetCategory() {
     };
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/blog/newCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/newCategory`,
       data,
     });
     getList();
@@ -441,7 +600,7 @@ export function SetCategory() {
   const editFunc = async (id: number) => {
     const res = await axios({
       method: 'PATCH',
-      url: 'http://localhost:8000/api/blog/updateCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/updateCategory`,
       data: {
         group: newGroup,
         categoryName: newName,
@@ -456,14 +615,19 @@ export function SetCategory() {
     }
     const res = await axios({
       method: 'DELETE',
-      url: 'http://localhost:8000/api/blog/delCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/delCategory`,
       data: { id },
     });
     alert(res.data.msg);
     getList();
   };
   useEffect(() => {
-    setUser();
+    if (localStorage.getItem('token')) {
+      setUser();
+    } else {
+      alert('로그인 후 이용 가능합니다.');
+      document.location.href = '/signup';
+    }
   }, []);
   useEffect(() => {
     getList();
@@ -478,7 +642,8 @@ export function SetCategory() {
       )}
       {isBlogExist && list.length === 0 && <p>카테고리를 생성해주세요!</p>}
       {isBlogExist &&
-        list.map(({ id, categoryName, group }) => {
+        // list.map (1)
+        currentItems.map(({ id, categoryName, group }) => {
           if (editId == id) {
             return changeCate(id);
           } else {
@@ -496,6 +661,14 @@ export function SetCategory() {
         >
           카테고리 추가
         </RectBtn>
+      )}
+      {list.length >= 1 && (
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          totalItems={list.length}
+          paginate={paginate}
+          currentPage={currentPage}
+        />
       )}
     </>
   );
@@ -529,7 +702,7 @@ export function SetInfo() {
     }
     const res = await axios({
       method: 'PATCH',
-      url: 'http://localhost:8000/api/member/update',
+      url: `${process.env.REACT_APP_HOST}/api/member/update`,
       data,
     });
     if (res.data.success) {
@@ -547,7 +720,7 @@ export function SetInfo() {
     }
     const res = await axios({
       method: 'DELETE',
-      url: 'http://localhost:8000/api/member/destroy',
+      url: `${process.env.REACT_APP_HOST}/api/member/destroy`,
       data: { id: user.id },
     });
     if (res.data.success) {
@@ -653,11 +826,9 @@ export function SetBlog() {
     if (user.id) {
       const res = await axios({
         method: 'GET',
-        url: 'http://localhost:8000/api/blog/find',
+        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
         params: { memberId: user.id },
       });
-      console.log(user);
-      console.log(res);
       if (res.data.result) {
         setNickname(res.data.result.nickname);
         setBlogTitle(res.data.result.blogTitle);
@@ -683,12 +854,12 @@ export function SetBlog() {
       if (uploadUrl) {
         imageUrl = uploadUrl;
         setUploadedImageUrl(uploadUrl);
-        setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
+        // setPreviewImageUrl(null); // 업로드 후 미리보기 URL 초기화
       }
     }
     const res = await axios({
       method: 'PATCH',
-      url: 'http://localhost:8000/api/blog/update',
+      url: `${process.env.REACT_APP_HOST}/api/blog/update`,
       data: {
         memberId: user.id,
         nickname,
@@ -731,15 +902,10 @@ export function SetBlog() {
   };
 
   const triggerFileInputClick = () => {
-    console.log('프로필 사진 변경 버튼 클릭됨');
-    console.log(fileInputRef.current);
     fileInputRef.current?.click();
   };
-
-  const setToDefaultImage = () => {
-    setUseDefaultImg(true); // 기본 이미지 사용 상태를 true로 설정
-    setPreviewImageUrl(null); // 미리보기 이미지 URL을 초기화
-    setUploadedImageUrl(null); // 업로드된 이미지 URL을 초기화
+  const handleDefaultImageClick = () => {
+    setPreviewImageUrl(null);
   };
 
   useEffect(() => {
@@ -750,17 +916,13 @@ export function SetBlog() {
     setInfo();
   }, [user]);
 
-  useEffect(() => {
-    // toggleBtn(theme);
-    console.log(theme);
-  }, [theme]);
-
   return (
     <>
       <BlogBox>
         <ProfileImage
           id={user.id || 0}
-          profileimg={previewImageUrl || ''}
+          profileimg={previewImageUrl}
+          setPreview={setPreviewImageUrl}
           imgwidth={'80px'}
         />
         <input
@@ -773,7 +935,9 @@ export function SetBlog() {
           프로필 사진 변경
         </button>
 
-        <button className="editImg">기본이미지</button>
+        <button className="editImg" onClick={handleDefaultImageClick}>
+          기본이미지
+        </button>
       </BlogBox>
       <BoxStyle>
         <label>닉네임 *</label>

@@ -1,18 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Info, items } from '../data/SearchData';
 import styled from 'styled-components';
-import { ReactComponent as IcoLike } from '../images/ico-like.svg';
-import { ReactComponent as IcoComment } from '../images/ico-comment.svg';
 import { ReactComponent as IcoHorizon } from '../images/ico-horizon.svg';
 import { ReactComponent as IcoVertical } from '../images/ico-vertical.svg';
-import { ThemeStyle } from '../types';
-import MainCategory from '../components/MainCategory';
-import MainPopularHorizontal from '../components/MainPopularHorizontal';
-import { data } from '../data/PopularHorizontalPost';
+import { PostObject, ThemeStyle } from '../types';
+import axios from 'axios';
+import { PostList, PostLists } from './Lists';
+import Pagination from './Pagination';
+import { Container } from './MainPopularStyle';
 
 const PopularPost = styled.div`
-  margin: 20px 20px 70px 20px;
+  margin-bottom: 70px;
+`;
+
+const DesktopBlogMain = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  /* width: 100%; */
 `;
 export function BlogProfile() {
   return <div></div>;
@@ -23,44 +29,26 @@ export function BlogCategory() {
 
 export function BlogPopular() {
   const { id } = useParams<{ id?: string }>();
-  const [highestView, setHighestView] = useState<Info | null>(null);
+  const [post, setPost] = useState<PostObject>();
 
+  const getPost = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/post/popular`,
+      params: { id: Number(id) },
+    });
+    setPost(res.data.result[0]);
+  };
   useEffect(() => {
-    const postId = id ? parseInt(id) : NaN;
-    // 현재 페이지 ID와 일치하고, 가장 조회수가 높은 게시물 찾기
-    const relatedPosts = items.filter((item) => item.id === postId);
-    const mostPopularPost =
-      relatedPosts.sort((a, b) => (b.view || 0) - (a.view || 0))[0] || null;
-    setHighestView(mostPopularPost);
-  }, [id, items]);
+    getPost();
+  }, []);
   return (
     <>
       <div className="Info">인기 게시글</div>
       {/* DB에서 조회수 가장 높은 걸로 가져오게(연결만 다시) , 지금 현재는 만든 db에서 view 높은걸로 가져오게 설정함*/}
       <PopularPost>
-        {highestView ? (
-          <>
-            <img
-              className="postImg"
-              src={highestView.imageUrl}
-              alt="Popular Post"
-            />
-            <div className="blogPostTitle">{highestView.title}</div>
-            <div className="blogPostContent">{highestView.content}</div>
-            <div className="postInfo">
-              <div className="Date">{highestView.date}</div>
-              <div className="postInfoDetail">
-                <div className="blogIcons likeCount">
-                  <IcoLike stroke="#333" fill="none" />
-                  <span>3</span>
-                </div>
-                <div className="blogIcons comment">
-                  <IcoComment stroke="#333" fill="none" />
-                  <span>30</span>
-                </div>
-              </div>
-            </div>
-          </>
+        {post ? (
+          <PostLists post={post} vertical={false} />
         ) : (
           <p>게시물이 없습니다.</p>
         )}
@@ -78,10 +66,44 @@ export default function BlogPosts({
 }) {
   const { id } = useParams<{ id?: string }>();
   const [layoutMode, setLayoutMode] = useState('horizontal');
+  const [postList, setPostList] = useState<PostObject[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isWide, setIsWide] = useState(window.innerWidth > 1160);
+  const itemsPerPage = 6;
+
+  // 페이지네이션 로직
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = postList.slice(indexOfFirstItem, indexOfLastItem);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  //layout
+  // const currentIndex = postList.slice(0, 6);
+  const groupedItems = [...Array(Math.ceil(currentItems.length / 3))].map(
+    (_, i) => currentItems.slice(i * 3, i * 3 + 3)
+  );
+  const groupedItems2 = [...Array(Math.ceil(currentItems.length / 2))].map(
+    (_, i) => currentItems.slice(i * 2, i * 2 + 2)
+  );
 
   const handleLayoutChange = (mode: string) => {
     setLayoutMode(mode);
   };
+
+  const getPostList = async () => {
+    if (id) {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/post/category`,
+        params: { id },
+      });
+      setPostList(res.data.result);
+    }
+  };
+
+  useEffect(() => {
+    getPostList();
+  }, []);
 
   return (
     <>
@@ -112,17 +134,67 @@ export default function BlogPosts({
           </button>
         </div>
       </div>
-      {layoutMode === 'vertical' ? (
-        <MainPopularHorizontal
-          data={data.filter((d) => d.id === parseInt(id || '0'))} // ID에 맞는 데이터만 필터링
-          showPagination={true}
-        />
+
+      {isWide ? (
+        <>
+          {layoutMode === 'vertical' ? (
+            <>
+              {groupedItems2.map((currentItems, index) => (
+                <DesktopBlogMain key={index} style={{ flexWrap: 'wrap' }}>
+                  {currentItems.map((val) => (
+                    // 3행2열
+                    <div key={val.id} style={{ width: 'calc(50% - 10px)' }}>
+                      <PostLists post={val} vertical={true} />
+                    </div>
+                  ))}
+                </DesktopBlogMain>
+              ))}
+            </>
+          ) : (
+            <>
+              {groupedItems.map((currentItems, index) => (
+                <DesktopBlogMain key={index} style={{ flexWrap: 'nowrap' }}>
+                  {currentItems.map((val) => (
+                    <div
+                      key={val.id}
+                      style={{ flex: '1 0 calc(33.333% - 40px)' }}
+                    >
+                      <PostLists post={val} vertical={false} />
+                    </div>
+                  ))}
+                </DesktopBlogMain>
+              ))}
+            </>
+          )}
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            totalItems={postList.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+        </>
       ) : (
-        <MainCategory
-          items={items.filter((item) => item.id === parseInt(id || '0'))} // ID에 맞는 데이터만 필터링
-          ShowContent={false}
-          showPagination={true}
-        />
+        <>
+          {layoutMode === 'vertical' ? (
+            <>
+              {currentItems.map((val) => (
+                <PostLists key={val.id} post={val} vertical={true} />
+              ))}
+            </>
+          ) : (
+            <>
+              {currentItems.map((val) => (
+                <PostLists key={val.id} post={val} vertical={false} />
+              ))}
+            </>
+          )}
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            totalItems={postList.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+        </>
       )}
     </>
   );

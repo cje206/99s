@@ -35,9 +35,18 @@ export default function SearchBar() {
   const [showMoreContent, setShowMoreContent] = useState(false);
   const [showMoreTitle, setShowMoreTitle] = useState(false);
 
-  const handleShowMoreWriter = () => setSelectedBar('작성자');
-  const handleShowMoreContent = () => setSelectedBar('내용');
-  const handleShowMoreTitle = () => setSelectedBar('제목');
+  const handleShowMoreWriter = () => {
+    setSelectedBar('작성자');
+    window.scrollTo(0, 0);
+  };
+  const handleShowMoreContent = () => {
+    setSelectedBar('내용');
+    window.scrollTo(0, 0);
+  };
+  const handleShowMoreTitle = () => {
+    setSelectedBar('제목');
+    window.scrollTo(0, 0);
+  };
 
   //전체 눌렀을떄만 버튼보이게
   useEffect(() => {
@@ -95,9 +104,7 @@ export default function SearchBar() {
           <SearchWriter items={items.slice(0, 3)} showPagination={false} />
           {showMoreWriter && (
             <ButtonExtra onClick={handleShowMoreWriter}>
-              <ButtonExtraStyled smallbtn={false} subscribebtn={false}>
-                게시글 더보기
-              </ButtonExtraStyled>
+              <ButtonExtraStyled>게시글 더보기</ButtonExtraStyled>
             </ButtonExtra>
           )}
           <hr
@@ -122,9 +129,7 @@ export default function SearchBar() {
           />
           {showMoreTitle && (
             <ButtonExtra onClick={handleShowMoreTitle}>
-              <ButtonExtraStyled smallbtn={false} subscribebtn={false}>
-                게시글 더보기
-              </ButtonExtraStyled>
+              <ButtonExtraStyled>게시글 더보기</ButtonExtraStyled>
             </ButtonExtra>
           )}
           <hr
@@ -149,9 +154,7 @@ export default function SearchBar() {
           />
           {showMoreContent && (
             <ButtonExtra onClick={handleShowMoreContent}>
-              <ButtonExtraStyled smallbtn={false} subscribebtn={false}>
-                게시글 더보기
-              </ButtonExtraStyled>
+              <ButtonExtraStyled>게시글 더보기</ButtonExtraStyled>
             </ButtonExtra>
           )}
         </>

@@ -4,14 +4,16 @@
 .main-slide {
   background-color: #ffcf58;
   position: relative;
-  align-items: center;
 
   @include mobile {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 500px;
     .mainContainer {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 500px;
+      align-items: center;
+    }
+    .mainText {
       margin-bottom: 22px;
       p {
         font-size: 23px;
@@ -41,20 +43,31 @@
     }
   }
   @include desktop {
-    display: flex;
-    justify-content: center;
-    height: 500px;
+    .main-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .mainContainer {
+      display: flex;
+      justify-content: center;
+      height: 500px;
+      align-items: center;
+      width: 1200px;
+      margin: 0 auto;
+    }
+
     .imgBorder {
       @include circle;
-      width: 400px;
+      width: 500px;
       height: 400px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
-    .mainContainer {
-      // margin-right: 20px;
-      width: 600px;
+    .mainText {
+      width: 700px;
       p {
         font-size: 27px;
       }

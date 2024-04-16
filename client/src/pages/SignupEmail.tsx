@@ -27,7 +27,6 @@ export default function SignupEmail() {
   const signupFunc = async () => {
     if (username.length < 2) {
       alert('이름은 2자 이상 입력해주세요.');
-      console.log(nameRef.current);
       nameRef.current?.focus();
       return;
     }
@@ -53,7 +52,7 @@ export default function SignupEmail() {
     }
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/member/signup',
+      url: `${process.env.REACT_APP_HOST}/api/member/signup`,
       data: {
         username,
         birth,

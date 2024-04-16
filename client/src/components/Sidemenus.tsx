@@ -10,10 +10,17 @@ import { ReactComponent as IcoDarkmode } from '../images/ico-darkmode.svg';
 import { ReactComponent as IcoSet } from '../images/ico-set.svg';
 import { ReactComponent as IcoWrite } from '../images/ico-write.svg';
 import { ReactComponent as IcoLogout } from '../images/ico-logout.svg';
+import { ReactComponent as IcoClose } from '../images/ico-close.svg';
 import { ToggleBtn } from './Btns';
-import { SetMenu } from './Settings';
 import { ArrList } from './Lists';
 import axios from 'axios';
+
+let defaultColor = '#333';
+let defaultBg = '#fff';
+if (localStorage.getItem('darkmode') === 'on') {
+  defaultBg = '#333';
+  defaultColor = '#fff';
+}
 
 const SideBox = styled.div`
   position: fixed;
@@ -22,8 +29,9 @@ const SideBox = styled.div`
   min-width: 320px;
   width: 100%;
   height: 100%;
-  background: #fff;
-  z-index: 150;
+  background: ${defaultBg};
+  z-index: 200;
+  box-sizing: border-box;
   .btnClose {
     position: absolute;
     top: 20px;
@@ -54,6 +62,10 @@ const SideBox = styled.div`
     padding: 15px 20px;
     border-bottom: 1px solid #eaf1ea;
     box-sizing: border-box;
+    @media (min-width: 1160px) {
+      display: flex;
+      align-items: center;
+    }
     svg {
       margin-right: 10px;
     }
@@ -72,16 +84,38 @@ const SideBox = styled.div`
       border-top: 1px solid #eaf1ea;
     }
   }
+  &.darkmode {
+    background: #333;
+    .profileBox {
+      background: #333;
+      border-bottom: 1px solid #eaf1ea;
+    }
+  }
 `;
+// interface ModalProps {
+//   children: React.ReactNode;
+//   onClose: () => void;
+// }
+// const Modal: React.FC<ModalProps> = ({ children, onClose }) => (
+//   <div className="modalBackground">
+//     <div className="modalContent">
+//       {children}
+//       <button onClick={onClose}>닫기</button>
+//     </div>
+//   </div>
+// );
 export function DefaultSidemenu({ func }: { func?: () => void }) {
   const location = useLocation();
   const [user, setUser] = useAuth();
+  const [blog, setBlog] = useState<Boolean>(false);
   const [darkmode, setDarkmode] = useState<Boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isScreenLarge, setIsScreenLarge] = useState(window.innerWidth > 1160);
   const logoutFun = () => {
     if (!window.confirm('로그아웃 하시겠습니까?')) {
       return;
     }
-    localStorage.clear();
+    localStorage.removeItem('token');
     document.location.reload();
   };
   const applyDark = () => {
@@ -91,6 +125,17 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
       localStorage.removeItem('darkmode');
     }
   };
+  const getBlog = async () => {
+    if (user.id) {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+        params: { memberId: user.id },
+      });
+      setBlog(res.data.success);
+    }
+  };
+
   useEffect(() => {
     setUser();
     if (localStorage.getItem('darkmode') === 'on') {
@@ -100,8 +145,35 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
   useEffect(() => {
     applyDark();
   }, [darkmode]);
+  useEffect(() => {
+    getBlog();
+  }, [user]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsScreenLarge(window.innerWidth > 1160);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isScreenLarge) {
+      // 화면 크기가 1160px를 넘으면 모달 열기
+      setIsModalOpen(true);
+    } else {
+      setIsModalOpen(false);
+    }
+  }, [isScreenLarge]);
+
   return (
-    <SideBox>
+    <SideBox
+      className={
+        localStorage.getItem('darkmode') === 'on' ? 'darkmode' : 'default'
+      }
+    >
       <div className="profileBox">
         <img
           src="/images/ico-close.png"
@@ -109,12 +181,24 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
           onClick={func}
           style={{ cursor: 'pointer' }}
         />
+        <IcoClose
+          stroke={defaultColor}
+          className="btnClose"
+          onClick={func}
+          style={{ cursor: 'pointer' }}
+        />
         <ProfileImage id={user.id || 0} />
         {user.id ? (
           <div className="profileText">
-            <Link to={`/blog/${user.id}`} className="blogLink">
-              http://localhost:3000/blog/{user.id}
-            </Link>
+            {blog ? (
+              <Link to={`/blog/${user.id}`} className="blogLink">
+                내 블로그
+              </Link>
+            ) : (
+              <Link to={`/setting/blog`} className="blogLink">
+                블로그 생성하기
+              </Link>
+            )}
             <p className="profileName">{user.username}</p>
           </div>
         ) : (
@@ -129,14 +213,14 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
             <IcoWrite stroke="#fbc02d" />
             <span>글 작성하기</span>
           </Link>
-          <div className="blogIcons">
+          <Link to="/subscribe" className="blogIcons">
             <IcoSubscribe stroke="#fbc02d" />
             <span>구독</span>
-          </div>
-          <div className="blogIcons">
+          </Link>
+          <Link to="/like" className="blogIcons">
             <IcoLike stroke="#fbc02d" fill="none" />
             <span>좋아요</span>
-          </div>
+          </Link>
           <Link to="/setting" className="blogIcons">
             <IcoSet stroke="#fbc02d" />
             <span>설정</span>
@@ -176,7 +260,12 @@ export function SetSidemenu({ func }: { func?: () => void }) {
   }, [location.pathname]);
   return (
     <SideBox>
-      <img src="/images/ico-close.png" className="btnClose" onClick={func} />
+      <IcoClose
+        stroke={defaultColor}
+        className="btnClose"
+        onClick={func}
+        style={{ cursor: 'pointer' }}
+      />
       <div className="body" style={{ paddingTop: '50px' }}>
         {/* <SetMenu /> */}
         <Link to="/setting">
@@ -207,10 +296,9 @@ export function BlogSidemenu({ func }: { func?: () => void }) {
   const getCategory = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/getCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
       params: { memberId: Number(id) },
     });
-    console.log(res);
     setList(res.data.result);
   };
   useEffect(() => {
@@ -223,7 +311,12 @@ export function BlogSidemenu({ func }: { func?: () => void }) {
   }, [location.pathname]);
   return (
     <SideBox>
-      <img src="/images/ico-close.png" className="btnClose" onClick={func} />
+      <IcoClose
+        stroke={defaultColor}
+        className="btnClose"
+        onClick={func}
+        style={{ cursor: 'pointer' }}
+      />
       <div className="body" style={{ paddingTop: '50px' }}>
         <Link to={`/blog/${id}/category`}>
           <ArrList>전체 글</ArrList>

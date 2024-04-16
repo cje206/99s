@@ -1,14 +1,17 @@
 import '../styles/MainPopularPost.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swipe from 'react-easy-swipe';
 import {
   Container,
-  PostImage,
   StyledImgDiv,
   Img,
   ImageCounterWrapper,
   ImageCounter,
+  SlideContainer,
+  MainPopularContainer,
 } from '../components/MainPopularStyle';
+import { PostObject } from '../types';
+import { PostLists } from './Lists';
 
 export interface SwipeImg {
   imageUrl: string;
@@ -18,29 +21,36 @@ export interface SwipeImg {
   Date: string;
 }
 
-interface MainPopularPostProps {
-  images: SwipeImg[];
-}
-
-export default function MainPopularPost({ images }: MainPopularPostProps) {
+export default function MainPopularPost({
+  postlist,
+}: {
+  postlist: PostObject[];
+}) {
   const [positionx, setPositionx] = useState<number>(0);
   const [imgCount, setImgCount] = useState<number>(1);
   const [endSwipe, setEndSwipe] = useState<boolean>(false);
+  const [isWide, setIsWide] = useState(window.innerWidth > 1160);
+
+  const currentItems = postlist.slice(0, 6);
+
+  const groupedItems = [...Array(Math.ceil(currentItems.length / 3))].map(
+    (_, i) => currentItems.slice(i * 3, i * 3 + 3)
+  );
 
   const onSwipeMove = (position: { x: number }) => {
     setEndSwipe(false);
-    if (images.length === 1) {
+    if (postlist.length === 1) {
       return;
     }
     if (imgCount === 1 && position.x < 0) {
       setPositionx(() => position.x);
       return;
     }
-    if (imgCount > 1 && imgCount < images.length) {
+    if (imgCount > 1 && imgCount < postlist.length) {
       setPositionx(() => position.x);
       return;
     }
-    if (imgCount === images.length && position.x > 0) {
+    if (imgCount === postlist.length && position.x > 0) {
       setPositionx(() => position.x);
       return;
     }
@@ -49,80 +59,102 @@ export default function MainPopularPost({ images }: MainPopularPostProps) {
   const onSwipeEnd = () => {
     // 오른쪽으로 스와이프 (이전 이미지로)
     if (positionx > 20) {
-      const prevImgCount = imgCount <= 1 ? images.length : imgCount - 1;
+      const prevImgCount = imgCount <= 1 ? postlist.length : imgCount - 1;
       setImgCount(prevImgCount);
     }
     // 왼쪽으로 스와이프 (다음 이미지로)
     else if (positionx < -20) {
-      const nextImgCount = imgCount >= images.length ? 1 : imgCount + 1;
+      const nextImgCount = imgCount >= postlist.length ? 1 : imgCount + 1;
       setImgCount(nextImgCount);
     }
     setPositionx(0);
     setEndSwipe(true);
   };
 
+  // useEffect(() => {
+
+  //   const handleResize = () => {
+  //     setIsWide(window.innerWidth > 1160);
+  //   };
+
+  //   window.addEventListener('resize', handleResize);
+
+  //   return () => window.removeEventListener('resize', handleResize);
+  // }, []);
+
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setCurrentIndex((preIndex) => (preIndex + 1) % postlist.length);
+  //   }, 3000);
+  //   return () => clearInterval(timer);
+  // }, [postlist.length]);
+
+
+  //   useEffect(() => {
+  //     const timer = setInterval(() => {
+  //       setCurrentIndex((preIndex) => (preIndex + 1) % postlist.length);
+  //     }, 3000);
+  //     return () => clearInterval(timer);
+  //   }, [postlist.length]);
   return (
     <>
-      {/* <p className="category" style={{ fontWeight: 'bold', fontSize: '18px' }}>
-        인기 게시글
-      </p> */}
       <Container>
-        <PostImage>
-          <Swipe onSwipeEnd={onSwipeEnd} onSwipeMove={onSwipeMove}>
-            <StyledImgDiv
-              imgCount={imgCount}
-              positionx={positionx}
-              endSwipe={endSwipe}
-            >
-              {images.map((image, index) => {
-                return (
+        {isWide ? (
+          <>
+            {groupedItems.map((group, index) => (
+              <MainPopularContainer key={index}>
+                {group.map((post) => (
                   <div
                     className="popularPost"
-                    key={index}
+                    key={post.id}
                     style={{
-                      minWidth: '100%',
-                      textAlign: 'center',
+                      flex: '1 0 calc(33.333% - 40px)', // 한 행에 3개씩
                     }}
                   >
-                    {' '}
-                    <Img src={image.imageUrl}></Img>
+                    <PostLists post={post} vertical={false} />
                   </div>
-                );
-              })}
-            </StyledImgDiv>
-          </Swipe>
-        </PostImage>
-        <div className="postTitle popular">{images[imgCount - 1].title}</div>
-        <div className="postWriterInfo">
-          {images[imgCount - 1].writerImgUrl && (
-            <img
-              className="writerImg"
-              src={images[imgCount - 1].writerImgUrl}
-              alt="작성자 사진"
-            />
-          )}
-          <div className="writerDetail">
-            <div className="writerDetail block">
-              {images[imgCount - 1].writer}
-            </div>
-            <div
-              style={{
-                color: '#7E7F81',
-                fontSize: '11px',
-              }}
-            >
-              {images[imgCount - 1].Date}
-            </div>
-          </div>
-        </div>
-        {images.length > 1 && (
-          <ImageCounterWrapper>
-            {images.map((imageUrl, index) => {
-              return (
-                <ImageCounter key={index} index={index} imgCount={imgCount} />
-              );
-            })}
-          </ImageCounterWrapper>
+                ))}
+              </MainPopularContainer>
+            ))}
+          </>
+        ) : (
+          <>
+            <Swipe onSwipeEnd={onSwipeEnd} onSwipeMove={onSwipeMove}>
+              <StyledImgDiv
+                imgCount={imgCount}
+                positionx={positionx}
+                endSwipe={endSwipe}
+              >
+                {postlist?.map((post) => (
+                  <div
+                    className="popularPost"
+                    key={post.id}
+                    style={{
+                      minWidth: '100%',
+                      boxSizing: 'border-box',
+                      padding: '20px',
+                    }}
+                  >
+                    <PostLists post={post} vertical={false} />
+                  </div>
+                ))}
+              </StyledImgDiv>
+            </Swipe>
+
+            {postlist.length > 1 && (
+              <ImageCounterWrapper>
+                {postlist.map((post, index) => {
+                  return (
+                    <ImageCounter
+                      key={index}
+                      index={index}
+                      imgCount={imgCount}
+                    />
+                  );
+                })}
+              </ImageCounterWrapper>
+            )}
+          </>
         )}
       </Container>
     </>

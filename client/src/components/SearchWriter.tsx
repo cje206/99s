@@ -59,7 +59,7 @@ const PostNum = styled.div`
 export default function SearchWriter({
   items,
   showPagination,
-  itemsPerPage = 10, //나중에 10으로 바꾸면된다
+  itemsPerPage = 3, //나중에 10으로 바꾸면된다
 }: InfoProps) {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -76,7 +76,7 @@ export default function SearchWriter({
           <PostWrapper>
             <PostWriter className="PostWriter">{item.writer}</PostWriter>
             <PostInfo>
-              <Subscribe>구독자 {item.subscribe} · </Subscribe>
+              <Subscribe>구독자 {item.subscribe} &#183; </Subscribe>
               <PostNum>게시글 {item.postNum}</PostNum>
             </PostInfo>
           </PostWrapper>

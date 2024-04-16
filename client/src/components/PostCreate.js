@@ -4,16 +4,13 @@ import { uploadBytes, getDownloadURL, ref } from 'firebase/storage';
 import DOMPurify from 'isomorphic-dompurify';
 import axios from 'axios';
 import ImageResize from '@looop/quill-image-resize-module-react';
-import styled from 'styled-components';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.core.css'; // 이 위치로 옮겼습니다.
 import '../styles/test.scss';
 
 import { storage } from '../config/Firebase';
-import { ButtonExtraStyled, ButtonExtra, TitleInput } from './MainPopularStyle';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-import { EditBox } from './Settings';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -68,7 +65,6 @@ const imageHandler = (quillRef, storage) => {
       });
     } catch (error) {
       editor.deleteText(range.index, 1);
-      console.log(error);
     }
   });
 };
@@ -121,34 +117,13 @@ function QuillEditor({ placeholder, value, ...rest }) {
   const getCategory = async () => {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/getCategory',
+      url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
       params: { memberId: user.id },
     });
     setCategoryList(res.data.result);
   };
 
-  useEffect(() => {
-    if (localStorage.getItem('token')) {
-      setUser();
-    }
-    if (localStorage.getItem('postId')) {
-      setPostId(localStorage.getItem('postId'));
-    }
-    if (quillRef.current) {
-      const editor = quillRef.current.getEditor();
-      const toolbar = editor.getModule('toolbar');
-      toolbar.addHandler('image', () => imageHandler(quillRef, storage));
-    }
-  }, []);
-  useEffect(() => {
-    if (user.id) {
-      getCategory();
-      console.log(user.id);
-    }
-  }, [user]);
-
   const DisplayContents = ({ content }) => {
-    console.log(DOMPurify.sanitize(content));
     return (
       <div
         className="view ql-editor" // react-quill css
@@ -165,7 +140,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
     }
     const findBlog = await axios({
       method: 'GET',
-      url: 'http://localhost:8000/api/blog/find',
+      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
       params: { memberId: user.id },
     });
     const categoryId = () => {
@@ -186,21 +161,42 @@ function QuillEditor({ placeholder, value, ...rest }) {
     }
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/post/write',
+      url: `${process.env.REACT_APP_HOST}/api/post/write`,
       data,
     });
-    console.log(res);
     if (res.data.success) {
       alert('게시글 작성이 완료되었습니다.');
       navigate(`/blog/${user.id}/${res.data.result.id}`);
     }
   };
+  const getPost = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/post/find`,
+      params: { id: postId },
+    });
+    const { categoryId, content, postTitle } = res.data.result;
+    let newString;
+    res.data.result.hashtag.map((val, idx) => {
+      if (idx > 0) {
+        newString += `, ${val}`;
+        setHashtag(newString);
+      } else {
+        newString = val;
+        setHashtag(newString);
+      }
+    });
+    setTitle(postTitle);
+    if (categoryId) {
+      setCategory(String(categoryId));
+    }
+    document.querySelector('.ql-editor').innerHTML = content;
+    localStorage.removeItem('postId');
+  };
   const checkKeyCode = (e) => {
-    console.log();
     const kcode = e.keyCode;
     if (kcode == 32) {
       setHashtag(hashtag + ', #');
-      console.log('onKeyDown');
     } else if (kcode == 13) {
       setHashtag(hashtag + ', #');
     }
@@ -219,11 +215,35 @@ function QuillEditor({ placeholder, value, ...rest }) {
       setHashtag('');
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    }
+    if (localStorage.getItem('postId')) {
+      setPostId(Number(localStorage.getItem('postId')));
+    }
+    if (quillRef.current) {
+      const editor = quillRef.current.getEditor();
+      const toolbar = editor.getModule('toolbar');
+      toolbar.addHandler('image', () => imageHandler(quillRef, storage));
+    }
+  }, []);
+  useEffect(() => {
+    if (user.id) {
+      getCategory();
+    }
+  }, [user]);
+  useEffect(() => {
+    if (postId) {
+      getPost();
+    }
+  }, [postId]);
   return (
-    <div className="wrap">
+    <div className="wrap createPost">
       <div className="postHeader">
         <button onClick={() => navigate(-1)}>취소</button>
-        <select onChange={(e) => setCategory(e.target.value)}>
+        <select onChange={(e) => setCategory(e.target.value)} value={category}>
           <option value="none">카테고리 없음</option>
           {categoryList?.map((value) => (
             <option key={value.id} value={value.id}>

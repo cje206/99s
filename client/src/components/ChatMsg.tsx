@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { ChatMsgProps, SendMsgProps } from '../types';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import socketIOClient from 'socket.io-client';
+import socketIOClient, { io } from 'socket.io-client';
 
 const BoxStyle = styled.div`
   display: flex;
@@ -56,6 +56,7 @@ export function MyChatMsg({ text, sendTime }: ChatMsgProps) {
   const writtenTime = new Date(sendTime);
   const HOUR = writtenTime.getHours();
   const MINUTE = writtenTime.getMinutes();
+  useEffect(() => {}, []);
   return (
     <BoxStyle style={{ justifyContent: 'flex-end' }}>
       <TimeStyle>
@@ -73,6 +74,7 @@ export function OpChatMsg({ text, sendTime }: ChatMsgProps) {
   const writtenTime = new Date(sendTime);
   const HOUR = writtenTime.getHours();
   const MINUTE = writtenTime.getMinutes();
+  useEffect(() => {}, []);
   return (
     <BoxStyle>
       <ChatStyle style={{ marginRight: '10px' }}>{text}</ChatStyle>
@@ -99,7 +101,9 @@ export function DateChatMsg({ children }: any) {
 }
 
 export function InputChat({ userId, chatlist }: SendMsgProps) {
-  const socket = socketIOClient('localhost:8000');
+  const socketRef = useRef(io('/'));
+  const socket = socketRef.current;
+  // const socket = socketIOClient(`${process.env.REACT_APP_HOST}`);
   const [chatMsg, setChatMsg] = useState<string>('');
   const [chatData, setChatData] = chatlist;
   const sendMsg = async () => {
@@ -112,13 +116,14 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
     });
     const res = await axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/chat/write',
+      url: `http://localhost:8000/api/chat/write`,
       data: { userId, roomId: chatData.roomId, chatMsg },
     });
     setChatData({
       open: true,
       data: [...chatData.data, res.data.result],
       roomId: chatData.roomId,
+      nickname: chatData.nickname,
     });
     setChatMsg('');
   };
@@ -130,6 +135,7 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
       sendMsg();
     }
   };
+  useEffect(() => {}, []);
   return (
     <InputBox>
       <TextInput

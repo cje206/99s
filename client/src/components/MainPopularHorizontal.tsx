@@ -29,7 +29,6 @@ export default function MainPopularHorizontal({
   itemsPerPage = 10,
 }: MainPopularInfoProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  // const itemsPerPage = 3; //실험차 3이고 나중에 10으로 변경하면 됌
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -39,22 +38,22 @@ export default function MainPopularHorizontal({
   return (
     <>
       {currentItems.map((data, index) => (
-        <PostInfoContainer key={index} style={{ margin: '20px 20px 0 20px' }}>
-          <div className="contentWrapper">
-            <div className="imageWrapper">
-              <img src={data.imageUrl} alt={data.title}></img>
-            </div>
-            <div className="textWrapper">
-              <div className="postTitle" style={{ fontWeight: '700' }}>
-                {data.title}
-              </div>
-              <div className="textDetail">
-                <div className="postWriter">{data.writer}</div>
-                <div className="postDate">{data.date}</div>
-              </div>
-              <div className="postContent">{data.content}</div>
-            </div>
+        <PostInfoContainer key={index}>
+          {/* <div className="contentWrapper"> */}
+          <div className="imageWrapper">
+            <img src={data.imageUrl} alt={data.title}></img>
           </div>
+          <div className="textWrapper">
+            <div className="postTitle" style={{ fontWeight: '700' }}>
+              {data.title}
+            </div>
+            <div className="textDetail">
+              <div className="postWriter">{data.writer}</div>
+              <div className="postDate">{data.date}</div>
+            </div>
+            <div className="postContent">{data.content}</div>
+          </div>
+          {/* </div> */}
         </PostInfoContainer>
       ))}
       {showPagination && (

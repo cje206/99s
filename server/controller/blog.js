@@ -1,25 +1,26 @@
-const { list } = require('firebase/storage');
 const { Blog, Category, Subscribe } = require('../models');
 const { where } = require('sequelize');
 
-// exports.blogDetail = async (req, res) => {
-//   try {
-//     //req.params.id = 작성자
-//     console.log('req.params.id', req.params.id);
-//     //content 모델 내용 가져오기
-//     const result = await Blog.findByPk(req.params.id);
-//     res.json({ success: true, result: result }); //result.userId를 가지고 프론트에서
-//   } catch {
-//     console.log(error);
-//     res.json({ success: false, result: error });
-//   }
-// };
+// id로 블로그 조회
+exports.blog = async (req, res) => {
+  const { id } = req.query;
+  const result = await Blog.findOne({ where: { id } });
+  if (result) {
+    res.json({ success: true, msg: '블로그 조회 완료', result });
+  } else {
+    res.json({ success: false, msg: '블로그 없음' });
+  }
+};
 
 // member id로 블로그 조회
 exports.find = async (req, res) => {
   const { memberId } = req.query;
   const result = await Blog.findOne({ where: { memberId } });
-  res.json({ success: true, msg: '블로그 조회 완료', result });
+  if (result) {
+    res.json({ success: true, msg: '블로그 조회 완료', result });
+  } else {
+    res.json({ success: false, msg: '블로그 없음' });
+  }
 };
 
 // 블로그 정보 수정
@@ -55,6 +56,14 @@ exports.update = async (req, res) => {
   res.json({ success: true, msg: '블로그 수정 완료' });
 };
 
+// 회원별 구독 리스트 조회
+exports.subList = async (req, res) => {
+  const result = await Subscribe.findAll({
+    where: { memberId: req.query.memberId },
+  });
+  res.json({ success: true, result, msg: '구독 리스트 조회 완료' });
+};
+
 // 구독 확인
 exports.checkSub = async (req, res) => {
   const { memberId, blogId } = req.query;
@@ -85,9 +94,19 @@ exports.clickSub = async (req, res) => {
   const find = await Subscribe.findOne({ where: { memberId, blogId } });
   if (find) {
     const result = await Subscribe.destroy({ where: { memberId, blogId } });
+    const count = await Subscribe.findAll({ where: { blogId } });
+    const update = await Blog.update(
+      { subscribeCount: count.length },
+      { where: { id: blogId } }
+    );
     res.json({ success: true, msg: '구독 삭제 완료' });
   } else {
     const result = await Subscribe.create({ memberId, blogId });
+    const count = await Subscribe.findAll({ where: { blogId } });
+    const update = await Blog.update(
+      { subscribeCount: count.length },
+      { where: { id: blogId } }
+    );
     res.json({ success: true, msg: '구독 추가 완료' });
   }
 };
@@ -102,7 +121,6 @@ exports.findCategory = async (req, res) => {
 exports.getCategory = async (req, res) => {
   const { memberId } = req.query;
   const find = await Blog.findOne({ where: { memberId } });
-  console.log(find);
   if (find) {
     const result = await Category.findAll({ where: { blogId: find.id } });
     res.json({ success: true, result, msg: '블로그 조회 완료' });

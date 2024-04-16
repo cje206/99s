@@ -52,6 +52,9 @@
     border: none;
     text-align: center;
     font-weight: blod;
+    option {
+      line-height: 40px;
+    }
   }
   .write {
     color: #ddd;
@@ -67,8 +70,10 @@
   box-sizing: border-box;
   padding: 0 20px;
 }
-@media screen and (min-width: 1200px) {
-  .postHeader {
-    display: none;
+@media screen and (min-width: 1160px) {
+  .createPost {
+    width: 1200px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
   }
 }

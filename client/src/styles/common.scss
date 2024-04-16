@@ -1,9 +1,12 @@
 .wrap {
+  position: relative;
   min-width: 320px;
+  min-height: 100vh;
   box-sizing: border-box;
-
+  padding-bottom: 270px;
   .body {
     padding: 20px;
+    box-sizing: border-box;
     h1.title {
       font-size: 1.4rem;
       font-weight: bold;
@@ -23,5 +26,22 @@
   &.darkmode {
     background: #000;
     color: #fff;
+  }
+  &.blogHome {
+    @media (min-width: 1160px) {
+      width: 1200px;
+      margin: 0 auto;
+    }
+  }
+}
+
+.darkmode {
+  .wrap {
+    background: #333;
+    color: #fff;
+    min-height: 100vh;
+  }
+  .headerBg {
+    background: #333;
   }
 }

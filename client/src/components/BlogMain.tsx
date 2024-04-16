@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import '../styles/BlogMain.scss';
 import { useEffect, useState } from 'react';
@@ -7,8 +7,11 @@ import { ReactComponent as IcoChat } from '../images/ico-chat.svg';
 import { ReactComponent as IcoSubscribe } from '../images/ico-subscribe.svg';
 import { ReactComponent as IcoPost } from '../images/ico-post.svg';
 import { ReactComponent as IcoShare } from '../images/ico-share.svg';
-import { ThemeStyle } from '../types';
+import { ThemeStyle, WriterInfoObj } from '../types';
 import ProfileImage from '../components/ProfileImage';
+import { SubscribeBtn } from './Btns';
+import axios from 'axios';
+import { handleCopyClipBoard } from './Functions';
 
 const BlogMainContainer = styled.div<{ link?: string }>`
   display: flex;
@@ -28,9 +31,14 @@ const BlogDetail = styled.div`
   padding-left: 20px;
   box-sizing: border-box;
   .nickName {
-    font-weight: bold;
-    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
+    p {
+      font-weight: bold;
+      font-size: 18px;
+    }
   }
   .blogInfo {
     font-size: 14px;
@@ -55,15 +63,57 @@ interface Blog {
 }
 
 export default function BlogMain({
-  bloginfo,
+  blogid,
   theme,
 }: {
-  bloginfo: Blog;
+  blogid: number;
   theme: ThemeStyle;
 }) {
+  const { pathname } = useLocation();
   const { id } = useParams<{ id?: string }>();
   const [user, setUser] = useAuth();
+  const [subscribe, setSubscribe] = useState<Boolean>(false);
+  const [blogInfo, setBlogInfo] = useState<WriterInfoObj>();
+  const [postCount, setPostCount] = useState<number>(0);
+  const checkSub = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/blog/checkSub`,
+      params: { memberId: user.id, blogId: blogid },
+    });
+    setSubscribe(res.data.success);
+  };
 
+  const getBlog = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/sub/getInfo`,
+      params: { blogId: blogid },
+    });
+    setBlogInfo(res.data.result);
+  };
+
+  const getPost = async () => {
+    if (blogid) {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/post/category`,
+        params: { id: blogid },
+      });
+      setPostCount(res.data.result.length);
+    }
+  };
+  useEffect(() => {
+    if (user.id) {
+      checkSub();
+    }
+  }, [blogInfo, subscribe]);
+  useEffect(() => {
+    if (blogid) {
+      getBlog();
+      getPost();
+    }
+  }, [blogid, subscribe]);
   useEffect(() => {
     setUser();
   }, []);
@@ -73,38 +123,50 @@ export default function BlogMain({
       <BlogMainContainer>
         <ProfileImage id={Number(id)} />
         <BlogDetail>
-          <div className="nickName">{bloginfo.nickname}</div>
-          <div className="blogInfo">{bloginfo.blogInfo}</div>
+          <div className="nickName">
+            <p>{blogInfo?.nickname}</p>
+            {id == user.id || (
+              <SubscribeBtn sub={subscribe} func={setSubscribe} />
+            )}
+          </div>
+          <div className="blogInfo">{blogInfo?.blogInfo}</div>
         </BlogDetail>
       </BlogMainContainer>
       <div className="hr" style={theme}>
         <div className="linkChat">
-          {user.id === bloginfo.memberId ? (
-            <Link to="/chat" className="blogIcons">
-              <IcoChat stroke={theme.color}></IcoChat>
-              <span>채팅 목록</span>
-            </Link>
-          ) : (
-            <Link
-              to="/chat"
-              className="blogIcons"
-              onClick={() => localStorage.setItem('chat', id || '0')}
-            >
-              <IcoChat stroke={theme.color}></IcoChat>
-              <span>1:1 채팅</span>
-            </Link>
+          {Boolean(user.id) && (
+            <>
+              {user.id === blogInfo?.memberId ? (
+                <Link to="/chat" className="blogIcons">
+                  <IcoChat stroke={theme.color}></IcoChat>
+                  <span>채팅 목록</span>
+                </Link>
+              ) : (
+                <Link
+                  to="/chat"
+                  className="blogIcons"
+                  onClick={() => localStorage.setItem('chat', id || '0')}
+                >
+                  <IcoChat stroke={theme.color}></IcoChat>
+                  <span>1:1 채팅</span>
+                </Link>
+              )}
+            </>
           )}
         </div>
         <div className="react">
           <div className="blogIcons subscribeCount">
             <IcoSubscribe stroke={theme.color}></IcoSubscribe>
-            <span>{bloginfo.subscribeCount}</span>
+            <span>{blogInfo?.subscribeCount}</span>
           </div>
           <div className="blogIcons postCount">
             <IcoPost stroke={theme.color}></IcoPost>
-            <span>10</span>
+            <span>{postCount}</span>
           </div>
-          <div className="blogIcons share">
+          <div
+            className="blogIcons share"
+            onClick={() => handleCopyClipBoard(pathname)}
+          >
             <IcoShare stroke={theme.color}></IcoShare>
           </div>
         </div>

@@ -34,48 +34,56 @@ exports.find = async (req, res) => {
     },
   });
 
-  for (let i = 0; i < find1.length; i++) {
-    const [findId, _] = find1[i].roomId.split('to');
-    const searchBlog = await Blog.findOne({ where: { memberId: findId } });
-    if (searchBlog.nickname) {
-      result.push({
-        id: find1[i].id,
-        roomId: find1[i].roomId,
-        recentMsg: find1[i].recentMsg,
-        updatedAt: getTimeText(find1[i].updatedAt),
-        nickname: searchBlog.nickname,
-      });
-    } else {
-      const searchMember = await Member.findOne({ where: { id: findId } });
-      result.push({
-        id: find1[i].id,
-        roomId: find1[i].roomId,
-        recentMsg: find1[i].recentMsg,
-        updatedAt: getTimeText(find1[i].updatedAt),
-        nickname: searchMember.username,
-      });
+  if (find1) {
+    for (let i = 0; i < find1.length; i++) {
+      const [findId, _] = find1[i].roomId.split('to');
+      console.log(findId);
+      if (findId) {
+      }
+      const searchBlog = await Blog.findOne({ where: { memberId: findId } });
+      if (searchBlog.nickname) {
+        result.push({
+          id: find1[i].id,
+          roomId: find1[i].roomId,
+          recentMsg: find1[i].recentMsg,
+          updatedAt: getTimeText(find1[i].updatedAt),
+          nickname: searchBlog.nickname,
+        });
+      } else {
+        const searchMember = await Member.findOne({ where: { id: findId } });
+        result.push({
+          id: find1[i].id,
+          roomId: find1[i].roomId,
+          recentMsg: find1[i].recentMsg,
+          updatedAt: getTimeText(find1[i].updatedAt),
+          nickname: searchMember.username,
+        });
+      }
     }
   }
-  for (let i = 0; i < find2.length; i++) {
-    const [_, findId] = find2[i].roomId.split('to');
-    const searchBlog = await Blog.findOne({ where: { memberId: findId } });
-    if (searchBlog.nickname) {
-      result.push({
-        id: find2[i].id,
-        roomId: find2[i].roomId,
-        recentMsg: find2[i].recentMsg,
-        updatedAt: getTimeText(find2[i].updatedAt),
-        nickname: searchBlog.nickname,
-      });
-    } else {
-      const searchMember = await Member.findOne({ where: { id: findId } });
-      result.push({
-        id: find2[i].id,
-        roomId: find2[i].roomId,
-        recentMsg: find2[i].recentMsg,
-        updatedAt: getTimeText(find2[i].updatedAt),
-        nickname: searchMember.username,
-      });
+  if (find2) {
+    for (let i = 0; i < find2.length; i++) {
+      const [_, findId] = find2[i].roomId.split('to');
+      console.log(findId);
+      const searchBlog = await Blog.findOne({ where: { memberId: findId } });
+      if (searchBlog.nickname) {
+        result.push({
+          id: find2[i].id,
+          roomId: find2[i].roomId,
+          recentMsg: find2[i].recentMsg,
+          updatedAt: getTimeText(find2[i].updatedAt),
+          nickname: searchBlog.nickname,
+        });
+      } else {
+        const searchMember = await Member.findOne({ where: { id: findId } });
+        result.push({
+          id: find2[i].id,
+          roomId: find2[i].roomId,
+          recentMsg: find2[i].recentMsg,
+          updatedAt: getTimeText(find2[i].updatedAt),
+          nickname: searchMember.username,
+        });
+      }
     }
   }
   res.json({
@@ -106,11 +114,13 @@ exports.write = async (req, res) => {
   } else {
     const add = await Room.create({ roomId, recentMsg: chatMsg });
   }
+  console.log('완료');
   res.json({ success: true, result, msg: '채팅 추가 완료' });
 };
 
 // 닉네임 조회
 exports.nickname = async (req, res) => {
+  console.log('닉네임 조회');
   const { memberId } = req.query;
   const searchBlog = await Blog.findOne({ where: { memberId } });
   if (searchBlog.nickname) {

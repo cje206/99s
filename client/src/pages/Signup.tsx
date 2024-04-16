@@ -3,12 +3,13 @@ import SingupBtn from '../components/SingupBtn';
 import '../styles/signup.scss';
 import { Link } from 'react-router-dom';
 import { SignHeader } from '../components/Headers';
+import Footer from '../components/Footer';
 
 export default function Signup() {
   return (
     <div className="wrap">
       <SignHeader />
-      <div className="body">
+      <div className="body signup">
         <h1 className="title">Blo9 회원가입</h1>
         <p className="subText">
           이미 계정이 있으신가요? <Link to="/login">로그인</Link>
@@ -22,6 +23,7 @@ export default function Signup() {
           계정찾기
         </Link>
       </div>
+      <Footer />
     </div>
   );
 }
