@@ -9,6 +9,7 @@ import {
   ImageCounterWrapper,
   ImageCounter,
   SlideContainer,
+  MainPopularContainer,
 } from '../components/MainPopularStyle';
 import { PostObject } from '../types';
 import { getThumbnail } from './Functions';
@@ -31,7 +32,12 @@ export default function MainPopularPost({
   const [imgCount, setImgCount] = useState<number>(1);
   const [endSwipe, setEndSwipe] = useState<boolean>(false);
   const [isWide, setIsWide] = useState(window.innerWidth > 1160);
-  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const currentItems = postlist.slice(0, 6);
+
+  const groupedItems = [...Array(Math.ceil(currentItems.length / 3))].map(
+    (_, i) => currentItems.slice(i * 3, i * 3 + 3)
+  );
 
   const onSwipeMove = (position: { x: number }) => {
     setEndSwipe(false);
@@ -67,57 +73,65 @@ export default function MainPopularPost({
     setEndSwipe(true);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsWide(window.innerWidth > 1160);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((preIndex) => (preIndex + 1) % images.length);
-    }, 3000);
-    return () => clearInterval(timer);
-  }, [images.length]);
-
   return (
     <>
       <Container>
-
-        <Swipe onSwipeEnd={onSwipeEnd} onSwipeMove={onSwipeMove}>
-          <StyledImgDiv
-            imgCount={imgCount}
-            positionx={positionx}
-            endSwipe={endSwipe}
-          >
-            {postlist?.map((post) => (
-              <div
-                className="popularPost"
-                key={post.id}
-                style={{
-                  minWidth: '100%',
-                  boxSizing: 'border-box',
-                  padding: '20px',
-                }}
-              >
-                <PostLists post={post} vertical={false} />
-              </div>
+        {isWide ? (
+          <>
+            {groupedItems.map((group, index) => (
+              <MainPopularContainer key={index}>
+                {group.map((post) => (
+                  <div
+                    className="popularPost"
+                    key={post.id}
+                    style={{
+                      flex: '1 0 calc(33.333% - 40px)', // 한 행에 3개씩
+                    }}
+                  >
+                    <PostLists post={post} vertical={false} />
+                  </div>
+                ))}
+              </MainPopularContainer>
             ))}
-          </StyledImgDiv>
-        </Swipe>
-        {postlist.length > 1 && (
-          <ImageCounterWrapper>
-            {postlist.map((post, index) => {
-              return (
-                <ImageCounter key={index} index={index} imgCount={imgCount} />
-              );
-            })}
-          </ImageCounterWrapper>
+          </>
+        ) : (
+          <>
+            <Swipe onSwipeEnd={onSwipeEnd} onSwipeMove={onSwipeMove}>
+              <StyledImgDiv
+                imgCount={imgCount}
+                positionx={positionx}
+                endSwipe={endSwipe}
+              >
+                {postlist?.map((post) => (
+                  <div
+                    className="popularPost"
+                    key={post.id}
+                    style={{
+                      minWidth: '100%',
+                      boxSizing: 'border-box',
+                      padding: '20px',
+                    }}
+                  >
+                    <PostLists post={post} vertical={false} />
+                  </div>
+                ))}
+              </StyledImgDiv>
+            </Swipe>
 
+            {postlist.length > 1 && (
+              <ImageCounterWrapper>
+                {postlist.map((post, index) => {
+                  return (
+                    <ImageCounter
+                      key={index}
+                      index={index}
+                      imgCount={imgCount}
+                    />
+                  );
+                })}
+              </ImageCounterWrapper>
+            )}
+          </>
         )}
       </Container>
     </>

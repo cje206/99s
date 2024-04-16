@@ -194,11 +194,6 @@ export function BlogHeader({ id }: { id: number }) {
         }}
       >
         {' '}
-        <LogoImg
-          src="/images/logo2.png"
-          alt="Blo9"
-          onClick={() => navigator('/')}
-        />
         <Text
           onClick={() => navigator(`/blog/${id}`)}
           style={{ cursor: 'pointer' }}

@@ -168,6 +168,7 @@ export function PostLists({
   const [commentCount, setCommentCount] = useState<number>(0);
   const [memberId, setMemberId] = useState<number>(0);
   const [nickname, setNickname] = useState<string>('');
+
   const boxStyle = () => {
     if (vertical) {
       return { display: 'flex', marginBottom: '20px' };
@@ -204,7 +205,7 @@ export function PostLists({
       style={boxStyle()}
       className={vertical ? 'vertical' : ''}
     >
-      <div className="postImg">
+      <div className="postImg main">
         <img src={getThumbnail(post.content)} alt="Popular Post" />
       </div>
       <div className="postText">

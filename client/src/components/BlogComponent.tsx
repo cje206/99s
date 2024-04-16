@@ -5,10 +5,21 @@ import { ReactComponent as IcoHorizon } from '../images/ico-horizon.svg';
 import { ReactComponent as IcoVertical } from '../images/ico-vertical.svg';
 import { PostObject, ThemeStyle } from '../types';
 import axios from 'axios';
-import { PostLists } from './Lists';
+import { PostList, PostLists } from './Lists';
+import Pagination from './Pagination';
+import { Container } from './MainPopularStyle';
 
 const PopularPost = styled.div`
   margin-bottom: 70px;
+`;
+
+const DesktopBlogMain = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
 `;
 export function BlogProfile() {
   return <div></div>;
@@ -56,7 +67,22 @@ export default function BlogPosts({
 }) {
   const { id } = useParams<{ id?: string }>();
   const [layoutMode, setLayoutMode] = useState('horizontal');
-  const [postList, setPostList] = useState<PostObject[]>();
+  const [postList, setPostList] = useState<PostObject[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isWide, setIsWide] = useState(window.innerWidth > 1160);
+  const itemsPerPage = 6;
+
+  // 페이지네이션 로직
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = postList.slice(indexOfFirstItem, indexOfLastItem);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  //layout
+  const currentIndex = postList.slice(0, 6);
+  const groupedItems = [...Array(Math.ceil(currentIndex.length / 3))].map(
+    (_, i) => currentIndex.slice(i * 3, i * 3 + 3)
+  );
 
   const handleLayoutChange = (mode: string) => {
     setLayoutMode(mode);
@@ -106,9 +132,67 @@ export default function BlogPosts({
           </button>
         </div>
       </div>
-      {layoutMode === 'vertical'
-        ? postList?.map((val) => <PostLists post={val} vertical={true} />)
-        : postList?.map((val) => <PostLists post={val} vertical={false} />)}
+
+      {isWide ? (
+        <>
+          {layoutMode === 'vertical' ? (
+            <>
+              {groupedItems.map((currentItems, index) => (
+                <DesktopBlogMain key={index}>
+                  {currentItems.map((val) => (
+                    <div key={val.id} style={{ flex: '1 0 50%' }}>
+                      <PostLists post={val} vertical={true} />
+                    </div>
+                  ))}
+                </DesktopBlogMain>
+              ))}
+            </>
+          ) : (
+            <>
+              {groupedItems.map((currentItems, index) => (
+                <DesktopBlogMain key={index}>
+                  {currentItems.map((val) => (
+                    <div
+                      key={val.id}
+                      style={{ flex: '1 0 calc(33.333% - 40px)' }}
+                    >
+                      <PostLists post={val} vertical={false} />
+                    </div>
+                  ))}
+                </DesktopBlogMain>
+              ))}
+            </>
+          )}
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            totalItems={postList.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+        </>
+      ) : (
+        <>
+          {layoutMode === 'vertical' ? (
+            <>
+              {currentItems.map((val) => (
+                <PostLists key={val.id} post={val} vertical={true} />
+              ))}
+            </>
+          ) : (
+            <>
+              {currentItems.map((val) => (
+                <PostLists key={val.id} post={val} vertical={false} />
+              ))}
+            </>
+          )}
+          <Pagination
+            itemsPerPage={itemsPerPage}
+            totalItems={postList.length}
+            paginate={paginate}
+            currentPage={currentPage}
+          />
+        </>
+      )}
     </>
   );
 }
