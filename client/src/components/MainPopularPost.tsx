@@ -72,6 +72,7 @@ export default function MainPopularPost({
   };
 
   // useEffect(() => {
+
   //   const handleResize = () => {
   //     setIsWide(window.innerWidth > 1160);
   //   };
@@ -88,6 +89,13 @@ export default function MainPopularPost({
   //   return () => clearInterval(timer);
   // }, [postlist.length]);
 
+
+  //   useEffect(() => {
+  //     const timer = setInterval(() => {
+  //       setCurrentIndex((preIndex) => (preIndex + 1) % postlist.length);
+  //     }, 3000);
+  //     return () => clearInterval(timer);
+  //   }, [postlist.length]);
   return (
     <>
       <Container>

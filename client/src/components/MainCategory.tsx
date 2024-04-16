@@ -46,8 +46,12 @@ export default function MainCategory({
   const [shownItems, setShownItems] = useState(6); // 초기에 보여줄 아이템 수
   const [showMoreButton, setShowMoreButton] = useState(true); // 더보기 버튼의 표시 여부
   const [currentPage, setCurrentPage] = useState(1);
+  const [isWide, setIsWide] = useState(window.innerWidth > 1160);
 
   const currentItems = items.slice(0, shownItems);
+  const groupedItems = [...Array(Math.ceil(currentItems.length / 3))].map(
+    (_, i) => currentItems.slice(i * 3, i * 3 + 3)
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -116,30 +120,74 @@ export default function MainCategory({
           </StyledButton>
         </ButtonWrapper>
       )}
+
       <div className="postsContainer">
-        {currentItems.map((item, index) => (
-          <PostCategoryContainer
-            key={index}
-            style={{ margin: '20px 20px 0 20px' }}
-          >
-            <div className="categoryImg">
-              <ImgCategory src={item.imageUrl} alt={item.title}></ImgCategory>
-            </div>
-            <TextDetail>
-              <div className="postWriter">{item.writer}</div>
-              <div
-                className="postDate"
-                style={{ color: '#7e7f81', fontSize: '13px' }}
+        {isWide ? (
+          <>
+            {currentItems.map((item, index) => (
+              <PostCategoryContainer
+                key={index}
+                style={{
+                  width: 'calc(50% - 10px)',
+                  flexWrap: 'wrap',
+                }}
               >
-                {item.date}
-              </div>
-            </TextDetail>
-            <PostDetail>
-              <div className="postTitle">{item.title}</div>
-              <div className="postContent">{item.content}</div>
-            </PostDetail>
-          </PostCategoryContainer>
-        ))}
+                <div className="categoryImg">
+                  <ImgCategory
+                    src={item.imageUrl}
+                    alt={item.title}
+                  ></ImgCategory>
+                </div>
+                <TextDetail>
+                  <div className="postWriter">{item.writer}</div>
+                  <div
+                    className="postDate"
+                    style={{ color: '#7e7f81', fontSize: '13px' }}
+                  >
+                    {item.date}
+                  </div>
+                </TextDetail>
+                <PostDetail>
+                  <div className="postTitle">{item.title}</div>
+                  <div className="postContent">{item.content}</div>
+                </PostDetail>
+              </PostCategoryContainer>
+            ))}
+          </>
+        ) : (
+          <>
+            {currentItems.map((item, index) => (
+              <PostCategoryContainer
+                key={index}
+                style={{
+                  minWidth: '100%',
+                  boxSizing: 'border-box',
+                  padding: '20px',
+                }}
+              >
+                <div className="categoryImg">
+                  <ImgCategory
+                    src={item.imageUrl}
+                    alt={item.title}
+                  ></ImgCategory>
+                </div>
+                <TextDetail>
+                  <div className="postWriter">{item.writer}</div>
+                  <div
+                    className="postDate"
+                    style={{ color: '#7e7f81', fontSize: '13px' }}
+                  >
+                    {item.date}
+                  </div>
+                </TextDetail>
+                <PostDetail>
+                  <div className="postTitle">{item.title}</div>
+                  <div className="postContent">{item.content}</div>
+                </PostDetail>
+              </PostCategoryContainer>
+            ))}
+          </>
+        )}
       </div>
       {ShowContent && showMoreButton && (
         <ButtonExtra onClick={handleShowMore} style={{ marginBottom: '40px' }}>
