@@ -50,6 +50,7 @@ const MenuList = styled.div`
   align-items: center;
   justify-content: center;
   gap: 20px;
+  color: ${defaultColor};
   div {
     cursor: pointer;
     line-height: 66px;

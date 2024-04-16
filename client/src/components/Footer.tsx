@@ -15,6 +15,9 @@ const FooterContainer = styled.div`
   width: 100%;
   height: 220px;
   display: flex;
+  @media (min-width: 1160px) {
+    height: 130px;
+  }
 `;
 const FooterWidth = styled.div`
   margin: 0 auto;

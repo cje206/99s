@@ -10,9 +10,7 @@ import { ReactComponent as IcoComment } from '../images/ico-comment.svg';
 import '../styles/lists.scss';
 
 let defaultColor = '#333';
-let defaultBg = '#fff';
 if (localStorage.getItem('darkmode') === 'on') {
-  defaultBg = '#333';
   defaultColor = '#fff';
 }
 
@@ -166,7 +164,6 @@ export function PostLists({
   post: PostObject;
   vertical: boolean;
 }) {
-  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [commentCount, setCommentCount] = useState<number>(0);
   const [memberId, setMemberId] = useState<number>(0);
   const [nickname, setNickname] = useState<string>('');
@@ -201,9 +198,6 @@ export function PostLists({
       getBlog();
     }
   }, [post]);
-  useEffect(() => {
-    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
-  }, []);
   return (
     <Link
       to={`/blog/${memberId}/${post.id}`}

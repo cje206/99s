@@ -23,7 +23,29 @@
       }
     }
     @media (min-width: 1160px) {
-      padding: 20px 0;
+      padding: 0;
+      width: 1200px;
+      margin: 0 auto;
+      &.chat {
+        display: flex;
+        margin-bottom: 0 !important;
+        padding-bottom: 50px;
+        .chatlist {
+          width: 300px;
+          border-right: 1px solid #e2e7e2;
+          position: fixed;
+          top: 70px;
+          bottom: 50px;
+          left: 50%;
+          transform: translateX(-600px);
+          overflow: auto;
+        }
+        .chatMsgBox {
+          width: 100%;
+          box-sizing: border-box;
+          padding: 20px 20px 20px 320px;
+        }
+      }
     }
   }
   &.darkmode {
@@ -35,6 +57,9 @@
       width: 1200px;
       margin: 0 auto;
     }
+  }
+  @media (min-width: 1160px) {
+    padding-bottom: 180px;
   }
 }
 

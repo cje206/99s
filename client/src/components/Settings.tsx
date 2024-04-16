@@ -1,17 +1,16 @@
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { CategoryObj, PostObject, ThemeStyle, UserProps } from '../types';
+import { useEffect, useRef, useState } from 'react';
+import { BlogObject, CategoryObj, PostObject } from '../types';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 import { ErrorMsgGrey, ErrorMsgRed } from './ErrorMsg';
-import { NewPostBtn, ToggleBtn } from './Btns';
+import { ToggleBtn } from './Btns';
 import { ArrList } from './Lists';
 import { storage } from '../config/Firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import ProfileImage from './ProfileImage';
 import Pagination from './Pagination';
-import { is } from 'immutable';
 import { getTimeText } from './Functions';
 const TableStyle = styled.table`
   width: 100%;
@@ -106,8 +105,6 @@ const BoxStyle = styled.div`
     border: none;
   }
 `;
-
-const AddButton = styled.button``;
 
 export const EditBox = styled.div`
   display: flex;
@@ -250,10 +247,6 @@ const RectBtn = styled.button`
   margin-top: 20px;
 `;
 
-interface Props {
-  user: UserProps;
-}
-
 interface NavButton {
   selectedBar: boolean;
 }
@@ -271,16 +264,12 @@ const StyledButton = styled.button<NavButton>`
 `;
 const SetBar = styled.div`
   display: flex;
+  position: absolute;
+  top: 100px;
+  right: 0;
   flex-direction: column;
   align-items: flex-start;
-  padding: 10px 0 0 20px;
-  width: 100%;
-`;
-
-const WriteBtn = styled.button`
-  border-radius: 10px;
-  padding: 10px;
-  border: 1px solid #000;
+  width: 300px;
 `;
 
 export function SetMenu() {
@@ -344,6 +333,21 @@ export function PcSetMenu() {
 
 export function SetHome() {
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 1160);
+  const [user, setUser] = useAuth();
+  const [blog, setBlog] = useState<BlogObject>();
+  useEffect(() => {
+    const getBlog = async () => {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+        params: { memberId: user.id },
+      });
+      setBlog(res.data.result);
+    };
+    if (user.id) {
+      getBlog();
+    }
+  }, [user]);
 
   useEffect(() => {
     function handleResize() {
@@ -352,26 +356,33 @@ export function SetHome() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    }
+  }, []);
   return (
     <>
       <TableStyle className="settingTable">
         <thead>
           <tr>
             <ThStyle>분류</ThStyle>
-            <ThStyle>24시간</ThStyle>
             <ThStyle style={{ border: 'none' }}>누적</ThStyle>
           </tr>
         </thead>
         <tbody>
           <tr>
             <TdStyle>조회수</TdStyle>
-            <TdStyle>0회</TdStyle>
-            <TdStyle style={{ borderRight: 'none' }}>10회</TdStyle>
+            <TdStyle style={{ borderRight: 'none' }}>
+              {blog?.view || '0'}회
+            </TdStyle>
           </tr>
           <tr>
             <TdStyle>구독자 수</TdStyle>
-            <TdStyle>0회</TdStyle>
-            <TdStyle style={{ borderRight: 'none' }}>10회</TdStyle>
+            <TdStyle style={{ borderRight: 'none' }}>
+              {blog?.subscribeCount || '0'}명
+            </TdStyle>
           </tr>
         </tbody>
       </TableStyle>
@@ -425,6 +436,7 @@ export function SetPost() {
       getPost();
       getCategory();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -433,6 +445,7 @@ export function SetPost() {
       alert('로그인 후 이용 가능합니다.');
       document.location.href = '/signup';
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>
@@ -446,9 +459,10 @@ export function SetPost() {
               <span>
                 {data.categoryId
                   ? category?.map((val) => {
-                      if (val.id == data.categoryId) {
+                      if (val.id === data.categoryId) {
                         return val.categoryName;
                       }
+                      return;
                     })
                   : '카테고리 없음'}{' '}
                 &#183; {getTimeText(data.createdAt || '')}
@@ -628,9 +642,11 @@ export function SetCategory({ itemsPerPage = 3 }) {
       alert('로그인 후 이용 가능합니다.');
       document.location.href = '/signup';
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     getList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
   return (
     <>
@@ -644,7 +660,7 @@ export function SetCategory({ itemsPerPage = 3 }) {
       {isBlogExist &&
         // list.map (1)
         currentItems.map(({ id, categoryName, group }) => {
-          if (editId == id) {
+          if (editId === id) {
             return changeCate(id);
           } else {
             return unchangeCate(id, categoryName, group);
@@ -730,6 +746,7 @@ export function SetInfo() {
   };
   useEffect(() => {
     setUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     setEmail(user.email);
@@ -784,7 +801,7 @@ export function SetInfo() {
             onChange={(e) => setConfirmPw(e.target.value)}
           />
         </BoxStyle>
-        {confirmPw == pw || (
+        {confirmPw === pw || (
           <ErrorMsgRed>* 비밀번호가 일치하지 않습니다.</ErrorMsgRed>
         )}
       </div>
@@ -813,15 +830,7 @@ export function SetBlog() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
-  const [useDefaultImg, setUseDefaultImg] = useState<boolean>(false);
 
-  const toggleBtn = (idx: number) => {
-    const btns = document.querySelectorAll('.btn');
-    for (let i = 0; i < btns.length; i++) {
-      btns[i].classList.remove('active');
-      btns[idx - 1].classList.add('active');
-    }
-  };
   const setInfo = async () => {
     if (user.id) {
       const res = await axios({
@@ -911,9 +920,11 @@ export function SetBlog() {
   useEffect(() => {
     setUser();
     setInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     setInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   return (

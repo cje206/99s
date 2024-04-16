@@ -1,4 +1,3 @@
-import { Info } from '../types';
 import styled from 'styled-components';
 
 interface Props {

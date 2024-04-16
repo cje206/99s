@@ -5,9 +5,8 @@ import { ReactComponent as IcoHorizon } from '../images/ico-horizon.svg';
 import { ReactComponent as IcoVertical } from '../images/ico-vertical.svg';
 import { PostObject, ThemeStyle } from '../types';
 import axios from 'axios';
-import { PostList, PostLists } from './Lists';
+import { PostLists } from './Lists';
 import Pagination from './Pagination';
-import { Container } from './MainPopularStyle';
 
 const PopularPost = styled.div`
   margin-bottom: 70px;
@@ -20,12 +19,6 @@ export const DesktopBlogMain = styled.div`
   gap: 20px;
   /* width: 100%; */
 `;
-export function BlogProfile() {
-  return <div></div>;
-}
-export function BlogCategory() {
-  return <div></div>;
-}
 
 export function BlogPopular() {
   const { id } = useParams<{ id?: string }>();

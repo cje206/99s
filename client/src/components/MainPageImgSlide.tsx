@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import '../styles/MainPageImgSlide.scss';
 import { useState, useEffect } from 'react';
-import styled from 'styled-components';
 
 export interface Slide {
   imageUrl: string;

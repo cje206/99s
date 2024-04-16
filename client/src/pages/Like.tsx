@@ -12,16 +12,15 @@ export default function Like() {
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [user, setUser] = useAuth();
   const [like, setLike] = useState<Obj[]>();
-
-  const getSub = async () => {
-    const res = await axios({
-      method: 'GET',
-      url: `${process.env.REACT_APP_HOST}/api/like/likeList`,
-      params: { memberId: user.id },
-    });
-    setLike(res.data.result);
-  };
   useEffect(() => {
+    const getSub = async () => {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/like/likeList`,
+        params: { memberId: user.id },
+      });
+      setLike(res.data.result);
+    };
     if (user.id) {
       getSub();
     }
@@ -43,7 +42,7 @@ export default function Like() {
         <SubHeader>좋아요 리스트</SubHeader>
       )}
 
-      <div className="body" style={{ paddingTop: 0 }}>
+      <div className="body">
         {Boolean(like?.length) ? (
           like?.map((val) => <PostList id={val.postId}></PostList>)
         ) : (

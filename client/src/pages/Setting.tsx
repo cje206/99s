@@ -6,11 +6,9 @@ import {
   SetCategory,
   SetHome,
   SetInfo,
-  SetMenu,
   SetPost,
 } from '../components/Settings';
 import '../styles/_utils.scss';
-import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
 export default function Setting({ position }: { position: string }) {
@@ -26,24 +24,26 @@ export default function Setting({ position }: { position: string }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   return (
-    <div className="wrap setting">
+    <div className="wrap">
       {innerWidth >= 1160 ? (
         <MainPcHeader />
       ) : (
         <SettingHeader>{position}</SettingHeader>
       )}
-      <div className="settingPc">
+      <div className="setting">
         {isLargeScreen && (
           <div className="sideMenuPc">
             <PcSetMenu />
           </div>
         )}
-        <div className="body block">
-          {position === '설정' && <SetHome />}
-          {position === '글 관리' && <SetPost />}
-          {position === '카테고리 관리' && <SetCategory />}
-          {position === '개인정보 수정' && <SetInfo />}
-          {position === '블로그 편집' && <SetBlog />}
+        <div className="settingPc">
+          <div className="body block">
+            {position === '설정' && <SetHome />}
+            {position === '글 관리' && <SetPost />}
+            {position === '카테고리 관리' && <SetCategory />}
+            {position === '개인정보 수정' && <SetInfo />}
+            {position === '블로그 편집' && <SetBlog />}
+          </div>
         </div>
       </div>
       <Footer />
