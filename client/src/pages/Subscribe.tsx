@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import useAuth from '../hooks/useAuth';
-import { SubHeader } from '../components/Headers';
+import { MainPcHeader, SubHeader } from '../components/Headers';
 import axios from 'axios';
 import { WriterList } from '../components/Lists';
 
@@ -9,6 +9,7 @@ interface Obj {
 }
 
 export default function Subscribe() {
+  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [user, setUser] = useAuth();
   const [subscribe, setSubscribe] = useState<Obj[]>();
   const getSub = async () => {
@@ -17,7 +18,6 @@ export default function Subscribe() {
       url: `${process.env.REACT_APP_HOST}/api/blog/subList`,
       params: { memberId: user.id },
     });
-    console.log(res);
     setSubscribe(res.data.result);
   };
   useEffect(() => {
@@ -26,6 +26,7 @@ export default function Subscribe() {
     }
   }, [user]);
   useEffect(() => {
+    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
     if (localStorage.getItem('token')) {
       setUser();
     } else {
@@ -35,7 +36,11 @@ export default function Subscribe() {
   }, []);
   return (
     <div className="wrap">
-      <SubHeader>구독 리스트</SubHeader>
+      {innerWidth >= 1160 ? (
+        <MainPcHeader />
+      ) : (
+        <SubHeader>구독 리스트</SubHeader>
+      )}
       <div className="body" style={{ paddingTop: 0 }}>
         {Boolean(subscribe?.length) ? (
           subscribe?.map((val) => <WriterList id={val.blogId}></WriterList>)

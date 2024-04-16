@@ -72,14 +72,23 @@ export default function MainPopularPost({
   };
 
   // useEffect(() => {
-  //     const handleResize = () => {
-  //       setIsWide(window.innerWidth > 1160);
-  //     };
 
-  //     window.addEventListener('resize', handleResize);
+  //   const handleResize = () => {
+  //     setIsWide(window.innerWidth > 1160);
+  //   };
 
-  //     return () => window.removeEventListener('resize', handleResize);
-  //   }, []);
+  //   window.addEventListener('resize', handleResize);
+
+  //   return () => window.removeEventListener('resize', handleResize);
+  // }, []);
+
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setCurrentIndex((preIndex) => (preIndex + 1) % postlist.length);
+  //   }, 3000);
+  //   return () => clearInterval(timer);
+  // }, [postlist.length]);
+
 
   //   useEffect(() => {
   //     const timer = setInterval(() => {

@@ -33,7 +33,6 @@ export default function Chatlist({
   const socket = socketRef.current;
   // const socket = socketIOClient(`${process.env.REACT_APP_HOST}`);
   const goChat = async (roomId: string) => {
-    console.log('goChat');
     socket.emit('enter', { roomId });
     const res = await axios({
       method: 'GET',
@@ -48,9 +47,7 @@ export default function Chatlist({
       nickname,
     });
   };
-  useEffect(() => {
-    console.log('Chatlist useEffect');
-  }, []);
+  useEffect(() => {}, []);
   return (
     <BoxStyle onClick={() => goChat(roomId)}>
       <ProfileImage id={id} />

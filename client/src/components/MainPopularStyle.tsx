@@ -143,14 +143,11 @@ export const ButtonWrapper = styled.div`
   align-items: center;
   margin: 40px 20px 0 20px;
 `;
-interface StyledButtonProps {
-  isSelected: boolean;
-}
 
-export const StyledButton = styled.button<StyledButtonProps>`
+export const StyledButton = styled.button`
   border-radius: 20px;
   padding: 10px 20px;
-  background-color: ${(props) => (props.isSelected ? '#ffcf58' : '#ffffff')};
+  background-color: #fff;
   color: #313030;
   font-weight: bold;
   @media (min-width: 1160px) {
@@ -185,7 +182,7 @@ interface ButtonProps {
   subscribebtn: boolean;
 }
 
-export const ButtonExtraStyled = styled.button<ButtonProps>`
+export const ButtonExtraStyled = styled.button`
   border-radius: 20px;
   padding: 10px 50px;
   border: 1px solid #d9dbdf;
@@ -203,26 +200,6 @@ export const ButtonExtraStyled = styled.button<ButtonProps>`
   }
 
   // 조건부 스타일 적용
-  ${(props) =>
-    props.smallbtn &&
-    css`
-      padding: 10px 30px;
-      color: #fbc02d;
-    `}
-  ${(props) =>
-    props.subscribebtn &&
-    css`
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 30px; /* 텍스트와 이미지 사이의 공간을 조정 */
-      color: #fbc02d;
-      img {
-        margin-left: 5px; // 이미지와 텍스트 사이의 간격
-        width: 20px;
-        height: auto;
-      }
-    `}
 `;
 export const TitleInput = styled.input`
   margin-bottom: 9px;

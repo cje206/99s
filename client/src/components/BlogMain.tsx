@@ -100,7 +100,6 @@ export default function BlogMain({
         url: `${process.env.REACT_APP_HOST}/api/post/category`,
         params: { id: blogid },
       });
-      console.log(res);
       setPostCount(res.data.result.length);
     }
   };
