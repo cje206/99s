@@ -31,7 +31,9 @@ export default function Chat() {
     if (localStorage.getItem('token')) {
       setUser();
     } else {
-      document.location.href = '/login';
+      alert('로그인 후 이용 가능한 서비스입니다.');
+      document.location.href = '/signup';
+      return;
     }
   }, []);
   useEffect(() => {

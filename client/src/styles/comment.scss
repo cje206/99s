@@ -39,6 +39,9 @@
       .commentBtns {
         display: flex;
         align-items: center;
+        button {
+          color: #777;
+        }
       }
     }
     .commentContent {

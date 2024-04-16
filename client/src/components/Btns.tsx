@@ -205,6 +205,7 @@ export function PostSetBtn() {
 export function MainSetBtn() {
   const [user, setUser] = useAuth();
   const [darkmode, setDarkmode] = useState<Boolean>(false);
+  const [blog, setBlog] = useState<Boolean>(false);
   const navigate = useNavigate();
   const applyDark = () => {
     if (darkmode) {
@@ -213,6 +214,19 @@ export function MainSetBtn() {
       localStorage.removeItem('darkmode');
     }
   };
+  useEffect(() => {
+    const getBlog = async () => {
+      if (user.id) {
+        const res = await axios({
+          method: 'GET',
+          url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+          params: { memberId: user.id },
+        });
+        setBlog(res.data.success);
+      }
+    };
+    getBlog();
+  }, [user]);
   useEffect(() => {
     if (localStorage.getItem('token')) {
       setUser();
@@ -229,9 +243,15 @@ export function MainSetBtn() {
       className={darkmode ? 'darkmode' : 'default'}
       style={{ top: '60px', right: 0 }}
     >
-      <div className="btn" onClick={() => navigate(`/blog/${user.id}`)}>
-        내 블로그
-      </div>
+      {blog ? (
+        <div className="btn" onClick={() => navigate(`/blog/${user.id}`)}>
+          내 블로그
+        </div>
+      ) : (
+        <div className="btn" onClick={() => navigate(`/setting/blog`)}>
+          블로그 생성하기
+        </div>
+      )}
       <div
         className="btn"
         onClick={() => {

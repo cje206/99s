@@ -16,12 +16,7 @@ export default function Signup() {
         </p>
         <div className="singupBtns">
           <SingupBtn text="이메일로 회원가입" method="email" />
-          <SingupBtn text="이메일로 회원가입" method="email" />
-          <SingupBtn text="이메일로 회원가입" method="email" />
         </div>
-        <Link to="/find" className="findAccount">
-          계정찾기
-        </Link>
       </div>
       <Footer />
     </div>

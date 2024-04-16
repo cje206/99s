@@ -127,6 +127,7 @@ const OtherBox = styled.div`
   padding: 0 20px;
   border-bottom: 1px solid #e2e7e2;
   line-height: 50px;
+  cursor: pointer;
   .otherName {
     font-weight: 700;
     margin-right: 10px;

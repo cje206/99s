@@ -10,12 +10,21 @@ import {
 } from '../components/Settings';
 import '../styles/_utils.scss';
 import Footer from '../components/Footer';
+import useAuth from '../hooks/useAuth';
 
 export default function Setting({ position }: { position: string }) {
+  const [user, setUser] = useAuth();
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 1160);
 
   useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    } else {
+      alert('로그인 후 이용 가능한 서비스입니다.');
+      document.location.href = '/signup';
+      return;
+    }
     window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
     function handleResize() {
       setIsLargeScreen(window.innerWidth > 1160);
