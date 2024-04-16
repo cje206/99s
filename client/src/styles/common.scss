@@ -108,6 +108,10 @@ $colorBk: #333;
         stroke: $colorWh;
       }
     }
+    .profileBox {
+      background: $colorBk;
+      border-bottom: 1px solid #e2e7e2;
+    }
     .headerBg {
       background: $colorBk;
       color: $colorWh;
