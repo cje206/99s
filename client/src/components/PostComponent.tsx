@@ -197,7 +197,7 @@ export function PostTitle({
             <div className="date">
               {getTimeText(post?.createdAt || '')} &#183;{' '}
             </div>
-            <div className="view">조회 조회수</div>
+            <div className="view">조회수 {post?.view || '0'}</div>
           </div>
         </div>
         <IcoShare

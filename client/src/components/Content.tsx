@@ -45,12 +45,23 @@ export default function Content({
       setNextPost(res.data.result[1]);
     }
   };
+
+  const addViewCount = async () => {
+    const res = await axios({
+      method: 'PATCH',
+      url: `${process.env.REACT_APP_HOST}/api/post/addView`,
+      data: { blogId: id, postId },
+    });
+  };
   useEffect(() => {
     getOtherPost();
   }, [blog]);
   useEffect(() => {
     if (localStorage.getItem('token')) {
       setUser();
+    }
+    if (id) {
+      addViewCount();
     }
     getOtherPost();
   }, []);

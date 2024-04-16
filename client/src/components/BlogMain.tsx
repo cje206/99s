@@ -115,6 +115,9 @@ export default function BlogMain({
     }
   }, [blogid, subscribe]);
   useEffect(() => {
+    console.log(Boolean(user.id));
+  }, [user]);
+  useEffect(() => {
     setUser();
   }, []);
 
@@ -125,7 +128,7 @@ export default function BlogMain({
         <BlogDetail>
           <div className="nickName">
             <p>{blogInfo?.nickname}</p>
-            {id == user.id || (
+            {Boolean(user.id) && Number(id) !== user.id && (
               <SubscribeBtn sub={subscribe} func={setSubscribe} />
             )}
           </div>

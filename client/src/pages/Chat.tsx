@@ -11,6 +11,7 @@ import useAuth from '../hooks/useAuth';
 import socketIOClient, { io } from 'socket.io-client';
 import axios from 'axios';
 import Footer from '../components/Footer';
+import { getTimeText } from '../components/Functions';
 
 export default function Chat() {
   const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
