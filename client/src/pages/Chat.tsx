@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { InputChat, MyChatMsg, OpChatMsg } from '../components/ChatMsg';
 import Chatlist from '../components/Chatlist';
 import { ChatDetailHeader, ChattingHeader } from '../components/Headers';
 import { ChatDataProps } from '../types';
 import useAuth from '../hooks/useAuth';
-import socketIOClient from 'socket.io-client';
+import socketIOClient, { io } from 'socket.io-client';
 import axios from 'axios';
 import Footer from '../components/Footer';
 
 export default function Chat() {
-  const socket = socketIOClient(':8000');
+  const socketRef = useRef(io('/'));
+  const socket = socketRef.current;
+  // const socket = socketIOClient(':8000');
   const [user, setUser] = useAuth();
   const [roomList, setRoomList] = useState<any[]>([]);
   const [chatData, setChatData] = useState<ChatDataProps>({
@@ -26,11 +28,12 @@ export default function Chat() {
       url: `http://localhost:8000/api/chat/find`,
       params: { userId: user.id },
     });
-    console.log(res);
+    console.log('findRoom');
     setRoomList(res.data.result);
   };
 
   useEffect(() => {
+    console.log('메인 useEffect');
     if (localStorage.getItem('token')) {
       setUser();
     } else {
@@ -38,6 +41,7 @@ export default function Chat() {
     }
   }, []);
   useEffect(() => {
+    console.log('user변동 useEffect');
     findRoom();
     if (localStorage.getItem('chat')) {
       const opId = Number(localStorage.getItem('chat'));
@@ -51,13 +55,11 @@ export default function Chat() {
           url: `http://localhost:8000/api/chat/check`,
           params: { roomId },
         });
-        console.log(opId);
         const searchName = await axios({
           method: 'GET',
           url: `http://localhost:8000/api/chat/nickname`,
           params: { memberId: opId },
         });
-        console.log(searchName.data.result);
         setChatData({
           open: true,
           opId,
@@ -70,18 +72,19 @@ export default function Chat() {
     }
   }, [user]);
   useEffect(() => {
+    console.log('chatdata 변동 useEffect');
+    console.log(chatData);
     if (chatData.open) {
       localStorage.removeItem('chat');
-      console.log(chatData.data);
     }
   }, [chatData]);
 
   return (
     <>
-      <div className="wrap">
+      <div className="wrap" style={{ paddingBottom: 0 }}>
         {chatData.open || <ChattingHeader />}
         {chatData.open && (
-          <ChatDetailHeader id={chatData.opId}>
+          <ChatDetailHeader id={chatData.opId || 0}>
             {chatData.nickname}
           </ChatDetailHeader>
         )}

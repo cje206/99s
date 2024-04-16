@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { ReactComponent as IcoArrLeft } from '../images/ico-arr-left.svg';
 
 const FooterContainer = styled.div`
   background-color: #e6e6e6;
@@ -8,6 +9,11 @@ const FooterContainer = styled.div`
   padding: 30px;
   bottom: 0;
   left: 0;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 220px;
 `;
 const FooterWidth = styled.div`
   margin: 0 auto;
@@ -29,7 +35,6 @@ const Span = styled.div`
   align-items: center;
   justify-content: center;
   display: flex;
-  font-weight: bold;
 
   text-align: center;
   line-height: 1.5;
@@ -92,15 +97,14 @@ export default function Footer() {
               alt="로고2"
             />
             {!isWide && (
-              <button style={{ cursor: 'pointer' }} onClick={toggleComments}>
-                <img
-                  style={{ width: '15px', height: '10px' }}
-                  src={`${process.env.PUBLIC_URL}/images/${
-                    showContent ? 'ico-arrowDown' : 'ico-arrowUp'
-                  }.png`}
-                  alt=""
-                />
-              </button>
+              <IcoArrLeft
+                stroke="#999"
+                style={{
+                  cursor: 'pointer',
+                  transform: showContent ? 'rotate(90deg)' : 'rotate(-90deg)',
+                }}
+                onClick={toggleComments}
+              />
             )}
           </Logo>
           {!isWide && !showContent ? (

@@ -1,6 +1,9 @@
 .wrap {
+  position: relative;
   min-width: 320px;
+  min-height: 100vh;
   box-sizing: border-box;
+  padding-bottom: 270px;
   .body {
     padding: 20px;
     h1.title {
