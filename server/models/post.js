@@ -15,10 +15,6 @@ const PostModel = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    hashtag: {
-      type: DataTypes.JSON,
-      defaultValue: [],
-    },
     likeCount: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
@@ -26,6 +22,10 @@ const PostModel = (sequelize) => {
     hashtag: {
       type: DataTypes.JSON,
       defaultValue: [],
+    },
+    view: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   });
 };

@@ -32,10 +32,6 @@ const BlogModel = (sequelize) => {
       allowNUll: false,
       defaultValue: 1,
     },
-    subscribeList: {
-      type: DataTypes.JSON,
-      defaultValue: [],
-    },
     subscribeCount: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
