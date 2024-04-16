@@ -108,8 +108,12 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
     const applyDark = () => {
       if (darkmode) {
         localStorage.setItem('darkmode', 'on');
+        document.querySelector('.mainBox')?.classList.add('darkmode');
+        document.querySelector('.mainBox')?.classList.remove('default');
       } else {
         localStorage.removeItem('darkmode');
+        document.querySelector('.mainBox')?.classList.add('default');
+        document.querySelector('.mainBox')?.classList.remove('darkmode');
       }
     };
     applyDark();
