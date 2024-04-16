@@ -7,6 +7,10 @@ export default function Post({ position }: { position: string }) {
   useEffect(() => {
     window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
   }, []);
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `글쓰기`;
+  }, []);
   return (
     <div className="wrap">
       {innerWidth >= 1160 && <MainPcHeader />}

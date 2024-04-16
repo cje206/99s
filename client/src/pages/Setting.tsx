@@ -32,6 +32,10 @@ export default function Setting({ position }: { position: string }) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `설정`;
+  }, []);
   return (
     <div className="wrap">
       {innerWidth >= 1160 ? (
