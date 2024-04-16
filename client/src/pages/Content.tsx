@@ -36,19 +36,20 @@ export default function ContentPage() {
       const { bgColor, fontColor } = res.data.result;
       getColor(setTheme, res.data.result.theme, fontColor, bgColor);
       setBlog(res.data.result);
-    };
-    const getPost = async () => {
-      const res = await axios({
-        method: 'GET',
-        url: `${process.env.REACT_APP_HOST}/api/post/find`,
-        params: { id: postId },
-      });
-      if (res.data.result.blogId === Number(id)) {
-        setPost(res.data.result);
-      }
+      const getPost = async () => {
+        const res2 = await axios({
+          method: 'GET',
+          url: `${process.env.REACT_APP_HOST}/api/post/find`,
+          params: { id: postId },
+        });
+        console.log(res2.data.result.blogId, res.data.result.id);
+        if (res2.data.result.blogId === res.data.result.id) {
+          setPost(res2.data.result);
+        }
+      };
+      getPost();
     };
     getBlog();
-    getPost();
   }, [id, postId]);
 
   return (
