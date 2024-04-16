@@ -1,5 +1,12 @@
 @import './variables';
 
+@include mobile {
+  .body {
+    &.blog {
+      padding: 20px; //
+    }
+  }
+}
 .body {
   &.blog {
     padding: 0;
