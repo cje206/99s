@@ -6,7 +6,7 @@ import MainPopularHorizontal from '../components/MainPopularHorizontal';
 import { data } from '../data/PopularHorizontalPost';
 import MainCategory from '../components/MainCategory';
 import { items } from '../data/MainCategory';
-import { MainHeader } from '../components/Headers';
+import { MainHeader, MainPcHeader } from '../components/Headers';
 import '../styles/common.scss';
 import Footer from '../components/Footer';
 import '../styles/Main.scss';
@@ -16,6 +16,7 @@ import axios from 'axios';
 import { PostLists } from '../components/Lists';
 
 export default function Main() {
+  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [popPost, setPopPost] = useState<PostObject[]>([
     {
       id: 0,
@@ -29,15 +30,16 @@ export default function Main() {
       method: 'GET',
       url: `${process.env.REACT_APP_HOST}/api/post/mainPop`,
     });
-    console.log(res);
     setPopPost(res.data.result);
   };
   useEffect(() => {
     getPopPost();
+    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
   }, []);
   return (
     <div className="wrap">
-      <MainHeader />
+      {innerWidth >= 1160 ? <MainPcHeader /> : <MainHeader />}
+
       <div className="main-slide">
         <MainPageImgSlide slides={slides} />
       </div>

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ThemeStyle } from '../types';
 import { useEffect, useState } from 'react';
@@ -10,6 +10,8 @@ import { ReactComponent as IcoMenuLeft } from '../images/ico-menu-left.svg';
 import { ReactComponent as IcoMenuRight } from '../images/ico-menu-right.svg';
 import { ReactComponent as IcoSearch } from '../images/ico-search.svg';
 import { ReactComponent as Blo9Logo } from '../images/blo9_logo.svg';
+import useAuth from '../hooks/useAuth';
+import { MainSetBtn } from './Btns';
 
 let defaultColor = '#333';
 let defaultBg = '#fff';
@@ -24,23 +26,43 @@ const BoxStyle = styled.div`
   position: sticky;
   top: 0;
   left: 0;
-  line-height: 70px;
-  padding: 0 20px;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 100;
-  border-bottom: 1px solid #f1f1f1;
   background: ${defaultBg};
-  @media (min-width: 1160px) {
-    width: 1200px;
-    margin: 0 auto;
+  z-index: 100;
+  header {
+    position: relative;
+    width: 100%;
+    height: 70px;
+    line-height: 70px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f1f1;
+    @media (min-width: 1160px) {
+      width: 1200px;
+      margin: 0 auto;
+    }
   }
 `;
-const LogoImg = styled.img`
-  width: 80px;
-  height: auto;
+const MenuList = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  div {
+    cursor: pointer;
+    line-height: 66px;
+
+    &.headerMenu {
+      &:hover,
+      &.on {
+        border-bottom: 4px solid #fbc02d;
+        font-weight: 700;
+        box-sizing: border-box;
+      }
+    }
+  }
 `;
 const Icon = styled.p<{ $url: string }>`
   width: 24px;
@@ -115,20 +137,91 @@ export function MainHeader() {
   return (
     <>
       <BoxStyle className="headerBg">
-        <IcoMenuLeft
-          stroke={defaultColor}
-          fill="none"
-          onClick={() => setSidemenu(true)}
-        />
-        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
-        <IcoSearch
-          stroke={defaultColor}
-          fill="none"
-          onClick={() => navigate('/search')}
-        />
+        <header>
+          <IcoMenuLeft
+            stroke={defaultColor}
+            fill="none"
+            onClick={() => setSidemenu(true)}
+          />
+          <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+          <IcoSearch
+            stroke={defaultColor}
+            fill="none"
+            onClick={() => navigate('/search')}
+          />
+        </header>
       </BoxStyle>
       {sidemenu && <DefaultSidemenu func={closeFunc} />}
     </>
+  );
+}
+
+export function MainPcHeader({ activepage }: { activepage?: string }) {
+  const { pathname } = useLocation();
+  const [user, setUser] = useAuth();
+  const [showSet, setShowSet] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    }
+  }, []);
+
+  return (
+    <BoxStyle className="headerBg">
+      <header>
+        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <MenuList>
+          <div
+            className={
+              pathname === '/post/write' ? 'headerMenu on' : 'headerMenu'
+            }
+            onClick={() => navigate('/post/write')}
+          >
+            글 작성하기
+          </div>
+          <div
+            className={
+              pathname === '/subscribe' ? 'headerMenu on' : 'headerMenu'
+            }
+            onClick={() => navigate('/subscribe')}
+          >
+            구독
+          </div>
+          <div
+            className={pathname === '/like' ? 'headerMenu on' : 'headerMenu'}
+            onClick={() => navigate('/like')}
+          >
+            좋아요
+          </div>
+          <div
+            className={
+              pathname.includes('setting') ? 'headerMenu on' : 'headerMenu'
+            }
+            onClick={() => navigate('/setting')}
+          >
+            설정
+          </div>
+          <div
+            className={
+              pathname.includes('chat') ? 'headerMenu on' : 'headerMenu'
+            }
+            onClick={() => navigate('/chat')}
+          >
+            메세지
+          </div>
+        </MenuList>
+        <MenuList
+          className="pofileBox"
+          onClick={() => (user.id ? setShowSet(!showSet) : navigate('/signup'))}
+        >
+          <div>{user.username || '로그인/회원가입'}</div>
+          <ProfileImage id={user.id || 0} imgwidth="40px" />
+        </MenuList>
+        {showSet && <MainSetBtn />}
+      </header>
+    </BoxStyle>
   );
 }
 
@@ -141,17 +234,19 @@ export function SubHeader({ children }: { children: string }) {
   return (
     <>
       <BoxStyle className="headerBg">
-        <IcoMenuLeft
-          stroke={defaultColor}
-          fill="none"
-          onClick={() => setSidemenu(true)}
-        />
-        <Text>{children}</Text>
-        <IcoSearch
-          stroke={defaultColor}
-          fill="none"
-          onClick={() => navigate('/search')}
-        />
+        <header>
+          <IcoMenuLeft
+            stroke={defaultColor}
+            fill="none"
+            onClick={() => setSidemenu(true)}
+          />
+          <Text>{children}</Text>
+          <IcoSearch
+            stroke={defaultColor}
+            fill="none"
+            onClick={() => navigate('/search')}
+          />
+        </header>
       </BoxStyle>
       {sidemenu && <DefaultSidemenu func={closeFunc} />}
     </>
@@ -162,13 +257,15 @@ export function SearchHeader() {
   const navigate = useNavigate();
   return (
     <BoxStyle>
-      <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
-      <SearchBox>
-        <InputBox />
-        <BtnBox>
-          <IcoSearch stroke="#fff" />
-        </BtnBox>
-      </SearchBox>
+      <header>
+        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <SearchBox>
+          <InputBox />
+          <BtnBox>
+            <IcoSearch stroke="#fff" />
+          </BtnBox>
+        </SearchBox>
+      </header>
     </BoxStyle>
   );
 }
@@ -211,19 +308,21 @@ export function BlogHeader({ id }: { id: number }) {
           color: theme.background,
         }}
       >
-        <Text
-          onClick={() => navigator(`/blog/${id}`)}
-          style={{ cursor: 'pointer' }}
-        >
-          {title}
-        </Text>
-        <BtnsWrap>
-          <IcoSearch stroke={theme.background} />
-          <IcoMenuRight
-            stroke={theme.background}
-            onClick={() => setSidemenu(true)}
-          />
-        </BtnsWrap>
+        <header>
+          <Text
+            onClick={() => navigator(`/blog/${id}`)}
+            style={{ cursor: 'pointer' }}
+          >
+            {title}
+          </Text>
+          <BtnsWrap>
+            <IcoSearch stroke={theme.background} />
+            <IcoMenuRight
+              stroke={theme.background}
+              onClick={() => setSidemenu(true)}
+            />
+          </BtnsWrap>
+        </header>
       </BoxStyle>
       {sidemenu && <BlogSidemenu func={closeFunc} />}
     </>
@@ -249,12 +348,17 @@ export function SettingHeader({ children }: any) {
 
   return (
     <BoxStyle>
-      <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
-      <TextCenter>{children}</TextCenter>
-      {!isLargeScreen && (
-        <IcoMenuRight stroke={defaultColor} onClick={() => setSidemenu(true)} />
-      )}
-      {sidemenu && <SetSidemenu func={closeFunc} />}
+      <header>
+        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <TextCenter>{children}</TextCenter>
+        {!isLargeScreen && (
+          <IcoMenuRight
+            stroke={defaultColor}
+            onClick={() => setSidemenu(true)}
+          />
+        )}
+        {sidemenu && <SetSidemenu func={closeFunc} />}
+      </header>
     </BoxStyle>
   );
 }
@@ -263,9 +367,11 @@ export function ChattingHeader() {
   const navigate = useNavigate();
   return (
     <BoxStyle>
-      <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
-      <TextCenter>채팅</TextCenter>
-      <Icon $url="search"></Icon>
+      <header>
+        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+        <TextCenter>채팅</TextCenter>
+        <Icon $url="search"></Icon>
+      </header>
     </BoxStyle>
   );
 }
@@ -279,11 +385,13 @@ export function ChatDetailHeader({
 }) {
   return (
     <BoxStyle>
-      <BtnsWrap>
-        <ProfileImage id={id} imgwidth="40px" />
-        <Title>{children}</Title>
-      </BtnsWrap>
-      <Icon $url="search"></Icon>
+      <header>
+        <BtnsWrap>
+          <ProfileImage id={id} imgwidth="40px" />
+          <Title>{children}</Title>
+        </BtnsWrap>
+        <Icon $url="search"></Icon>
+      </header>
     </BoxStyle>
   );
 }
@@ -292,7 +400,9 @@ export function SignHeader() {
   const navigate = useNavigate();
   return (
     <BoxStyle>
-      <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+      <header>
+        <Blo9Logo fill={defaultColor} onClick={() => navigate('/')} />
+      </header>
     </BoxStyle>
   );
 }

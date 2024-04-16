@@ -71,23 +71,22 @@ export default function MainPopularPost({
     setEndSwipe(true);
   };
 
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setIsWide(window.innerWidth > 1160);
+  //   };
 
-<!--   useEffect(() => {
-    const handleResize = () => {
-      setIsWide(window.innerWidth > 1160);
-    };
+  //   window.addEventListener('resize', handleResize);
 
-    window.addEventListener('resize', handleResize);
+  //   return () => window.removeEventListener('resize', handleResize);
+  // }, []);
 
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((preIndex) => (preIndex + 1) % postlist.length);
-    }, 3000);
-    return () => clearInterval(timer);
-  }, [postlist.length]); -->
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setCurrentIndex((preIndex) => (preIndex + 1) % postlist.length);
+  //   }, 3000);
+  //   return () => clearInterval(timer);
+  // }, [postlist.length]);
 
   return (
     <>

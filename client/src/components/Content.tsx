@@ -33,13 +33,11 @@ export default function Content({
     postTitle: '',
   });
   const getOtherPost = async () => {
-    console.log(blog.id);
     const res = await axios({
       method: 'GET',
       url: `${process.env.REACT_APP_HOST}/api/post/otherPost`,
       params: { postId, blogId: blog.id },
     });
-    console.log(res.data.result);
     if (res.data.result[0]) {
       setPrevPost(res.data.result[0]);
     }
@@ -49,7 +47,6 @@ export default function Content({
   };
   useEffect(() => {
     getOtherPost();
-    console.log(blog);
   }, [blog]);
   useEffect(() => {
     if (localStorage.getItem('token')) {

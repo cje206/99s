@@ -102,9 +102,6 @@ export function WriterList({ id }: { id: number }) {
     setInfo(res.data.result);
   };
   useEffect(() => {
-    console.log(info);
-  }, [info]);
-  useEffect(() => {
     if (id && id !== 0) {
       getInfo();
     }
@@ -141,9 +138,6 @@ export function PostList({ id }: { id: number }) {
     });
     setInfo(res.data.result);
   };
-  useEffect(() => {
-    console.log(info);
-  }, [info]);
   useEffect(() => {
     if (id && id !== 0) {
       getInfo();

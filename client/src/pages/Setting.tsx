@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { SettingHeader } from '../components/Headers';
+import { MainPcHeader, SettingHeader } from '../components/Headers';
 import {
   PcSetMenu,
   SetBlog,
@@ -14,9 +14,11 @@ import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
 export default function Setting({ position }: { position: string }) {
+  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 1160);
 
   useEffect(() => {
+    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
     function handleResize() {
       setIsLargeScreen(window.innerWidth > 1160);
     }
@@ -25,7 +27,11 @@ export default function Setting({ position }: { position: string }) {
   }, []);
   return (
     <div className="wrap setting">
-      <SettingHeader>{position}</SettingHeader>
+      {innerWidth >= 1160 ? (
+        <MainPcHeader />
+      ) : (
+        <SettingHeader>{position}</SettingHeader>
+      )}
       <div className="settingPc">
         {isLargeScreen && (
           <div className="sideMenuPc">

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import useAuth from '../hooks/useAuth';
 import { useEffect, useState } from 'react';
-import { SubHeader } from '../components/Headers';
+import { MainPcHeader, SubHeader } from '../components/Headers';
 import { PostList } from '../components/Lists';
 
 interface Obj {
@@ -9,6 +9,7 @@ interface Obj {
 }
 
 export default function Like() {
+  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [user, setUser] = useAuth();
   const [like, setLike] = useState<Obj[]>();
 
@@ -18,7 +19,6 @@ export default function Like() {
       url: `${process.env.REACT_APP_HOST}/api/like/likeList`,
       params: { memberId: user.id },
     });
-    console.log(res);
     setLike(res.data.result);
   };
   useEffect(() => {
@@ -27,6 +27,7 @@ export default function Like() {
     }
   }, [user]);
   useEffect(() => {
+    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
     if (localStorage.getItem('token')) {
       setUser();
     } else {
@@ -36,7 +37,12 @@ export default function Like() {
   }, []);
   return (
     <div className="wrap">
-      <SubHeader>좋아요 리스트</SubHeader>
+      {innerWidth >= 1160 ? (
+        <MainPcHeader />
+      ) : (
+        <SubHeader>좋아요 리스트</SubHeader>
+      )}
+
       <div className="body" style={{ paddingTop: 0 }}>
         {Boolean(like?.length) ? (
           like?.map((val) => <PostList id={val.postId}></PostList>)

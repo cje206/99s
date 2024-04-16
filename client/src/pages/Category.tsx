@@ -41,7 +41,6 @@ export default function Category() {
       url: `${process.env.REACT_APP_HOST}/api/post/category`,
       params: data,
     });
-    console.log(res);
     setPost(res.data.result);
   };
   useEffect(() => {

@@ -115,7 +115,7 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
     if (!window.confirm('로그아웃 하시겠습니까?')) {
       return;
     }
-    localStorage.clear();
+    localStorage.removeItem('token');
     document.location.reload();
   };
   const applyDark = () => {
@@ -299,7 +299,6 @@ export function BlogSidemenu({ func }: { func?: () => void }) {
       url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
       params: { memberId: Number(id) },
     });
-    console.log(res);
     setList(res.data.result);
   };
   useEffect(() => {

@@ -65,22 +65,31 @@ const PostSetBox = styled.div`
   position: absolute;
   top: 40px;
   right: 10px;
+  width: fit-content;
+  min-width: 140px;
   border: 2px solid #e2e7e2;
   border-radius: 10px;
   background: #fff;
+  color: #333;
   z-index: 170;
   padding: 10px;
   .btn {
     line-height: 40px;
     border-bottom: 1px solid #e2e7e2;
+    cursor: pointer;
   }
   .darkmodebtn {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
     .text {
       line-height: 40px;
-      margin-right: 10px;
     }
+  }
+  &.darkmode {
+    background: #333;
+    color: #fff;
   }
 `;
 
@@ -170,7 +179,7 @@ export function PostSetBtn() {
     applyDark();
   }, [darkmode]);
   return (
-    <PostSetBox>
+    <PostSetBox className={darkmode ? 'darkmode' : 'default'}>
       {Number(id) === user?.id && (
         <div className="btn" onClick={editBtn}>
           수정
@@ -181,6 +190,56 @@ export function PostSetBtn() {
           삭제
         </div>
       )}
+      <div className="darkmodebtn" onClick={() => setDarkmode(!darkmode)}>
+        <p className="text">다크모드</p>
+        <ToggleBtn active={Boolean(darkmode)} />
+      </div>
+    </PostSetBox>
+  );
+}
+
+export function MainSetBtn() {
+  const [user, setUser] = useAuth();
+  const [darkmode, setDarkmode] = useState<Boolean>(false);
+  const navigate = useNavigate();
+  const applyDark = () => {
+    if (darkmode) {
+      localStorage.setItem('darkmode', 'on');
+    } else {
+      localStorage.removeItem('darkmode');
+    }
+  };
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    }
+    if (localStorage.getItem('darkmode') === 'on') {
+      setDarkmode(true);
+    }
+  }, []);
+  useEffect(() => {
+    applyDark();
+  }, [darkmode]);
+  return (
+    <PostSetBox
+      className={darkmode ? 'darkmode' : 'default'}
+      style={{ top: '60px', right: 0 }}
+    >
+      <div className="btn" onClick={() => navigate(`/blog/${user.id}`)}>
+        내 블로그
+      </div>
+      <div
+        className="btn"
+        onClick={() => {
+          if (!window.confirm('로그아웃 하시겠습니까?')) {
+            return;
+          }
+          localStorage.removeItem('token');
+          document.location.reload();
+        }}
+      >
+        로그아웃
+      </div>
       <div className="darkmodebtn" onClick={() => setDarkmode(!darkmode)}>
         <p className="text">다크모드</p>
         <ToggleBtn active={Boolean(darkmode)} />

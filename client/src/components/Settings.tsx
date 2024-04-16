@@ -577,7 +577,6 @@ export function SetCategory({ itemsPerPage = 3 }) {
         url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
         params: { memberId: user.id },
       });
-      console.log(res);
       setIsbBlogExist(res.data.success);
       if (res.data.result) {
         setList(res.data.result);
@@ -830,8 +829,6 @@ export function SetBlog() {
         url: `${process.env.REACT_APP_HOST}/api/blog/find`,
         params: { memberId: user.id },
       });
-      console.log(user);
-      console.log(res);
       if (res.data.result) {
         setNickname(res.data.result.nickname);
         setBlogTitle(res.data.result.blogTitle);
@@ -905,13 +902,10 @@ export function SetBlog() {
   };
 
   const triggerFileInputClick = () => {
-    console.log('프로필 사진 변경 버튼 클릭됨');
-    console.log(fileInputRef.current);
     fileInputRef.current?.click();
   };
   const handleDefaultImageClick = () => {
     setPreviewImageUrl(null);
-    console.log('기본 이미지로 전환됨');
   };
 
   useEffect(() => {
@@ -921,11 +915,6 @@ export function SetBlog() {
   useEffect(() => {
     setInfo();
   }, [user]);
-
-  useEffect(() => {
-    // toggleBtn(theme);
-    console.log(theme);
-  }, [theme]);
 
   return (
     <>
