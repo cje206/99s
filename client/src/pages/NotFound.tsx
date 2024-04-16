@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SignHeader } from '../components/Headers';
 import Footer from '../components/Footer';
 
 const NotFound: React.FC = () => {
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `NotFound`;
+  }, []);
   return (
     <div className="wrap">
       <SignHeader />

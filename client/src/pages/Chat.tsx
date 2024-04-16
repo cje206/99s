@@ -92,6 +92,10 @@ export default function Chat() {
       localStorage.removeItem('chat');
     }
   }, [chatData]);
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `채팅`;
+  }, []);
 
   return (
     <>

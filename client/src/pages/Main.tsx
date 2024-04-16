@@ -32,6 +32,10 @@ export default function Main() {
     getPopPost();
     window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
   }, []);
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `Blog9`;
+  }, []);
   return (
     <div className="wrap">
       {innerWidth >= 1160 ? <MainPcHeader /> : <MainHeader />}

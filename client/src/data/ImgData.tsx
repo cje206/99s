@@ -2,15 +2,15 @@ import { Slide } from '../components/MainPageImgSlide';
 
 export const slides: Slide[] = [
   {
-    imageUrl: '/images/mainSon.avif',
-    text: '이강인과 손흥민의 합작 골',
+    imageUrl: '/images/dog.png',
+    text: '2024 댕댕트레킹 티켓 오픈!',
   },
   {
-    imageUrl: '/images/mainIpad.jpeg',
-    text: '5월 초 애플 신제품 출시',
+    imageUrl: '/images/moon.jpeg',
+    text: '미주 대륙, 7년만에 벌어진 "해를 품은 달" 우주쇼에 들썩',
   },
   {
-    imageUrl: '/images/mainSchwarzenegger.jpeg',
-    text: '슈워제네거, 진짜 터미네이터 되나?',
+    imageUrl: '/images/coupang.svg',
+    text: '쿠팡이츠, 배달비 전격 무료?!',
   },
 ];
