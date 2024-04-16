@@ -51,6 +51,10 @@ export default function ContentPage() {
     };
     getBlog();
   }, [id, postId]);
+  useEffect(() => {
+    const titleElement = document.getElementsByTagName('title')[0];
+    titleElement.innerHTML = `블로그`;
+  }, []);
 
   return (
     <div className="wrap">
