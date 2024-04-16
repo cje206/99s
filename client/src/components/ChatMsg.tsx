@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { ChatMsgProps, SendMsgProps } from '../types';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import socketIOClient, { io } from 'socket.io-client';
 
@@ -56,6 +56,9 @@ export function MyChatMsg({ text, sendTime }: ChatMsgProps) {
   const writtenTime = new Date(sendTime);
   const HOUR = writtenTime.getHours();
   const MINUTE = writtenTime.getMinutes();
+  useEffect(() => {
+    console.log('MyChatMsg useEffect');
+  }, []);
   return (
     <BoxStyle style={{ justifyContent: 'flex-end' }}>
       <TimeStyle>
@@ -73,6 +76,9 @@ export function OpChatMsg({ text, sendTime }: ChatMsgProps) {
   const writtenTime = new Date(sendTime);
   const HOUR = writtenTime.getHours();
   const MINUTE = writtenTime.getMinutes();
+  useEffect(() => {
+    console.log('OpChatMsg useEffect');
+  }, []);
   return (
     <BoxStyle>
       <ChatStyle style={{ marginRight: '10px' }}>{text}</ChatStyle>
@@ -99,10 +105,13 @@ export function DateChatMsg({ children }: any) {
 }
 
 export function InputChat({ userId, chatlist }: SendMsgProps) {
-  const socket = socketIOClient(`${process.env.REACT_APP_HOST}`);
+  const socketRef = useRef(io('/'));
+  const socket = socketRef.current;
+  // const socket = socketIOClient(`${process.env.REACT_APP_HOST}`);
   const [chatMsg, setChatMsg] = useState<string>('');
   const [chatData, setChatData] = chatlist;
   const sendMsg = async () => {
+    console.log('sendMsg');
     if (chatMsg.trim().length == 0) {
       return;
     }
@@ -110,7 +119,6 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
       chatMsg,
       userId,
     });
-    console.log(chatData.roomId);
     const res = await axios({
       method: 'POST',
       url: `http://localhost:8000/api/chat/write`,
@@ -132,6 +140,9 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
       sendMsg();
     }
   };
+  useEffect(() => {
+    console.log('InputChat useEffect');
+  }, []);
   return (
     <InputBox>
       <TextInput

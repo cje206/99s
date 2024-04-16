@@ -109,3 +109,9 @@ export interface PostInfoObj {
   content: string;
   createdAt: string;
 }
+
+export interface CategoryObj {
+  id: number;
+  categoryName: string;
+  group: string;
+}

@@ -71,7 +71,6 @@ export default function ProfileImage({
     }
   };
   useEffect(() => {
-    console.log('profile', profileimg);
     if (profileimg) {
       setProfile({ img: profileimg });
     } else {

@@ -54,19 +54,17 @@ export default function ContentPage() {
   }, []);
 
   return (
-    <>
-      <div className="wrap">
-        <BlogHeader id={Number(id)} />
-        {post.id ? (
-          <>
-            <Content post={post} theme={theme} blog={blog} />
-            <CommentComponent theme={theme} />
-          </>
-        ) : (
-          <div className="body">존재하지 않는 포스트입니다.</div>
-        )}
-      </div>
+    <div className="wrap">
+      <BlogHeader id={Number(id)} />
+      {post.id ? (
+        <>
+          <Content post={post} theme={theme} blog={blog} />
+          <CommentComponent theme={theme} />
+        </>
+      ) : (
+        <div className="body">존재하지 않는 포스트입니다.</div>
+      )}
       <Footer />
-    </>
+    </div>
   );
 }

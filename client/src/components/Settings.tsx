@@ -1,7 +1,7 @@
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { ThemeStyle, UserProps } from '../types';
+import { CategoryObj, PostObject, ThemeStyle, UserProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
 import { ErrorMsgGrey, ErrorMsgRed } from './ErrorMsg';
@@ -12,6 +12,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import ProfileImage from './ProfileImage';
 import Pagination from './Pagination';
 import { is } from 'immutable';
+import { getTimeText } from './Functions';
 const TableStyle = styled.table`
   width: 100%;
   margin: 10px 0 30px;
@@ -380,29 +381,97 @@ export function SetHome() {
 
 export function SetPost() {
   const navigate = useNavigate();
+  const [user, setUser] = useAuth();
+  const [postList, setPostList] = useState<PostObject[]>();
+  const [category, setCategory] = useState<CategoryObj[]>();
+  const getPost = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/post/category`,
+      params: { id: user.id },
+    });
+    setPostList(res.data.result);
+  };
+
+  const getCategory = async () => {
+    const res = await axios({
+      method: 'GET',
+      url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
+      params: { memberId: user.id },
+    });
+    setCategory(res.data.result);
+  };
+  const editFunc = (id: number) => {
+    localStorage.setItem('postId', `${id}`);
+    navigate('/post/write');
+  };
+  const deleteFunc = async (id: number) => {
+    if (!window.confirm('게시글을 삭제하시겠습니까?')) {
+      return;
+    }
+    const res = await axios({
+      method: 'DELETE',
+      url: `${process.env.REACT_APP_HOST}/api/post/delete`,
+      data: { id },
+    });
+    if (res.data.success) {
+      alert('게시글 삭제가 완료되었습니다.');
+      getPost();
+    }
+  };
+  useEffect(() => {
+    if (user.id) {
+      getPost();
+      getCategory();
+    }
+  }, [user]);
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setUser();
+    } else {
+      alert('로그인 후 이용 가능합니다.');
+      document.location.href = '/signup';
+    }
+  }, []);
   return (
     <>
-      <CheckBox>
-        <div className="flexBox" style={{ marginBottom: '10px' }}>
-          <input type="checkbox" id="check1" />
-          <label htmlFor="check01">
-            글 제목
-            <br />
-            <span>카테고리 &#183; 2024-04-01 12:37</span>
-          </label>
-        </div>
-        <BtnBox>
-          <div className="btn active">수정</div>
-          <div className="btn disabled">삭제</div>
-        </BtnBox>
-      </CheckBox>
+      {postList?.map((data) => (
+        <CheckBox key={data.id}>
+          <div className="flexBox" style={{ marginBottom: '10px' }}>
+            <input type="checkbox" id="check1" />
+            <label htmlFor="check01">
+              {data.postTitle}
+              <br />
+              <span>
+                {data.categoryId
+                  ? category?.map((val) => {
+                      if (val.id == data.categoryId) {
+                        return val.categoryName;
+                      }
+                    })
+                  : '카테고리 없음'}{' '}
+                &#183; {getTimeText(data.createdAt || '')}
+              </span>
+            </label>
+          </div>
+          <BtnBox>
+            <div className="btn active" onClick={() => editFunc(data.id)}>
+              수정
+            </div>
+            <div className="btn disabled" onClick={() => deleteFunc(data.id)}>
+              삭제
+            </div>
+          </BtnBox>
+        </CheckBox>
+      ))}
+
       <RectBtn onClick={() => navigate('/post/write')}>글쓰기</RectBtn>
     </>
   );
 }
 export function SetCategory({ itemsPerPage = 3 }) {
   const [user, setUser] = useAuth();
-  const [list, setList] = useState<any[]>([]);
+  const [list, setList] = useState<CategoryObj[]>([]);
   const [isBlogExist, setIsbBlogExist] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>('');
   const [newGroup, setNewGroup] = useState<string>('일상');
@@ -553,7 +622,12 @@ export function SetCategory({ itemsPerPage = 3 }) {
     getList();
   };
   useEffect(() => {
-    setUser();
+    if (localStorage.getItem('token')) {
+      setUser();
+    } else {
+      alert('로그인 후 이용 가능합니다.');
+      document.location.href = '/signup';
+    }
   }, []);
   useEffect(() => {
     getList();
