@@ -1,4 +1,4 @@
-import { PostInfoContainer, ImgPost } from '../components/MainPopularStyle';
+import { PostInfoContainer } from '../components/MainPopularStyle';
 import { useState } from 'react';
 import '../styles/MainPopularHorizontalPost.scss';
 import Pagination from './Pagination';

@@ -4,9 +4,7 @@ import { useParams } from 'react-router-dom';
 import { BlogHeader } from '../components/Headers';
 import styled from 'styled-components';
 import { PostObject } from '../types';
-import DOMPurify from 'isomorphic-dompurify';
 import { htmlToText } from '../components/Functions';
-import Footer from '../components/Footer';
 
 const ContentBox = styled.div`
   border-bottom: 1px solid #e2e7e2;
@@ -29,23 +27,23 @@ const ContentBox = styled.div`
 export default function Category() {
   const { id, categoryId } = useParams<{ id: string; categoryId: string }>();
   const [post, setPost] = useState<PostObject[]>();
-  const getPost = async () => {
-    let data;
-    if (categoryId) {
-      data = { categoryId };
-    } else {
-      data = { id };
-    }
-    const res = await axios({
-      method: 'GET',
-      url: `${process.env.REACT_APP_HOST}/api/post/category`,
-      params: data,
-    });
-    setPost(res.data.result);
-  };
   useEffect(() => {
+    const getPost = async () => {
+      let data;
+      if (categoryId) {
+        data = { categoryId };
+      } else {
+        data = { id };
+      }
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/post/category`,
+        params: data,
+      });
+      setPost(res.data.result);
+    };
     getPost();
-  }, [categoryId]);
+  }, [categoryId, id]);
   return (
     <>
       <div className="wrap">

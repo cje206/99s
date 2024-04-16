@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { BlogHeader } from '../components/Headers';
 import Content from '../components/Content';
 import CommentComponent from '../components/BlogComment';
@@ -26,31 +26,30 @@ export default function ContentPage() {
     nickname: '',
   });
 
-  const getBlog = async () => {
-    const res = await axios({
-      method: 'GET',
-      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
-      params: { memberId: id },
-    });
-    const { bgColor, fontColor } = res.data.result;
-    getColor(setTheme, res.data.result.theme, fontColor, bgColor);
-    setBlog(res.data.result);
-  };
-  const getPost = async () => {
-    const res = await axios({
-      method: 'GET',
-      url: `${process.env.REACT_APP_HOST}/api/post/find`,
-      params: { id: postId },
-    });
-    if (res.data.result.blogId === Number(id)) {
-      setPost(res.data.result);
-    }
-  };
-
   useEffect(() => {
+    const getBlog = async () => {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+        params: { memberId: id },
+      });
+      const { bgColor, fontColor } = res.data.result;
+      getColor(setTheme, res.data.result.theme, fontColor, bgColor);
+      setBlog(res.data.result);
+    };
+    const getPost = async () => {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/post/find`,
+        params: { id: postId },
+      });
+      if (res.data.result.blogId === Number(id)) {
+        setPost(res.data.result);
+      }
+    };
     getBlog();
     getPost();
-  }, []);
+  }, [id, postId]);
 
   return (
     <div className="wrap">

@@ -16,13 +16,8 @@ import PostPage from './pages/Post';
 import Category from './pages/Category';
 import Like from './pages/Like';
 import Subscribe from './pages/Subscribe';
-import { useEffect, useState } from 'react';
 
 function App() {
-  const [darkmode, setDarkmode] = useState();
-  useEffect(() => {
-    console.log('변경');
-  }, [localStorage.getItem('darkmode')]);
   return (
     <div className="App">
       <div

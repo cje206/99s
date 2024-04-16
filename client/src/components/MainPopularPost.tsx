@@ -4,10 +4,8 @@ import Swipe from 'react-easy-swipe';
 import {
   Container,
   StyledImgDiv,
-  Img,
   ImageCounterWrapper,
   ImageCounter,
-  SlideContainer,
   MainPopularContainer,
 } from '../components/MainPopularStyle';
 import { PostObject } from '../types';

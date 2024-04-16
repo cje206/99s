@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import '../styles/BlogMain.scss';
 import { useEffect, useState } from 'react';
@@ -11,17 +11,11 @@ import { ThemeStyle, WriterInfoObj } from '../types';
 import ProfileImage from '../components/ProfileImage';
 import { SubscribeBtn } from './Btns';
 import axios from 'axios';
-import { handleCopyClipBoard } from './Functions';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const BlogMainContainer = styled.div<{ link?: string }>`
   display: flex;
   margin: 20px 20px 0 20px;
-  .imgBox {
-    width: 20%;
-    border-radius: 50%;
-    overflow: hidden;
-  }
 `;
 
 const BlogDetail = styled.div`
@@ -47,21 +41,6 @@ const BlogDetail = styled.div`
     color: #7e7f81;
   }
 `;
-
-interface Blog {
-  id: number;
-  memberId: number;
-  nickname: string;
-  blogTitle: string;
-  theme: number;
-  view: number;
-  subscribeCount: number;
-  subscribeList: number[] | [];
-  fontColor: string;
-  bgColor: string;
-  writerImg?: string;
-  blogInfo?: string;
-}
 
 export default function BlogMain({
   blogid,
@@ -115,9 +94,7 @@ export default function BlogMain({
       getPost();
     }
   }, [blogid, subscribe]);
-  useEffect(() => {
-    console.log(Boolean(user.id));
-  }, [user]);
+  useEffect(() => {}, [user]);
   useEffect(() => {
     setUser();
   }, []);
@@ -125,7 +102,7 @@ export default function BlogMain({
   return (
     <div className="blog">
       <BlogMainContainer>
-        <ProfileImage id={Number(id)} />
+        <ProfileImage id={Number(id)} imgwidth="70px" />
         <BlogDetail>
           <div className="nickName">
             <p>{blogInfo?.nickname}</p>

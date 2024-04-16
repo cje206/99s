@@ -29,6 +29,7 @@
 #root .ql-editor {
   min-height: 60vh;
   padding: 20px;
+  color: #333;
   strong {
     font-weight: 700;
   }
@@ -51,7 +52,8 @@
   select {
     border: none;
     text-align: center;
-    font-weight: blod;
+    font-weight: 700;
+    cursor: pointer;
     option {
       line-height: 40px;
     }

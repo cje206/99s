@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { BlogObject, PostObject, ThemeStyle } from '../types';
 import axios from 'axios';
@@ -10,7 +10,7 @@ import { ReactComponent as IcoArrLeft } from '../images/ico-arr-left.svg';
 import { ReactComponent as IcoShare } from '../images/ico-share.svg';
 import '../styles/Content.scss';
 import { PostSetBtn, SubscribeBtn } from './Btns';
-import { getTimeText, handleCopyClipBoard } from './Functions';
+import { getTimeText } from './Functions';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 let defaultColor = '#333';
@@ -34,17 +34,6 @@ const ContentInfo = styled.div`
   box-sizing: border-box;
   background: ${defaultBg};
   z-index: 150;
-  .ico {
-    width: 24px;
-    height: 24px;
-    text-indent: -99999px;
-    &.goBack {
-      background: url('/images/ico-arrL.png') center/contain;
-    }
-    &.setting {
-      background: url('/images/ico-setting.png') center/contain;
-    }
-  }
 `;
 
 const ContentTopContainer = styled.div`
@@ -138,6 +127,7 @@ const OtherBox = styled.div`
   padding: 0 20px;
   border-bottom: 1px solid #e2e7e2;
   line-height: 50px;
+  cursor: pointer;
   .otherName {
     font-weight: 700;
     margin-right: 10px;
@@ -148,17 +138,9 @@ export function PostTop({ children }: { children: string }) {
   const navigate = useNavigate();
   return (
     <ContentInfo>
-      <IcoArrLeft
-        stroke={defaultColor}
-        className="ico goBack"
-        onClick={() => navigate(-1)}
-      />
+      <IcoArrLeft stroke={defaultColor} onClick={() => navigate(-1)} />
       <div>{children}</div>
-      <IcoSet
-        stroke={defaultColor}
-        className="ico setting"
-        onClick={() => setSetActive(!setActive)}
-      />
+      <IcoSet stroke={defaultColor} onClick={() => setSetActive(!setActive)} />
       {setActive && <PostSetBtn />}
     </ContentInfo>
   );
@@ -314,7 +296,7 @@ export function PostLike({
           <IcoLike
             className="likeIcon"
             fill="none"
-            stroke="#333"
+            stroke={defaultColor}
             onClick={toggleLike}
           ></IcoLike>
         )}

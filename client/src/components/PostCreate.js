@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import { uploadBytes, getDownloadURL, ref } from 'firebase/storage';
-import DOMPurify from 'isomorphic-dompurify';
 import axios from 'axios';
 import ImageResize from '@looop/quill-image-resize-module-react';
 import 'react-quill/dist/quill.snow.css';
@@ -11,6 +10,13 @@ import '../styles/test.scss';
 import { storage } from '../config/Firebase';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+
+let defaultColor = '#333';
+let defaultBg = '#fff';
+if (localStorage.getItem('darkmode') === 'on') {
+  defaultBg = '#333';
+  defaultColor = '#fff';
+}
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -106,13 +112,17 @@ function QuillEditor({ placeholder, value, ...rest }) {
   const navigate = useNavigate();
   const quillRef = useRef();
   const [user, setUser] = useAuth();
+  const [blog, setBlog] = useState(false);
   const [content, setContent] = useState('');
   const [title, setTitle] = useState('');
   const [hashtag, setHashtag] = useState('');
   const [category, setCategory] = useState('');
   const [categoryList, setCategoryList] = useState([]);
   const [postId, setPostId] = useState();
-  const sanitizer = DOMPurify.sanitize;
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
+  }, []);
 
   const getCategory = async () => {
     const res = await axios({
@@ -121,17 +131,6 @@ function QuillEditor({ placeholder, value, ...rest }) {
       params: { memberId: user.id },
     });
     setCategoryList(res.data.result);
-  };
-
-  const DisplayContents = ({ content }) => {
-    return (
-      <div
-        className="view ql-editor" // react-quill css
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(content),
-        }}
-      />
-    );
   };
   const addFunc = async () => {
     if (!content.trim() || content.trim() === '<p><br></p>') {
@@ -185,6 +184,7 @@ function QuillEditor({ placeholder, value, ...rest }) {
         newString = val;
         setHashtag(newString);
       }
+      return;
     });
     setTitle(postTitle);
     if (categoryId) {
@@ -195,9 +195,9 @@ function QuillEditor({ placeholder, value, ...rest }) {
   };
   const checkKeyCode = (e) => {
     const kcode = e.keyCode;
-    if (kcode == 32) {
+    if (kcode === 32) {
       setHashtag(hashtag + ', #');
-    } else if (kcode == 13) {
+    } else if (kcode === 13) {
       setHashtag(hashtag + ', #');
     }
   };
@@ -215,10 +215,18 @@ function QuillEditor({ placeholder, value, ...rest }) {
       setHashtag('');
     }
   };
+  const defaultStle = {
+    color: defaultColor,
+    background: defaultBg,
+  };
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
       setUser();
+    } else {
+      alert('로그인 후 이용해주세요.');
+      navigate('/signup');
+      return;
     }
     if (localStorage.getItem('postId')) {
       setPostId(Number(localStorage.getItem('postId')));
@@ -231,74 +239,97 @@ function QuillEditor({ placeholder, value, ...rest }) {
   }, []);
   useEffect(() => {
     if (user.id) {
+      const getBlog = async () => {
+        if (user.id) {
+          const res = await axios({
+            method: 'GET',
+            url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+            params: { memberId: user.id },
+          });
+          setBlog(res.data.success);
+        }
+      };
+      getBlog();
       getCategory();
     }
   }, [user]);
+  useEffect(() => {
+    console.log(blog, user.id);
+    if (user.id) {
+      if (!blog) {
+        alert('블로그 생성 후 게시글 작성이 가능합니다.');
+        navigate('/setting/blog');
+      }
+    }
+  }, [blog]);
   useEffect(() => {
     if (postId) {
       getPost();
     }
   }, [postId]);
   return (
-    <div className="wrap createPost">
-      <div className="postHeader">
-        <button onClick={() => navigate(-1)}>취소</button>
-        <select onChange={(e) => setCategory(e.target.value)} value={category}>
-          <option value="none">카테고리 없음</option>
-          {categoryList?.map((value) => (
-            <option key={value.id} value={value.id}>
-              {value.categoryName}
-            </option>
-          ))}
-        </select>
-        {title.trim().length && content.trim().length ? (
-          <button className="write on" onClick={addFunc}>
-            작성
-          </button>
-        ) : (
-          <button className="write" onClick={addFunc}>
-            작성
-          </button>
-        )}
-      </div>
-      <input
-        className="ql-snow ql-toolbar ql-title"
-        type="text"
-        placeholder="제목을 입력해주세요"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      ></input>
-
-      <ReactQuill
-        style={{ height: 'fit-content' }}
-        {...rest}
-        placeholder={placeholder}
-        theme="snow"
-        ref={quillRef}
-        value={content || ''}
-        onChange={setContent}
-        modules={modules}
-        formats={formats}
-      />
-      <input
-        className="hashtag"
-        type="text"
-        placeholder="해시태그를 입력해주세요(#제외 입력)"
-        value={hashtag}
-        onChange={changeFunc}
-        onKeyDown={checkKeyCode}
-        onFocus={focusFunc}
-        onBlur={focusOut}
-      />
-
-      {/* <EditBox>
-          <button className="btn btnCancle" onClick={() => navigate(-1)}>
+    <div className="wrap">
+      <div
+        className="body"
+        style={innerWidth >= 1160 ? { padding: '0 20px' } : { padding: 0 }}
+      >
+        <div className="postHeader">
+          <button onClick={() => navigate(-1)} style={defaultStle}>
             취소
           </button>
-          <button className="btn btnEdit" onClick={addFunc}>
-            작성
-          </button>
-        </EditBox> */}
+          <select
+            onChange={(e) => setCategory(e.target.value)}
+            value={category}
+            style={defaultStle}
+          >
+            <option value="none">카테고리 없음</option>
+            {categoryList?.map((value) => (
+              <option key={value.id} value={value.id}>
+                {value.categoryName}
+              </option>
+            ))}
+          </select>
+          {title.trim().length && content.trim().length ? (
+            <button className="write on" onClick={addFunc}>
+              작성
+            </button>
+          ) : (
+            <button className="write" onClick={addFunc}>
+              작성
+            </button>
+          )}
+        </div>
+        <input
+          className="ql-snow ql-toolbar ql-title"
+          type="text"
+          placeholder="제목을 입력해주세요"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          style={defaultStle}
+        ></input>
+        <ReactQuill
+          style={{ height: 'fit-content' }}
+          {...rest}
+          placeholder={placeholder}
+          theme="snow"
+          ref={quillRef}
+          value={content || ''}
+          onChange={setContent}
+          modules={modules}
+          formats={formats}
+        />
+        <input
+          className="hashtag"
+          type="text"
+          placeholder="해시태그를 입력해주세요(#제외 입력)"
+          value={hashtag}
+          onChange={changeFunc}
+          onKeyDown={checkKeyCode}
+          onFocus={focusFunc}
+          onBlur={focusOut}
+          style={defaultStle}
+        />
+      </div>
     </div>
   );
 }

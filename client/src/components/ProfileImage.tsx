@@ -13,7 +13,7 @@ const ProfileImg = styled.div<{ link?: string }>`
     padding-bottom: 100%;
   }
 `;
-const DefaultImg = styled.div<{ imgwidth: string; link?: string }>`
+const DefaultImg = styled.div<{ imgwidth: string }>`
   width: ${(props) => props.imgwidth};
   height: fit-content;
   border-radius: 50%;
@@ -39,36 +39,9 @@ export default function ProfileImage({
 }) {
   const [profile, setProfile] = useState<{ img: string | null }>({ img: null });
   const [theme, setTheme] = useState<ColorObject>({
-    color: '#fbc02d',
-    background: '#fff',
+    background: '#fbc02d',
+    color: '#f6f7f9',
   });
-
-  const getProfile = async () => {
-    if (id !== 0) {
-      const res = await axios({
-        method: 'GET',
-        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
-        params: { memberId: id },
-      });
-      if (res.data.result) {
-        // res.data.result가 존재하는지 확인
-        const { writerImg, bgColor, fontColor } = res.data.result;
-        setProfile({
-          img: writerImg,
-        });
-        if (setPreview) setPreview(writerImg);
-        getColor(setTheme, res.data.result.theme, fontColor, bgColor);
-      } else {
-        // res.data.result가 null이거나 undefined일 경우 처리
-        // 필요한 경우 기본값 설정
-        setProfile({ img: null });
-        setTheme({
-          color: '#fbc02d',
-          background: '#fff',
-        });
-      }
-    }
-  };
   useEffect(() => {
     if (profileimg) {
       setProfile({ img: profileimg });
@@ -78,6 +51,32 @@ export default function ProfileImage({
   }, [profileimg]);
 
   useEffect(() => {
+    const getProfile = async () => {
+      if (id !== 0) {
+        const res = await axios({
+          method: 'GET',
+          url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+          params: { memberId: id },
+        });
+        if (res.data.result) {
+          // res.data.result가 존재하는지 확인
+          const { writerImg, bgColor, fontColor } = res.data.result;
+          setProfile({
+            img: writerImg,
+          });
+          if (setPreview) setPreview(writerImg);
+          getColor(setTheme, res.data.result.theme, fontColor, bgColor);
+        } else {
+          // res.data.result가 null이거나 undefined일 경우 처리
+          // 필요한 경우 기본값 설정
+          setProfile({ img: null });
+          setTheme({
+            background: '#fbc02d',
+            color: '#f6f7f9',
+          });
+        }
+      }
+    };
     if (id !== 0) getProfile();
   }, [id]);
 

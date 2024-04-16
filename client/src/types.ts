@@ -11,7 +11,7 @@ export interface InputRef {
 }
 export interface ChatDataProps {
   open: boolean;
-  data: any[];
+  data: ChatDataObj[];
   opId: number;
   roomId: string;
   nickname: string;
@@ -24,6 +24,7 @@ export interface ChatListProps {
   sendTime: string;
   roomId: string;
   data: React.Dispatch<React.SetStateAction<ChatDataProps>>;
+  active: string;
 }
 
 export interface ChatMsgProps {
@@ -67,6 +68,7 @@ export interface BlogObject {
   writerImg?: string | null;
   subscribeCount?: number;
   memberId?: number | null;
+  view?: number;
 }
 export interface PostObject {
   id: number;
@@ -115,4 +117,11 @@ export interface CategoryObj {
   id: number;
   categoryName: string;
   group: string;
+}
+
+export interface ChatDataObj {
+  id?: number;
+  chatMsg?: string;
+  createdAt?: string;
+  userId?: number;
 }

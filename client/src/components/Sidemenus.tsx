@@ -92,25 +92,11 @@ const SideBox = styled.div`
     }
   }
 `;
-// interface ModalProps {
-//   children: React.ReactNode;
-//   onClose: () => void;
-// }
-// const Modal: React.FC<ModalProps> = ({ children, onClose }) => (
-//   <div className="modalBackground">
-//     <div className="modalContent">
-//       {children}
-//       <button onClick={onClose}>닫기</button>
-//     </div>
-//   </div>
-// );
+
 export function DefaultSidemenu({ func }: { func?: () => void }) {
-  const location = useLocation();
   const [user, setUser] = useAuth();
   const [blog, setBlog] = useState<Boolean>(false);
   const [darkmode, setDarkmode] = useState<Boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isScreenLarge, setIsScreenLarge] = useState(window.innerWidth > 1160);
   const logoutFun = () => {
     if (!window.confirm('로그아웃 하시겠습니까?')) {
       return;
@@ -118,55 +104,37 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
     localStorage.removeItem('token');
     document.location.reload();
   };
-  const applyDark = () => {
-    if (darkmode) {
-      localStorage.setItem('darkmode', 'on');
-    } else {
-      localStorage.removeItem('darkmode');
-    }
-  };
-  const getBlog = async () => {
-    if (user.id) {
-      const res = await axios({
-        method: 'GET',
-        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
-        params: { memberId: user.id },
-      });
-      setBlog(res.data.success);
-    }
-  };
-
   useEffect(() => {
-    setUser();
+    if (localStorage.getItem('token')) {
+      setUser();
+    }
     if (localStorage.getItem('darkmode') === 'on') {
       setDarkmode(true);
     }
   }, []);
   useEffect(() => {
+    const applyDark = () => {
+      if (darkmode) {
+        localStorage.setItem('darkmode', 'on');
+      } else {
+        localStorage.removeItem('darkmode');
+      }
+    };
     applyDark();
   }, [darkmode]);
   useEffect(() => {
+    const getBlog = async () => {
+      if (user.id) {
+        const res = await axios({
+          method: 'GET',
+          url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+          params: { memberId: user.id },
+        });
+        setBlog(res.data.success);
+      }
+    };
     getBlog();
   }, [user]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsScreenLarge(window.innerWidth > 1160);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isScreenLarge) {
-      // 화면 크기가 1160px를 넘으면 모달 열기
-      setIsModalOpen(true);
-    } else {
-      setIsModalOpen(false);
-    }
-  }, [isScreenLarge]);
 
   return (
     <SideBox
@@ -175,12 +143,6 @@ export function DefaultSidemenu({ func }: { func?: () => void }) {
       }
     >
       <div className="profileBox">
-        <img
-          src="/images/ico-close.png"
-          className="btnClose"
-          onClick={func}
-          style={{ cursor: 'pointer' }}
-        />
         <IcoClose
           stroke={defaultColor}
           className="btnClose"
@@ -257,7 +219,10 @@ export function SetSidemenu({ func }: { func?: () => void }) {
     if (url !== location.pathname) {
       document.location.reload();
     }
-  }, [location.pathname]);
+  }, [location.pathname, url]);
+  useEffect(() => {
+    setUrl(location.pathname);
+  }, [location]);
   return (
     <SideBox>
       <IcoClose
@@ -293,22 +258,25 @@ export function BlogSidemenu({ func }: { func?: () => void }) {
   const { id } = useParams<{ id?: string }>();
   const [url, setUrl] = useState(location.pathname);
   const [list, setList] = useState<any[]>();
-  const getCategory = async () => {
-    const res = await axios({
-      method: 'GET',
-      url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
-      params: { memberId: Number(id) },
-    });
-    setList(res.data.result);
-  };
   useEffect(() => {
+    setUrl(location.pathname);
+  }, [location]);
+  useEffect(() => {
+    const getCategory = async () => {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/blog/getCategory`,
+        params: { memberId: Number(id) },
+      });
+      setList(res.data.result);
+    };
     getCategory();
-  }, []);
+  }, [id]);
   useEffect(() => {
     if (url !== location.pathname) {
       document.location.reload();
     }
-  }, [location.pathname]);
+  }, [location.pathname, url]);
   return (
     <SideBox>
       <IcoClose
@@ -322,14 +290,11 @@ export function BlogSidemenu({ func }: { func?: () => void }) {
           <ArrList>전체 글</ArrList>
         </Link>
         {list?.length === 0 ||
-          list?.map((data) => {
-            const { categoryName, group } = data;
-            return (
-              <Link to={`/blog/${id}/category/${data.id}`} key={data.id}>
-                <ArrList>{categoryName}</ArrList>
-              </Link>
-            );
-          })}
+          list?.map((data) => (
+            <Link to={`/blog/${id}/category/${data.id}`} key={data.id}>
+              <ArrList>{data.categoryName}</ArrList>
+            </Link>
+          ))}
       </div>
     </SideBox>
   );

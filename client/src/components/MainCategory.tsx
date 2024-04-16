@@ -1,21 +1,9 @@
-//게시글 더보기 누르면, 그 밑으로 게시글 12개까지만 나오게 하는거는 추가 구현해야함
-
 import { useEffect, useState } from 'react';
-import {
-  PostCategoryContainer,
-  ImgCategory,
-  ButtonWrapper,
-  StyledButton,
-  TextDetail,
-  PostDetail,
-  ButtonExtraStyled,
-  ButtonExtra,
-} from '../components/MainPopularStyle';
+import { ButtonExtraStyled, ButtonExtra } from '../components/MainPopularStyle';
 import '../styles/MainCategory.scss';
 import Pagination from './Pagination';
 import axios from 'axios';
 import { PostObject } from '../types';
-import { DesktopBlogMain } from './BlogComponent';
 import { PostLists } from './Lists';
 export interface CategoryInfo {
   imageUrl?: string;
@@ -46,7 +34,6 @@ export default function MainCategory({
   ShowContent,
   showPagination,
 }: MainCategoryProps) {
-  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const [shownItems, setShownItems] = useState(6); // 초기에 보여줄 아이템 수
   const [showMoreButton, setShowMoreButton] = useState(true); // 더보기 버튼의 표시 여부
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,8 +45,6 @@ export default function MainCategory({
       hashtag: [],
     },
   ]);
-
-  const currentItems = items.slice(0, shownItems);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -77,11 +62,9 @@ export default function MainCategory({
       method: 'GET',
       url: `${process.env.REACT_APP_HOST}/api/post/mainNew`,
     });
-    console.log(res.data.result);
     setNewPost(res.data.result);
   };
   useEffect(() => {
-    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
     getNewPost();
   }, []);
   return (

@@ -1,5 +1,4 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { items } from '../data/SearchData';
+import { Link, useParams } from 'react-router-dom';
 import '../styles/BlogMain.scss';
 import { useEffect, useState } from 'react';
 import useAuth from '../hooks/useAuth';
@@ -29,7 +28,6 @@ interface Blog {
 
 export default function BlogHome({ position }: { position?: string }) {
   const { id } = useParams<{ id?: string }>();
-  const navigator = useNavigate();
   const [user, setUser] = useAuth();
   const [blogInfo, setBlogInfo] = useState<Blog>({
     id: 0,
@@ -43,38 +41,33 @@ export default function BlogHome({ position }: { position?: string }) {
     fontColor: '#fff',
     bgColor: '#333',
   });
-  const post = items.find(
-    (item: { id: number }) => item.id === (id ? parseInt(id) : NaN)
-  );
   const [theme, setTheme] = useState<ThemeStyle>({
     background: '#333',
     color: '#fff',
   });
 
-  const getBlogInfo = async () => {
-    const res = await axios({
-      method: 'GET',
-      url: `${process.env.REACT_APP_HOST}/api/blog/find`,
-      params: { memberId: id },
-    });
-    if (res.data.result) {
-      setBlogInfo(res.data.result);
-    }
-    getColor(
-      setTheme,
-      res.data.result.theme,
-      res.data.result.fontColor,
-      res.data.result.bgColor
-    );
-  };
-
   useEffect(() => {
     setUser();
   }, []);
   useEffect(() => {
+    const getBlogInfo = async () => {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/blog/find`,
+        params: { memberId: id },
+      });
+      if (res.data.result) {
+        setBlogInfo(res.data.result);
+      }
+      getColor(
+        setTheme,
+        res.data.result.theme,
+        res.data.result.fontColor,
+        res.data.result.bgColor
+      );
+    };
     getBlogInfo();
-  }, [user]);
-  useEffect(() => {}, [blogInfo]);
+  }, [user, id]);
 
   return (
     <div className="wrap">
