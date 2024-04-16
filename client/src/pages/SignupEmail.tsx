@@ -27,7 +27,6 @@ export default function SignupEmail() {
   const signupFunc = async () => {
     if (username.length < 2) {
       alert('이름은 2자 이상 입력해주세요.');
-      console.log(nameRef.current);
       nameRef.current?.focus();
       return;
     }

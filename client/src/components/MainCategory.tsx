@@ -42,7 +42,7 @@ export default function MainCategory({
   ShowContent,
   showPagination,
 }: MainCategoryProps) {
-  const [selectedCategory, setSelectedCategory] = useState('일상');
+  const [selectedCategory, setSelectedCategory] = useState<string>('일상');
   const [shownItems, setShownItems] = useState(6); // 초기에 보여줄 아이템 수
   const [showMoreButton, setShowMoreButton] = useState(true); // 더보기 버튼의 표시 여부
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,32 +65,52 @@ export default function MainCategory({
       {ShowContent && (
         <ButtonWrapper>
           <StyledButton
-            isSelected={selectedCategory === '일상'}
             onClick={() => setSelectedCategory('일상')}
+            style={
+              selectedCategory === '일상'
+                ? { background: '#fbc02d' }
+                : { background: '#fff' }
+            }
           >
             일상
           </StyledButton>
           <StyledButton
-            isSelected={selectedCategory === '스포츠'}
             onClick={() => setSelectedCategory('스포츠')}
+            style={
+              selectedCategory === '스포츠'
+                ? { background: '#fbc02d' }
+                : { background: '#fff' }
+            }
           >
             스포츠
           </StyledButton>
           <StyledButton
-            isSelected={selectedCategory === 'IT&#183;과학'}
             onClick={() => setSelectedCategory('IT&#183;과학')}
+            style={
+              selectedCategory === 'IT&#183;과학'
+                ? { background: '#fbc02d' }
+                : { background: '#fff' }
+            }
           >
             IT&#183;과학
           </StyledButton>
           <StyledButton
-            isSelected={selectedCategory === '시사&#183;경제'}
             onClick={() => setSelectedCategory('시사&#183;경제')}
+            style={
+              selectedCategory === '시사&#183;경제'
+                ? { background: '#fbc02d' }
+                : { background: '#fff' }
+            }
           >
             시사&#183;경제
           </StyledButton>
           <StyledButton
-            isSelected={selectedCategory === '글로벌'}
             onClick={() => setSelectedCategory('글로벌')}
+            style={
+              selectedCategory === '글로벌'
+                ? { background: '#fbc02d' }
+                : { background: '#fff' }
+            }
           >
             글로벌
           </StyledButton>
@@ -123,9 +143,7 @@ export default function MainCategory({
       </div>
       {ShowContent && showMoreButton && (
         <ButtonExtra onClick={handleShowMore} style={{ marginBottom: '40px' }}>
-          <ButtonExtraStyled smallbtn={false} subscribebtn={false}>
-            더보기
-          </ButtonExtraStyled>
+          <ButtonExtraStyled>더보기</ButtonExtraStyled>
         </ButtonExtra>
       )}
       {showPagination && (

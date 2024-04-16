@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { InputChat, MyChatMsg, OpChatMsg } from '../components/ChatMsg';
 import Chatlist from '../components/Chatlist';
-import { ChatDetailHeader, ChattingHeader } from '../components/Headers';
+import {
+  ChatDetailHeader,
+  ChattingHeader,
+  MainPcHeader,
+} from '../components/Headers';
 import { ChatDataProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import socketIOClient, { io } from 'socket.io-client';
@@ -9,6 +13,7 @@ import axios from 'axios';
 import Footer from '../components/Footer';
 
 export default function Chat() {
+  const [innerWidth, setInnerWidth] = useState<number>(window.innerWidth);
   const socketRef = useRef(io('/'));
   const socket = socketRef.current;
   // const socket = socketIOClient(':8000');
@@ -28,12 +33,11 @@ export default function Chat() {
       url: `http://localhost:8000/api/chat/find`,
       params: { userId: user.id },
     });
-    console.log('findRoom');
     setRoomList(res.data.result);
   };
 
   useEffect(() => {
-    console.log('메인 useEffect');
+    window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
     if (localStorage.getItem('token')) {
       setUser();
     } else {
@@ -41,7 +45,6 @@ export default function Chat() {
     }
   }, []);
   useEffect(() => {
-    console.log('user변동 useEffect');
     findRoom();
     if (localStorage.getItem('chat')) {
       const opId = Number(localStorage.getItem('chat'));
@@ -72,8 +75,6 @@ export default function Chat() {
     }
   }, [user]);
   useEffect(() => {
-    console.log('chatdata 변동 useEffect');
-    console.log(chatData);
     if (chatData.open) {
       localStorage.removeItem('chat');
     }
@@ -82,12 +83,19 @@ export default function Chat() {
   return (
     <>
       <div className="wrap" style={{ paddingBottom: 0 }}>
-        {chatData.open || <ChattingHeader />}
-        {chatData.open && (
-          <ChatDetailHeader id={chatData.opId || 0}>
-            {chatData.nickname}
-          </ChatDetailHeader>
+        {innerWidth >= 1160 ? (
+          <MainPcHeader />
+        ) : (
+          <>
+            {chatData.open || <ChattingHeader />}
+            {chatData.open && (
+              <ChatDetailHeader id={chatData.opId || 0}>
+                {chatData.nickname}
+              </ChatDetailHeader>
+            )}
+          </>
         )}
+
         <div className="body" style={{ marginBottom: '100px' }}>
           {chatData.open ||
             roomList?.map((value, idx) => {

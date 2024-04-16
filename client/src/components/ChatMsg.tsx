@@ -56,9 +56,7 @@ export function MyChatMsg({ text, sendTime }: ChatMsgProps) {
   const writtenTime = new Date(sendTime);
   const HOUR = writtenTime.getHours();
   const MINUTE = writtenTime.getMinutes();
-  useEffect(() => {
-    console.log('MyChatMsg useEffect');
-  }, []);
+  useEffect(() => {}, []);
   return (
     <BoxStyle style={{ justifyContent: 'flex-end' }}>
       <TimeStyle>
@@ -76,9 +74,7 @@ export function OpChatMsg({ text, sendTime }: ChatMsgProps) {
   const writtenTime = new Date(sendTime);
   const HOUR = writtenTime.getHours();
   const MINUTE = writtenTime.getMinutes();
-  useEffect(() => {
-    console.log('OpChatMsg useEffect');
-  }, []);
+  useEffect(() => {}, []);
   return (
     <BoxStyle>
       <ChatStyle style={{ marginRight: '10px' }}>{text}</ChatStyle>
@@ -111,7 +107,6 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
   const [chatMsg, setChatMsg] = useState<string>('');
   const [chatData, setChatData] = chatlist;
   const sendMsg = async () => {
-    console.log('sendMsg');
     if (chatMsg.trim().length == 0) {
       return;
     }
@@ -140,9 +135,7 @@ export function InputChat({ userId, chatlist }: SendMsgProps) {
       sendMsg();
     }
   };
-  useEffect(() => {
-    console.log('InputChat useEffect');
-  }, []);
+  useEffect(() => {}, []);
   return (
     <InputBox>
       <TextInput

@@ -45,7 +45,6 @@ export default function ContentPage() {
     if (res.data.result.blogId === Number(id)) {
       setPost(res.data.result);
     }
-    console.log('블로그 다름');
   };
 
   useEffect(() => {

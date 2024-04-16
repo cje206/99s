@@ -65,7 +65,6 @@ const imageHandler = (quillRef, storage) => {
       });
     } catch (error) {
       editor.deleteText(range.index, 1);
-      console.log(error);
     }
   });
 };
@@ -125,7 +124,6 @@ function QuillEditor({ placeholder, value, ...rest }) {
   };
 
   const DisplayContents = ({ content }) => {
-    console.log(DOMPurify.sanitize(content));
     return (
       <div
         className="view ql-editor" // react-quill css
@@ -158,7 +156,6 @@ function QuillEditor({ placeholder, value, ...rest }) {
       hashtag: hashtag.split(', ').filter((val) => val !== ''),
       categoryId: categoryId(),
     };
-    console.log('data', data);
     if (postId) {
       data.id = postId;
     }
@@ -167,7 +164,6 @@ function QuillEditor({ placeholder, value, ...rest }) {
       url: `${process.env.REACT_APP_HOST}/api/post/write`,
       data,
     });
-    console.log(res);
     if (res.data.success) {
       alert('게시글 작성이 완료되었습니다.');
       navigate(`/blog/${user.id}/${res.data.result.id}`);
@@ -179,24 +175,9 @@ function QuillEditor({ placeholder, value, ...rest }) {
       url: `${process.env.REACT_APP_HOST}/api/post/find`,
       params: { id: postId },
     });
-    // const newHash = () => {
-    //   let newString;
-    //   console.log(res.data.result.hashtag.length);
-    //   for (let i = 0; i < res.data.result.hashtag; i++) {
-    //     console.log(res.data.result.hashtag[i]);
-    //     if (newString.length > 0) {
-    //       newHash += res.data.result.hashtag[i];
-    //       console.log(newString);
-    //     } else {
-    //       newString = res.data.result.hashtag[i];
-    //     }
-    //   }
-    // };
-    // newHash();
     const { categoryId, content, postTitle } = res.data.result;
     let newString;
     res.data.result.hashtag.map((val, idx) => {
-      console.log(val, idx);
       if (idx > 0) {
         newString += `, ${val}`;
         setHashtag(newString);
@@ -213,11 +194,9 @@ function QuillEditor({ placeholder, value, ...rest }) {
     localStorage.removeItem('postId');
   };
   const checkKeyCode = (e) => {
-    console.log();
     const kcode = e.keyCode;
     if (kcode == 32) {
       setHashtag(hashtag + ', #');
-      console.log('onKeyDown');
     } else if (kcode == 13) {
       setHashtag(hashtag + ', #');
     }
