@@ -27,6 +27,7 @@ const BoxStyle = styled.div`
   top: 0;
   left: 0;
   background: ${defaultBg};
+  border-bottom: 1px solid #f1f1f1;
   z-index: 100;
   header {
     position: relative;
@@ -38,7 +39,6 @@ const BoxStyle = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #f1f1f1;
     @media (min-width: 1160px) {
       width: 1200px;
       margin: 0 auto;

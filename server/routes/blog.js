@@ -13,6 +13,7 @@ const {
   clickSub,
   subList,
   blog,
+  addView,
 } = require('../controller/blog');
 
 const router = express.Router();

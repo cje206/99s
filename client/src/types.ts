@@ -77,6 +77,7 @@ export interface PostObject {
   categoryId?: number | null;
   createdAt?: string;
   blogId?: number;
+  view?: number;
 }
 
 export interface OtherPostObj {

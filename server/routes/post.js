@@ -12,6 +12,7 @@ const {
   deletePost,
   mainPop,
   mainNew,
+  addView,
 } = require('../controller/post');
 
 const router = express.Router();
@@ -28,5 +29,6 @@ router.get('/category', category);
 router.get('/popular', popular);
 router.get('/mainPop', mainPop);
 router.get('/mainNew', mainNew);
+router.patch('/addView', addView);
 
 module.exports = router;
