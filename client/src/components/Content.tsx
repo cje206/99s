@@ -50,7 +50,7 @@ export default function Content({
     const res = await axios({
       method: 'PATCH',
       url: `${process.env.REACT_APP_HOST}/api/post/addView`,
-      data: { blogId: id, postId },
+      data: { blogId: blog.id, postId },
     });
   };
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function Content({
     if (localStorage.getItem('token')) {
       setUser();
     }
-    if (id) {
+    if (blog.id) {
       addViewCount();
     }
     getOtherPost();
