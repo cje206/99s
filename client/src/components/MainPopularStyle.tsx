@@ -16,8 +16,10 @@ export const Container = styled.div`
 
 export const SlideContainer = styled.div`
   width: 100%;
-  @media (max-width: 1190px) {
-    /* margin: 20px 20px 10px 20px; */
+  @media (min-width: 1160px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   border-radius: 20px;
@@ -80,6 +82,15 @@ export const StyledImgDiv = styled.div<StyledImgDivProps>`
     ${({ imgCount, positionx }) =>
       `calc(${positionx}px + ${-100 * (imgCount - 1)}%)`}
   );
+`;
+
+export const MainPopularContainer = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
 `;
 
 //가로로 된 post정보

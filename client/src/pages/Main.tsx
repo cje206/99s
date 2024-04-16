@@ -41,11 +41,9 @@ export default function Main() {
       <div className="main-slide">
         <MainPageImgSlide slides={slides} />
       </div>
-      <p className="category" style={{ margin: '0 20px' }}>
-        인기 게시글
-      </p>
+      <p className="category main">인기 게시글</p>
       <div className="mainPostContainer" style={{ overflow: 'hidden' }}>
-        <div className="popularPost">
+        <div className="popularPost popPost">
           <MainPopularPost postlist={popPost} />
         </div>
       </div>
