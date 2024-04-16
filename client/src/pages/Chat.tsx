@@ -76,8 +76,6 @@ export default function Chat() {
   }, [user, socket]);
   const scrollBottom = () => {
     if (scrollRef.current) {
-      console.log(scrollRef.current.scrollHeight);
-      // scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       scrollRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'end',
@@ -86,7 +84,6 @@ export default function Chat() {
     }
   };
   useEffect(() => {
-    console.log('바뀜');
     scrollBottom();
     if (chatData.open) {
       localStorage.removeItem('chat');

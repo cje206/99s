@@ -11,13 +11,6 @@ import { storage } from '../config/Firebase';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 
-let defaultColor = '#333';
-let defaultBg = '#fff';
-if (localStorage.getItem('darkmode') === 'on') {
-  defaultBg = '#333';
-  defaultColor = '#fff';
-}
-
 Quill.register('modules/imageResize', ImageResize);
 
 export const formats = [
@@ -220,10 +213,6 @@ function QuillEditor({ placeholder, value, ...rest }) {
       setHashtag('');
     }
   };
-  const defaultStle = {
-    color: defaultColor,
-    background: defaultBg,
-  };
 
   useEffect(() => {
     if (localStorage.getItem('token')) {
@@ -259,7 +248,6 @@ function QuillEditor({ placeholder, value, ...rest }) {
     }
   }, [user]);
   useEffect(() => {
-    console.log(blog, user.id);
     if (user.id) {
       if (!blog) {
         alert('블로그 생성 후 게시글 작성이 가능합니다.');
@@ -273,19 +261,16 @@ function QuillEditor({ placeholder, value, ...rest }) {
     }
   }, [postId]);
   return (
-    <div className="wrap">
+    <>
       <div
         className="body"
         style={innerWidth >= 1160 ? { padding: '0 20px' } : { padding: 0 }}
       >
         <div className="postHeader">
-          <button onClick={() => navigate(-1)} style={defaultStle}>
-            취소
-          </button>
+          <button onClick={() => navigate(-1)}>취소</button>
           <select
             onChange={(e) => setCategory(e.target.value)}
             value={category}
-            style={defaultStle}
           >
             <option value="none">카테고리 없음</option>
             {categoryList?.map((value) => (
@@ -310,7 +295,6 @@ function QuillEditor({ placeholder, value, ...rest }) {
           placeholder="제목을 입력해주세요"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={defaultStle}
         ></input>
         <ReactQuill
           style={{ height: 'fit-content' }}
@@ -332,10 +316,9 @@ function QuillEditor({ placeholder, value, ...rest }) {
           onKeyDown={checkKeyCode}
           onFocus={focusFunc}
           onBlur={focusOut}
-          style={defaultStle}
         />
       </div>
-    </div>
+    </>
   );
 }
 export default QuillEditor;

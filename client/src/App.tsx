@@ -16,15 +16,16 @@ import PostPage from './pages/Post';
 import Category from './pages/Category';
 import Like from './pages/Like';
 import Subscribe from './pages/Subscribe';
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [darkmode, setDarkmode] = useState<Boolean>(false);
+  useEffect(() => {
+    setDarkmode(Boolean(localStorage.getItem('darkmode')));
+  }, []);
   return (
     <div className="App">
-      <div
-        className={
-          localStorage.getItem('darkmode') === 'on' ? 'darkmode' : 'default'
-        }
-      >
+      <div className={darkmode ? 'mainBox darkmode' : 'mainBox default'}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Main />} />

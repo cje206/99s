@@ -54,7 +54,7 @@ export default function BlogHome({ position }: { position?: string }) {
       const res = await axios({
         method: 'GET',
         url: `${process.env.REACT_APP_HOST}/api/blog/find`,
-        params: { memberId: id },
+        params: { memberId: Number(id) },
       });
       if (res.data.result) {
         setBlogInfo(res.data.result);

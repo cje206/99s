@@ -42,7 +42,6 @@ export default function ContentPage() {
           url: `${process.env.REACT_APP_HOST}/api/post/find`,
           params: { id: postId },
         });
-        console.log(res2.data.result.blogId, res.data.result.id);
         if (res2.data.result.blogId === res.data.result.id) {
           setPost(res2.data.result);
         }

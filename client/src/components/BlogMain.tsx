@@ -74,11 +74,11 @@ export default function BlogMain({
   };
 
   const getPost = async () => {
-    if (blogid) {
+    if (id) {
       const res = await axios({
         method: 'GET',
         url: `${process.env.REACT_APP_HOST}/api/post/category`,
-        params: { id: blogid },
+        params: { id },
       });
       setPostCount(res.data.result.length);
     }

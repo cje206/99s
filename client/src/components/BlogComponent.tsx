@@ -82,21 +82,22 @@ export default function BlogPosts({
   const handleLayoutChange = (mode: string) => {
     setLayoutMode(mode);
   };
-
-  const getPostList = async () => {
+  useEffect(() => {
     if (id) {
-      const res = await axios({
-        method: 'GET',
-        url: `${process.env.REACT_APP_HOST}/api/post/category`,
-        params: { id },
-      });
-      setPostList(res.data.result);
+      const getPostList = async () => {
+        const res = await axios({
+          method: 'GET',
+          url: `${process.env.REACT_APP_HOST}/api/post/category`,
+          params: { id: Number(id) },
+        });
+        setPostList(res.data.result);
+      };
+      getPostList();
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     window.addEventListener('resize', () => setInnerWidth(window.innerWidth));
-    getPostList();
   }, []);
 
   return (
