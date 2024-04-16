@@ -156,7 +156,7 @@ export function MainHeader() {
   );
 }
 
-export function MainPcHeader({ activepage }: { activepage?: string }) {
+export function MainPcHeader() {
   const { pathname } = useLocation();
   const [user, setUser] = useAuth();
   const [showSet, setShowSet] = useState<boolean>(false);
