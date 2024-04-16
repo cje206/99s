@@ -50,6 +50,7 @@ const TextInput = styled.input`
 const SendBtn = styled.button`
   position: absolute;
   top: 20px;
+  right: 20px;
   line-height: 30px;
   border-radius: 15px;
   background: #fbc02d;

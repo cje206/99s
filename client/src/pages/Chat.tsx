@@ -47,31 +47,33 @@ export default function Chat() {
     };
     findRoom();
     if (localStorage.getItem('chat')) {
-      const opId = Number(localStorage.getItem('chat'));
-      const roomId: string = `${user.id > opId ? opId : user.id}to${
-        user.id > opId ? user.id : opId
-      }`;
-      const enterRoom = async (roomId: string) => {
-        socket.emit('enter', { roomId });
-        const res = await axios({
-          method: 'GET',
-          url: `${process.env.REACT_APP_HOST}/api/chat/check`,
-          params: { roomId },
-        });
-        const searchName = await axios({
-          method: 'GET',
-          url: `${process.env.REACT_APP_HOST}/api/chat/nickname`,
-          params: { memberId: opId },
-        });
-        setChatData({
-          open: true,
-          opId,
-          data: res.data.result,
-          roomId,
-          nickname: searchName.data.result.nickname,
-        });
-      };
-      enterRoom(roomId);
+      if (user.id) {
+        const opId = Number(localStorage.getItem('chat'));
+        const roomId: string = `${user.id > opId ? opId : user.id}to${
+          user.id > opId ? user.id : opId
+        }`;
+        const enterRoom = async (roomId: string) => {
+          socket.emit('enter', { roomId });
+          const res = await axios({
+            method: 'GET',
+            url: `${process.env.REACT_APP_HOST}/api/chat/check`,
+            params: { roomId },
+          });
+          const searchName = await axios({
+            method: 'GET',
+            url: `${process.env.REACT_APP_HOST}/api/chat/nickname`,
+            params: { memberId: opId },
+          });
+          setChatData({
+            open: true,
+            opId,
+            data: res.data.result,
+            roomId,
+            nickname: searchName.data.result.nickname,
+          });
+        };
+        enterRoom(roomId);
+      }
     }
   }, [user, socket]);
   const scrollBottom = () => {
@@ -96,7 +98,11 @@ export default function Chat() {
 
   return (
     <>
-      <div className="wrap" style={{ paddingBottom: 0 }} ref={scrollRef}>
+      <div
+        className="wrap"
+        style={{ paddingBottom: 0, marginBottom: 0 }}
+        ref={scrollRef}
+      >
         {innerWidth >= 1160 ? (
           <MainPcHeader />
         ) : (
@@ -112,7 +118,7 @@ export default function Chat() {
 
         <div
           className={innerWidth >= 1160 ? 'body chat' : 'body'}
-          style={{ marginBottom: '100px' }}
+          style={{ paddingBottom: '100px' }}
         >
           <div className="chatlist">
             {(innerWidth >= 1160 || !chatData.open) &&
