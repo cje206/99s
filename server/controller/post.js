@@ -172,3 +172,22 @@ exports.mainNew = async (req, res) => {
   });
   res.json({ success: true, result, msg: '최신 게시글 조회 완료' });
 };
+
+// 조회수 추가
+exports.addView = async (req, res) => {
+  const { blogId, postId } = req.body;
+  console.log(blogId, postId, '조회수');
+  const find = await Post.findOne({ where: { id: postId } });
+  const blog = await Blog.findOne({ where: { id: blogId } });
+  const result = await Post.update(
+    { view: find.view + 1 },
+    { where: { id: postId } }
+  );
+  const blogUpdate = await Blog.update(
+    { view: blog.view + 1 },
+    { where: { id: blogId } }
+  );
+  if (result) {
+    res.json({ success: true, msg: '조회수 추가 완료' });
+  }
+};
