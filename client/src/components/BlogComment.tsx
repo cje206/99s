@@ -9,6 +9,7 @@ import useAuth from '../hooks/useAuth';
 import { CommentObj, ThemeStyle } from '../types';
 import ProfileImage from './ProfileImage';
 import { ReactComponent as IcoArrLeft } from '../images/ico-arr-left.svg';
+import { getTimeText } from './Functions';
 
 const BlogComment = styled.div`
   padding: 20px;
@@ -260,7 +261,9 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                     )}
                     {editId === val.id || (
                       <div className="commentBottom">
-                        <div className="commentTime">{val.createdAt}</div>
+                        <div className="commentTime">
+                          {getTimeText(val.createdAt || '')}
+                        </div>
 
                         {(val.isSecret &&
                           user.id !== val.memberId &&
@@ -345,7 +348,7 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                           {editId === data.id || (
                             <div className="commentBottom">
                               <div className="commentTime">
-                                {data.createdAt}
+                                {getTimeText(data.createdAt || '')}
                               </div>
                             </div>
                           )}
