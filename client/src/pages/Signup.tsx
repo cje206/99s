@@ -20,6 +20,9 @@ export default function Signup() {
         </p>
         <div className="singupBtns">
           <SingupBtn text="이메일로 회원가입" method="email" />
+          <SingupBtn text="test 계정 1" method="test1" />
+          <SingupBtn text="test 계정 2" method="test2" />
+          <SingupBtn text="test 계정 3" method="test3" />
         </div>
       </div>
       <Footer />
