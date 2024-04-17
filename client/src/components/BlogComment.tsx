@@ -94,7 +94,7 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
   const renderComments = (parentIndex: number) => {
     return (
       <form>
-        <p className="addCommentTitle">대댓글 작성</p>
+        <p className="addCommentTitle">답댓글 작성</p>
         <textarea
           className="commentArea"
           style={{ width: '100%', height: '50px', marginTop: '10px' }}
@@ -125,7 +125,7 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
             style={theme}
             onClick={() => addReply(parentIndex)}
           >
-            대댓글 추가
+            답댓글 추가
           </button>
         </div>
       </form>
