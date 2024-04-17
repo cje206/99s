@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -25,10 +26,50 @@ const BoxStyle = styled.div`
 `;
 
 export default function SingupBtn({ text, method }: Props) {
+  const clickFunc = async (test: string) => {
+    if (test === 'test1') {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/member/login`,
+        params: { email: '11@11.11', pw: '111111', maintain: false },
+      });
+      if (res.data.success) {
+        alert(`${res.data.result.username}님 환영합니다!`);
+        localStorage.setItem('token', res.data.token);
+        document.location.href = '/';
+      }
+    } else if (test === 'test2') {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/member/login`,
+        params: { email: '22@22.22', pw: '222222', maintain: false },
+      });
+      if (res.data.success) {
+        alert(`${res.data.result.username}님 환영합니다!`);
+        localStorage.setItem('token', res.data.token);
+        document.location.href = '/';
+      }
+    } else if (test === 'test3') {
+      const res = await axios({
+        method: 'GET',
+        url: `${process.env.REACT_APP_HOST}/api/member/login`,
+        params: { email: '33@33.33', pw: '333333', maintain: false },
+      });
+      if (res.data.success) {
+        alert(`${res.data.result.username}님 환영합니다!`);
+        localStorage.setItem('token', res.data.token);
+        document.location.href = '/';
+      }
+    }
+  };
   return (
-    <Link to={`/signup/${method}`} className="signupBtn">
+    <Link
+      to={method === 'email' ? `/signup/email` : ''}
+      className="signupBtn"
+      onClick={() => clickFunc(method)}
+    >
       <BoxStyle>
-        <img src={`/images/signup-${method}.png`} alt={text} />
+        <img src={`/images/signup-email.png`} alt={text} />
         <span>{text}</span>
       </BoxStyle>
     </Link>
