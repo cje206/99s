@@ -145,7 +145,7 @@ export function PostList({ id }: { id: number }) {
           <ProfileImage id={info.memberId} imgwidth="40px" />
           <div className="writerText">
             <p className="nickname">{info.nickname}</p>
-            <p className="written">{info.createdAt}</p>
+            <p className="written">{getTimeText(info.createdAt)}</p>
           </div>
         </div>
       </PostContainter>
@@ -211,7 +211,7 @@ export function PostLists({
             <div className="profile">
               <p className="nickname">{nickname}</p>
               <div className="Date">
-                {post?.createdAt && getTimeText(post?.createdAt)}
+                {post?.createdAt && getTimeText(post?.createdAt || '')}
               </div>
             </div>
           </div>

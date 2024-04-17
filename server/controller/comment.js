@@ -1,24 +1,6 @@
 const { where } = require('sequelize');
 const { Comment, Member, Blog } = require('../models');
 
-// 시간
-const getTimeText = (time) => {
-  let recentTime = new Date(time);
-  let nowTime = new Date();
-  let displayTime = '';
-  let hDiff = (nowTime.getTime() - recentTime.getTime()) / (60 * 60 * 1000);
-  if (hDiff < 24) {
-    recentTime.getHours() <= 12
-      ? (displayTime = `오전 ${recentTime.getHours()}:${recentTime.getMinutes()}`)
-      : (displayTime = `오후 ${
-          recentTime.getHours() - 12
-        }:${recentTime.getMinutes()}`);
-  } else {
-    displayTime = `${recentTime.getMonth() + 1}월 ${recentTime.getDate()}일`;
-  }
-  return displayTime;
-};
-
 // 새 댓글 추가 시 유효성 검사 추가 예시
 exports.addComment = async (req, res) => {
   try {
@@ -58,7 +40,7 @@ exports.find = async (req, res) => {
         content,
         isSecret,
         parentIndex,
-        createdAt: getTimeText(createdAt),
+        createdAt,
         nickname: searchBlog.nickname,
       });
     } else {
@@ -69,7 +51,7 @@ exports.find = async (req, res) => {
         content,
         isSecret,
         parentIndex,
-        createdAt: getTimeText(createdAt),
+        createdAt,
         nickname: searchMember.username,
       });
     }
