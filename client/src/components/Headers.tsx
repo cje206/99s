@@ -9,6 +9,7 @@ import ProfileImage from './ProfileImage';
 import { ReactComponent as IcoMenuLeft } from '../images/ico-menu-left.svg';
 import { ReactComponent as IcoMenuRight } from '../images/ico-menu-right.svg';
 import { ReactComponent as IcoSearch } from '../images/ico-search.svg';
+import { ReactComponent as IcoArrLeft } from '../images/ico-arr-left.svg';
 import { ReactComponent as Blo9Logo } from '../images/blo9_logo.svg';
 import useAuth from '../hooks/useAuth';
 import { MainSetBtn } from './Btns';
@@ -97,6 +98,7 @@ const Text = styled.div`
 `;
 const BtnsWrap = styled.div`
   display: flex;
+  align-items: center;
   p {
     margin-left: 10px;
   }
@@ -377,6 +379,11 @@ export function ChatDetailHeader({
     <BoxStyle className="headerBg">
       <header>
         <BtnsWrap>
+          <IcoArrLeft
+            style={{ marginRight: '10px' }}
+            onClick={() => document.location.reload()}
+            className="changeStroke"
+          />
           <ProfileImage id={id} imgwidth="40px" />
           <Title>{children}</Title>
         </BtnsWrap>

@@ -1,24 +1,6 @@
 const { Chat, Room, Member, Blog } = require('../models');
 const { Op, where } = require('sequelize');
 
-// 시간
-const getTimeText = (time) => {
-  let recentTime = new Date(time);
-  let nowTime = new Date();
-  let displayTime = '';
-  let hDiff = (nowTime.getTime() - recentTime.getTime()) / (60 * 60 * 1000);
-  if (hDiff < 24) {
-    recentTime.getHours() <= 12
-      ? (displayTime = `오전 ${recentTime.getHours()}:${recentTime.getMinutes()}`)
-      : (displayTime = `오후 ${
-          recentTime.getHours() - 12
-        }:${recentTime.getMinutes()}`);
-  } else {
-    displayTime = `${recentTime.getMonth() + 1}월 ${recentTime.getDate()}일`;
-  }
-  return displayTime;
-};
-
 // 채팅 리스트 조회
 exports.find = async (req, res) => {
   const { userId } = req.query;
@@ -46,7 +28,7 @@ exports.find = async (req, res) => {
           id: find1[i].id,
           roomId: find1[i].roomId,
           recentMsg: find1[i].recentMsg,
-          updatedAt: getTimeText(find1[i].updatedAt),
+          updatedAt: find1[i].updatedAt,
           nickname: searchBlog.nickname,
         });
       } else {
@@ -55,7 +37,7 @@ exports.find = async (req, res) => {
           id: find1[i].id,
           roomId: find1[i].roomId,
           recentMsg: find1[i].recentMsg,
-          updatedAt: getTimeText(find1[i].updatedAt),
+          updatedAt: find1[i].updatedAt,
           nickname: searchMember.username,
         });
       }
@@ -71,7 +53,7 @@ exports.find = async (req, res) => {
           id: find2[i].id,
           roomId: find2[i].roomId,
           recentMsg: find2[i].recentMsg,
-          updatedAt: getTimeText(find2[i].updatedAt),
+          updatedAt: find2[i].updatedAt,
           nickname: searchBlog.nickname,
         });
       } else {
@@ -80,7 +62,7 @@ exports.find = async (req, res) => {
           id: find2[i].id,
           roomId: find2[i].roomId,
           recentMsg: find2[i].recentMsg,
-          updatedAt: getTimeText(find2[i].updatedAt),
+          updatedAt: find2[i].updatedAt,
           nickname: searchMember.username,
         });
       }

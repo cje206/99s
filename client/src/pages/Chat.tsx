@@ -10,6 +10,7 @@ import { ChatDataProps } from '../types';
 import useAuth from '../hooks/useAuth';
 import { io } from 'socket.io-client';
 import axios from 'axios';
+import { getTimeText } from '../components/Functions';
 
 export default function Chat() {
   const socketRef = useRef(io('/'));
@@ -129,7 +130,7 @@ export default function Chat() {
                     id={value.id}
                     nickname={value.nickname}
                     recentMsg={value.recentMsg}
-                    sendTime={value.updatedAt}
+                    sendTime={getTimeText(value.updatedAt || '')}
                     roomId={value.roomId}
                     data={setChatData}
                     active={
