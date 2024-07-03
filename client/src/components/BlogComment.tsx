@@ -203,7 +203,7 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                   <div className="comment" key={val.id}>
                     <div className="commentWriter">
                       <div className="commentInfo">
-                        <ProfileImage id={val.memberId} imgwidth="30px" />
+                        <ProfileImage id={val.memberId} $imgwidth="30px" />
                         <div>{val.nickname}</div>
                       </div>
                       {user.id === val.memberId &&
@@ -288,7 +288,7 @@ export default function CommentComponent({ theme }: { theme: ThemeStyle }) {
                             <div className="commentInfo">
                               <ProfileImage
                                 id={data.memberId}
-                                imgwidth="30px"
+                                $imgwidth="30px"
                               />
                               <div>{data.nickname}</div>
                             </div>

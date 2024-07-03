@@ -934,7 +934,7 @@ export function SetBlog() {
           id={user.id || 0}
           profileimg={previewImageUrl}
           setPreview={setPreviewImageUrl}
-          imgwidth={'80px'}
+          $imgwidth={'80px'}
         />
         <input
           type="file"

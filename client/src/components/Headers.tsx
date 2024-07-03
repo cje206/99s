@@ -93,7 +93,7 @@ const BtnBox = styled.div`
 `;
 const Text = styled.div`
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
   /* margin-left: 20px; */
 `;
 const BtnsWrap = styled.div`
@@ -114,7 +114,7 @@ const TextCenter = styled.div`
   text-align: center;
 
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
   line-height: 70px;
 `;
 const Title = styled.p`
@@ -211,7 +211,7 @@ export function MainPcHeader() {
           onClick={() => (user.id ? setShowSet(!showSet) : navigate('/signup'))}
         >
           <div>{user.username || '로그인/회원가입'}</div>
-          <ProfileImage id={user.id || 0} imgwidth="40px" />
+          <ProfileImage id={user.id || 0} $imgwidth="40px" />
         </MenuList>
         {showSet && <MainSetBtn />}
       </header>
@@ -384,7 +384,7 @@ export function ChatDetailHeader({
             onClick={() => document.location.reload()}
             className="changeStroke"
           />
-          <ProfileImage id={id} imgwidth="40px" />
+          <ProfileImage id={id} $imgwidth="40px" />
           <Title>{children}</Title>
         </BtnsWrap>
         <Icon $url="search"></Icon>

@@ -97,7 +97,7 @@ const WriterInfo = styled.div`
     flex-grow: 1;
     .writer {
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 700;
       margin-bottom: 5px;
       color: #333;
     }
@@ -167,7 +167,7 @@ export function PostTitle({
       <div className="categoryName">{categoryName}</div>
       <div className="contentTitle">{post.postTitle}</div>
       <div className="contentDetail">
-        <ProfileImage id={blog?.memberId || 1} imgwidth="50px" />
+        <ProfileImage id={blog?.memberId || 1} $imgwidth="50px" />
         <div className="block">
           <div className="writer">{blog.nickname}</div>
           <div className="block1">
@@ -297,13 +297,13 @@ export function PostLike({
           {/* 좋아요 누른 사람들 이미지 3개까지 보여주게 하기 */}
           <div className="likeImg">
             {likeList.memberList.length >= 1 && (
-              <ProfileImage id={likeList.memberList[0]} imgwidth="28px" />
+              <ProfileImage id={likeList.memberList[0]} $imgwidth="28px" />
             )}
             {likeList.memberList.length >= 2 && (
-              <ProfileImage id={likeList.memberList[1]} imgwidth="28px" />
+              <ProfileImage id={likeList.memberList[1]} $imgwidth="28px" />
             )}
             {likeList.memberList.length >= 3 && (
-              <ProfileImage id={likeList.memberList[2]} imgwidth="28px" />
+              <ProfileImage id={likeList.memberList[2]} $imgwidth="28px" />
             )}
           </div>
 
@@ -384,7 +384,7 @@ export function WriterProfile({
   }, [id]);
   return (
     <WriterInfo style={{ background: theme.color }}>
-      <ProfileImage id={Number(id)} imgwidth="60px" />
+      <ProfileImage id={Number(id)} $imgwidth="60px" />
       <div className="block2">
         <div className="writer">{blog?.nickname} </div>
         <div className="subscribe">구독자 {blog?.subscribeCount || 0}명</div>

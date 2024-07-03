@@ -13,8 +13,8 @@ const ProfileImg = styled.div<{ link?: string }>`
     padding-bottom: 100%;
   }
 `;
-const DefaultImg = styled.div<{ imgwidth: string }>`
-  width: ${(props) => props.imgwidth};
+const DefaultImg = styled.div<{ $imgwidth: string }>`
+  width: ${(props) => props.$imgwidth};
   height: fit-content;
   border-radius: 50%;
   overflow: hidden;
@@ -28,12 +28,12 @@ const DefaultImg = styled.div<{ imgwidth: string }>`
 
 export default function ProfileImage({
   id,
-  imgwidth,
+  $imgwidth,
   profileimg,
   setPreview,
 }: {
   id: number;
-  imgwidth?: string;
+  $imgwidth?: string;
   profileimg?: string | null;
   setPreview?: (writerImg: string) => void;
 }) {
@@ -83,7 +83,10 @@ export default function ProfileImage({
   return (
     <>
       {Boolean(id) ? (
-        <DefaultImg className="imgBox" imgwidth={imgwidth ? imgwidth : '20%'}>
+        <DefaultImg
+          className="imgBox"
+          $imgwidth={$imgwidth ? $imgwidth : '20%'}
+        >
           {profile.img ? (
             <ProfileImg link={profile.img} />
           ) : (
@@ -91,7 +94,10 @@ export default function ProfileImage({
           )}
         </DefaultImg>
       ) : (
-        <DefaultImg className="imgBox" imgwidth={imgwidth ? imgwidth : '20%'}>
+        <DefaultImg
+          className="imgBox"
+          $imgwidth={$imgwidth ? $imgwidth : '20%'}
+        >
           <DefaultPropfile fill={theme.background} />
         </DefaultImg>
       )}
