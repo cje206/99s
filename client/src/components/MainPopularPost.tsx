@@ -97,9 +97,9 @@ export default function MainPopularPost({
           <>
             <Swipe onSwipeEnd={onSwipeEnd} onSwipeMove={onSwipeMove}>
               <StyledImgDiv
-                imgCount={imgCount}
-                positionx={positionx}
-                endSwipe={endSwipe}
+                $imgCount={imgCount}
+                $positionx={positionx}
+                $endswipe={endSwipe}
               >
                 {postlist?.map((post) => (
                   <div
@@ -123,8 +123,8 @@ export default function MainPopularPost({
                   return (
                     <ImageCounter
                       key={index}
-                      index={index}
-                      imgCount={imgCount}
+                      $index={index}
+                      $imgCount={imgCount}
                     />
                   );
                 })}
