@@ -31,7 +31,7 @@ const BlogDetail = styled.div`
     align-items: center;
     margin-bottom: 10px;
     p {
-      font-weight: bold;
+      font-weight: 700;
       font-size: 18px;
     }
   }
@@ -102,7 +102,7 @@ export default function BlogMain({
   return (
     <div className="blog">
       <BlogMainContainer>
-        <ProfileImage id={Number(id)} imgwidth="70px" />
+        <ProfileImage id={Number(id)} $imgwidth="70px" />
         <BlogDetail>
           <div className="nickName">
             <p>{blogInfo?.nickname}</p>

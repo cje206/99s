@@ -102,7 +102,7 @@ export function WriterList({ id }: { id: number }) {
   return (
     <Link to={`/blog/${info.memberId}`}>
       <WriterContainer>
-        <ProfileImage id={info.memberId} imgwidth="50px" />
+        <ProfileImage id={info.memberId} $imgwidth="50px" />
         <div className="textBox">
           <div className="nickname">{info.nickname}</div>
           <div className="countBox">
@@ -142,7 +142,7 @@ export function PostList({ id }: { id: number }) {
         <div className="title">{info.title}</div>
         <div className="content">{htmlToText(info.content)}</div>
         <div className="writerInfo">
-          <ProfileImage id={info.memberId} imgwidth="40px" />
+          <ProfileImage id={info.memberId} $imgwidth="40px" />
           <div className="writerText">
             <p className="nickname">{info.nickname}</p>
             <p className="written">{getTimeText(info.createdAt)}</p>
@@ -207,7 +207,7 @@ export function PostLists({
         <div className="blogPostContent">{htmlToText(post?.content)}</div>
         <div className="postInfo">
           <div className="postProfile">
-            <ProfileImage id={memberId} imgwidth="40px" />
+            <ProfileImage id={memberId} $imgwidth="40px" />
             <div className="profile">
               <p className="nickname">{nickname}</p>
               <div className="Date">

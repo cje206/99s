@@ -59,7 +59,7 @@ export default function Chatlist({
       className={active === 'true' ? 'chatListBox on' : 'chatListBox'}
       onClick={() => goChat(roomId)}
     >
-      <ProfileImage id={id} imgwidth="50px" />
+      <ProfileImage id={id} $imgwidth="50px" />
       <div style={{ marginLeft: '10px' }}>
         <div className="title">{nickname}</div>
         <div className="msg">

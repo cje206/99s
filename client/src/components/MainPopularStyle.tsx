@@ -44,15 +44,15 @@ export const Img = styled.img`
 `;
 
 type ImageCounterProps = {
-  imgCount: number;
-  index: number;
+  $imgCount: number;
+  $index: number;
 };
 
 export const ImageCounter = styled.div<ImageCounterProps>`
   width: 6px;
   height: 6px;
-  background: ${({ index, imgCount }) =>
-    index === imgCount - 1 ? '#0095f6' : '#a8a8a8'};
+  background: ${({ $index, $imgCount }) =>
+    $index === $imgCount - 1 ? '#0095f6' : '#a8a8a8'};
   border-radius: 50%;
   &:not(:last-of-type) {
     margin-right: 4px;
@@ -68,19 +68,19 @@ export const ImageCounterWrapper = styled.div`
 `;
 
 interface StyledImgDivProps {
-  imgCount: number;
-  positionx: number;
-  endSwipe: boolean;
+  $imgCount: number;
+  $positionx: number;
+  $endswipe: boolean;
 }
 
 export const StyledImgDiv = styled.div<StyledImgDivProps>`
   display: flex;
   width: 100vw;
   height: fit-content;
-  transition: transform ${({ endSwipe }) => (endSwipe ? '0.2s' : '0s')};
+  transition: transform ${({ $endswipe }) => ($endswipe ? '0.2s' : '0s')};
   transform: translateX(
-    ${({ imgCount, positionx }) =>
-      `calc(${positionx}px + ${-100 * (imgCount - 1)}%)`}
+    ${({ $imgCount, $positionx }) =>
+      `calc(${$positionx}px + ${-100 * ($imgCount - 1)}%)`}
   );
 `;
 
@@ -149,7 +149,7 @@ export const StyledButton = styled.button`
   padding: 10px 20px;
   background-color: #fff;
   color: #313030;
-  font-weight: bold;
+  font-weight: 700;
   @media (min-width: 1160px) {
     margin-right: 20px;
     font-size: 17px;
@@ -183,7 +183,7 @@ export const ButtonExtraStyled = styled.button`
   border: 1px solid #d9dbdf;
   margin-right: 5px;
   color: #43a046;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
   &:hover {
     background-color: #c5e4c6;
